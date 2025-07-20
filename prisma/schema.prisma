@@ -1,0 +1,63 @@
+// 비타민 의원 홈페이지 데이터베이스 스키마
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  role     Role   @default(ADMIN)
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+model Content {
+  id      String @id @default(cuid())
+  page    String
+  section String
+  title   String?
+  content String
+  image   String?
+  order   Int    @default(0)
+  fontSize String @default("normal")
+  @@unique([page, section])
+}
+
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  important Boolean  @default(false)
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HealthInfo {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  category    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String
+  category    String
+  altText     String
+  createdAt   DateTime @default(now())
+}
