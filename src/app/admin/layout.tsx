@@ -51,6 +51,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <a href="/admin/services" className="text-lg font-semibold text-neutral-800 hover:text-primary-500 py-2 px-3 rounded transition focus:outline focus:outline-2 focus:outline-primary-500" tabIndex={0} aria-label="진료과목 관리" onClick={()=>setMenuOpen(false)}>진료과목 관리</a>
           <a href="/admin/notices" className="text-lg font-semibold text-neutral-800 hover:text-primary-500 py-2 px-3 rounded transition focus:outline focus:outline-2 focus:outline-primary-500" tabIndex={0} aria-label="공지사항 관리" onClick={()=>setMenuOpen(false)}>공지사항 관리</a>
           <a href="/admin/health-info" className="text-lg font-semibold text-neutral-800 hover:text-primary-500 py-2 px-3 rounded transition focus:outline focus:outline-2 focus:outline-primary-500" tabIndex={0} aria-label="건강정보 관리" onClick={()=>setMenuOpen(false)}>건강정보 관리</a>
+          <a href="/admin/guide" className="text-lg font-semibold text-primary-700 hover:text-primary-500 py-2 px-3 rounded transition focus:outline focus:outline-2 focus:outline-primary-500" tabIndex={0} aria-label="관리자 가이드" onClick={()=>setMenuOpen(false)}>관리자 가이드</a>
           <a href="/admin/logout" className="text-lg font-semibold text-neutral-400 hover:text-red-500 py-2 px-3 rounded transition mt-8 focus:outline focus:outline-2 focus:outline-red-500" tabIndex={0} aria-label="로그아웃" onClick={()=>setMenuOpen(false)}>로그아웃</a>
         </nav>
       </aside>
