@@ -1,7 +1,7 @@
 import HeroSection from "../components/home/HeroSection";
 import ServiceCards from "../components/home/ServiceCards";
 import FeatureSection from "../components/home/FeatureSection";
-import NoticeSection from "../components/home/NoticeSection";
+import DirectorSection from "../components/about/DirectorSection";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       <HeroSection />
       <ServiceCards />
       <FeatureSection />
-      <NoticeSection />
+      <DirectorSection />
     </>
   );
 }
