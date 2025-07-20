@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Logo from './Logo';
 
 const navItems = [
   { href: '/', label: '홈' },
@@ -26,7 +27,10 @@ export default function Header() {
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md border-b border-neutral-200/50 shadow' : 'bg-transparent'}`}>
       <nav className="container flex items-center justify-between h-16 sm:h-20">
-        <Link href="/" className="text-base sm:text-xl md:text-2xl font-extrabold text-primary-500 tracking-tight">비타민 의원</Link>
+        {/* 병원명/로고 */}
+        <Link href="/" className="flex items-center gap-2">
+          <Logo />
+        </Link>
         {/* 데스크톱 메뉴 */}
         <ul className="hidden sm:flex gap-1 sm:gap-2 md:gap-4">
           {navItems.map((item) => (
