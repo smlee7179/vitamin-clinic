@@ -18,7 +18,7 @@ export default function HeroSection() {
         <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium mb-8 drop-shadow">부산 동구 중앙대로 375 | 051-469-7581<br />노인 전문 마취통증의학과, 맞춤 재활 및 통증 치료</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-lg mx-auto relative z-30">
           <a href="tel:051-469-7581" className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out backdrop-blur-sm border border-white/20 relative z-40">📞 전화걸기</a>
-          <Link href="/contact" className="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 bg-black/30 sm:bg-transparent relative z-40">오시는 길</Link>
+          <Link href="/contact" className="bg-white border-2 border-white text-primary-600 hover:bg-white hover:text-primary-700 font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 relative z-40">오시는 길</Link>
         </div>
       </div>
       <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 md:h-20 z-30 pointer-events-none">
