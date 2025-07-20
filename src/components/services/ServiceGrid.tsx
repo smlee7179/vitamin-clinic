@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Content } from '@prisma/client';
 
 export default async function ServiceGrid() {
   const prisma = new PrismaClient();
-  let services = [];
+  let services: Content[] = [];
   try {
     services = await prisma.content.findMany({ where: { page: 'service' }, orderBy: { order: 'asc' } });
   } catch (e) {
@@ -13,7 +13,7 @@ export default async function ServiceGrid() {
   }
   return (
     <section className="container py-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-      {services.map((s: any, i: number) => (
+      {services.map((s) => (
         <div
           key={s.id}
           className="glass-card flex flex-col items-center p-8 shadow-card hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group"
