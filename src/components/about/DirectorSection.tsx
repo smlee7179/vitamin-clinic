@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Content } from '@prisma/client';
 
 export default async function DirectorSection() {
   const prisma = new PrismaClient();
-  let directors = [];
+  let directors: Content[] = [];
   try {
     directors = await prisma.content.findMany({
       where: { page: 'about', section: 'director' },
@@ -17,16 +17,14 @@ export default async function DirectorSection() {
   }
   return (
     <section className="container py-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      {directors.map((director: any) => (
+      {directors.map((director) => (
         <div key={director.id} className="flex flex-col md:flex-row items-center gap-8 mb-12">
           <div className="flex justify-center">
             <div className="relative w-56 h-56 rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-primary-200 to-primary-50">
-              <Image
+              <img
                 src={director.image || "/director.jpg"}
                 alt={director.title || "원장님 프로필"}
-                fill
-                className="object-cover object-center"
-                priority
+                className="object-cover object-center w-full h-full"
               />
             </div>
           </div>

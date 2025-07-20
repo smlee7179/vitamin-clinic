@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Content } from '@prisma/client';
 
 export default async function GallerySection() {
   const prisma = new PrismaClient();
-  let galleries = [];
+  let galleries: Content[] = [];
   try {
     galleries = await prisma.content.findMany({
       where: { section: 'gallery' },
@@ -18,7 +18,7 @@ export default async function GallerySection() {
     <section className="container py-16">
       <h2 className="text-2xl font-bold text-primary-600 mb-8">시설 갤러리</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {galleries.map((g: any) => (
+        {galleries.map((g) => (
           <div key={g.id} className="overflow-hidden rounded-2xl shadow-lg group">
             <img
               src={g.image || "/device.jpg"}
