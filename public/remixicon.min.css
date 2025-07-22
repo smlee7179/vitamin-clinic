@@ -1,0 +1,26 @@
+/* Remixicon CDN CSS */
+@font-face {
+  font-family: "remixicon";
+  src: url("/fonts/remixicon.woff2") format("woff2"),
+       url("/fonts/remixicon.woff") format("woff"),
+       url("/fonts/remixicon.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+[class^="ri-"]:before, [class*=" ri-"]:before {
+  font-family: "remixicon" !important;
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  margin-left: .2em;
+}
+/* 실제 remixicon.min.css의 전체 내용은 공식 CDN에서 복사하여 붙여넣어야 함. */

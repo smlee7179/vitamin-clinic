@@ -1,0 +1,25 @@
+{
+  "name": "비타민 의원 - 부산 정형외과",
+  "short_name": "비타민 의원",
+  "description": "부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff6b35",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["medical", "health"],
+  "lang": "ko",
+  "dir": "ltr"
+} 
