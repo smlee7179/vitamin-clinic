@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -74,6 +73,20 @@ interface ContentData {
     parking: string;
     subway: string;
     bus: string;
+  };
+  footer: {
+    companyName: string;
+    address: string;
+    phone: string;
+    email: string;
+    businessNumber: string;
+    representative: string;
+    copyright: string;
+    links: {
+      privacy: string;
+      terms: string;
+      sitemap: string;
+    };
   };
 }
 
@@ -152,6 +165,20 @@ export default function AdminPage() {
       parking: '건물 지하 주차장 이용 가능',
       subway: '2호선 해운대역 3번 출구 도보 5분',
       bus: '해운대역 정류장 하차 후 도보 3분'
+    },
+    footer: {
+      companyName: '비타민마취통증의학과의원',
+      address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
+      phone: '051-746-7582',
+      email: 'info@vitamin-clinic.co.kr',
+      businessNumber: '123-45-67890',
+      representative: '김철수',
+      copyright: '© 2024 비타민마취통증의학과의원. All rights reserved.',
+      links: {
+        privacy: '/privacy',
+        terms: '/terms',
+        sitemap: '/sitemap'
+      }
     }
   };
   // 1. 상태 선언
@@ -270,7 +297,8 @@ export default function AdminPage() {
           services: { ...base.services },
           doctors: { ...base.doctors },
           facilities: { ...base.facilities },
-          contact: { ...base.contact }
+          contact: { ...base.contact },
+          footer: { ...base.footer }
         };
       }
       if (section === 'services') {
@@ -279,7 +307,8 @@ export default function AdminPage() {
           services: { ...base.services, [field]: value },
           doctors: { ...base.doctors },
           facilities: { ...base.facilities },
-          contact: { ...base.contact }
+          contact: { ...base.contact },
+          footer: { ...base.footer }
         };
       }
       if (section === 'doctors') {
@@ -288,7 +317,8 @@ export default function AdminPage() {
           services: { ...base.services },
           doctors: { ...base.doctors, [field]: value },
           facilities: { ...base.facilities },
-          contact: { ...base.contact }
+          contact: { ...base.contact },
+          footer: { ...base.footer }
         };
       }
       if (section === 'facilities') {
@@ -297,7 +327,8 @@ export default function AdminPage() {
           services: { ...base.services },
           doctors: { ...base.doctors },
           facilities: { ...base.facilities, [field]: value },
-          contact: { ...base.contact }
+          contact: { ...base.contact },
+          footer: { ...base.footer }
         };
       }
       if (section === 'contact') {
@@ -306,7 +337,18 @@ export default function AdminPage() {
           services: { ...base.services },
           doctors: { ...base.doctors },
           facilities: { ...base.facilities },
-          contact: { ...base.contact, [field]: value }
+          contact: { ...base.contact, [field]: value },
+          footer: { ...base.footer }
+        };
+      }
+      if (section === 'footer') {
+        return {
+          hero: { ...base.hero },
+          services: { ...base.services },
+          doctors: { ...base.doctors },
+          facilities: { ...base.facilities },
+          contact: { ...base.contact },
+          footer: { ...base.footer, [field]: value }
         };
       }
       return base;
@@ -323,6 +365,7 @@ export default function AdminPage() {
       let doctors = { ...base.doctors };
       let facilities = { ...base.facilities };
       let contact = { ...base.contact };
+      let footer = { ...base.footer };
 
       if (section === 'doctors' && subsection === 'list' && typeof field === 'object' && field !== null && 'index' in field && 'key' in field) {
         const newList = [...doctors.list];
@@ -340,7 +383,7 @@ export default function AdminPage() {
         if (section === 'facilities') facilities = { ...facilities, [subsection]: { ...facilities[subsection], [field]: value } };
         if (section === 'contact') contact = { ...contact, [subsection]: { ...contact[subsection], [field]: value } };
       }
-      return { hero, services, doctors, facilities, contact };
+      return { hero, services, doctors, facilities, contact, footer };
     });
   };
 
@@ -507,6 +550,17 @@ export default function AdminPage() {
                   <i className="ri-map-pin-line mr-3 text-lg"></i>
                   <span className="font-medium">오시는 길</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('footer')}
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'footer' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
+                  }`}
+                >
+                  <i className="ri-file-text-line mr-3 text-lg"></i>
+                  <span className="font-medium">푸터 정보</span>
+                </button>
               </nav>
               
               {/* Quick Stats */}
@@ -601,7 +655,8 @@ export default function AdminPage() {
                             services: { ...base.services },
                             doctors: { ...base.doctors },
                             facilities: { ...base.facilities },
-                            contact: { ...base.contact }
+                            contact: { ...base.contact },
+                            footer: { ...base.footer }
                           };
                         }))}
                       />
@@ -631,7 +686,8 @@ export default function AdminPage() {
                             services: { ...base.services },
                             doctors: { ...base.doctors },
                             facilities: { ...base.facilities },
-                            contact: { ...base.contact }
+                            contact: { ...base.contact },
+                            footer: { ...base.footer }
                           };
                         }))}
                         disabled={!contentData.hero.backgroundImageFile}
@@ -720,7 +776,8 @@ export default function AdminPage() {
                                 services: { ...base.services, orthopedic: { ...base.services.orthopedic, imageFile: key } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                           />
@@ -750,7 +807,8 @@ export default function AdminPage() {
                                 services: { ...base.services, orthopedic: { ...base.services.orthopedic, imageFile: '' } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                             disabled={!contentData.services.orthopedic.imageFile}
@@ -813,7 +871,8 @@ export default function AdminPage() {
                                 services: { ...base.services, anesthesia: { ...base.services.anesthesia, imageFile: key } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                           />
@@ -843,7 +902,8 @@ export default function AdminPage() {
                                 services: { ...base.services, anesthesia: { ...base.services.anesthesia, imageFile: '' } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                             disabled={!contentData.services.anesthesia.imageFile}
@@ -906,7 +966,8 @@ export default function AdminPage() {
                                 services: { ...base.services, rehabilitation: { ...base.services.rehabilitation, imageFile: key } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                           />
@@ -936,7 +997,8 @@ export default function AdminPage() {
                                 services: { ...base.services, rehabilitation: { ...base.services.rehabilitation, imageFile: '' } },
                                 doctors: base.doctors,
                                 facilities: base.facilities,
-                                contact: base.contact
+                                contact: base.contact,
+                                footer: base.footer
                               };
                             }))}
                             disabled={!contentData.services.rehabilitation.imageFile}
@@ -1002,7 +1064,7 @@ export default function AdminPage() {
                                   services: { ...base.services },
                                   doctors: updatedDoctors,
                                   facilities: { ...base.facilities },
-                                  contact: { ...base.contact }
+                                  contact: { ...base.contact }, footer: { ...base.footer }
                                 };
                               }))}
                             />
@@ -1030,7 +1092,7 @@ export default function AdminPage() {
                                   services: { ...base.services },
                                   doctors: updatedDoctors,
                                   facilities: { ...base.facilities },
-                                  contact: { ...base.contact }
+                                  contact: { ...base.contact }, footer: { ...base.footer }
                                 };
                               }))}
                               disabled={!doctor.imageFile}
@@ -1126,7 +1188,7 @@ export default function AdminPage() {
                                   services: { ...base.services },
                                   doctors: { ...base.doctors },
                                   facilities: updatedFacilities,
-                                  contact: { ...base.contact }
+                                  contact: { ...base.contact }, footer: { ...base.footer }
                                 };
                               }))}
                             />
@@ -1154,7 +1216,7 @@ export default function AdminPage() {
                                   services: { ...base.services },
                                   doctors: { ...base.doctors },
                                   facilities: updatedFacilities,
-                                  contact: { ...base.contact }
+                                  contact: { ...base.contact }, footer: { ...base.footer }
                                 };
                               }))}
                               disabled={!facility.imageFile}
@@ -1295,6 +1357,138 @@ export default function AdminPage() {
                           value={contentData.contact.bus}
                           onChange={(e) => updateContent('contact', 'bus', e.target.value)}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'footer' && (
+              <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                <div className="flex items-center mb-8">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mr-4">
+                    <i className="ri-file-text-line text-white text-lg"></i>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">푸터 정보 설정</h2>
+                    <p className="text-gray-600">홈페이지 하단에 표시되는 회사 정보와 링크를 관리합니다.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">회사명</label>
+                      <input
+                        type="text"
+                        value={contentData.footer.companyName}
+                        onChange={(e) => updateContent('footer', 'companyName', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 비타민마취통증의학과의원"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">대표자</label>
+                      <input
+                        type="text"
+                        value={contentData.footer.representative}
+                        onChange={(e) => updateContent('footer', 'representative', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 김철수"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">주소</label>
+                      <input
+                        type="text"
+                        value={contentData.footer.address}
+                        onChange={(e) => updateContent('footer', 'address', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 부산광역시 해운대구 중동 1394-65"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">전화번호</label>
+                      <input
+                        type="text"
+                        value={contentData.footer.phone}
+                        onChange={(e) => updateContent('footer', 'phone', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 051-746-7582"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">이메일</label>
+                      <input
+                        type="email"
+                        value={contentData.footer.email}
+                        onChange={(e) => updateContent('footer', 'email', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: info@vitamin-clinic.co.kr"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">사업자등록번호</label>
+                      <input
+                        type="text"
+                        value={contentData.footer.businessNumber}
+                        onChange={(e) => updateContent('footer', 'businessNumber', e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 123-45-67890"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">저작권 정보</label>
+                    <input
+                      type="text"
+                      value={contentData.footer.copyright}
+                      onChange={(e) => updateContent('footer', 'copyright', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                      placeholder="예: © 2024 비타민마취통증의학과의원. All rights reserved."
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold text-gray-900">링크 설정</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">개인정보처리방침</label>
+                        <input
+                          type="text"
+                          value={contentData.footer.links.privacy}
+                          onChange={(e) => updateNestedContent('footer', 'links', 'privacy', e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                          placeholder="예: /privacy"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">이용약관</label>
+                        <input
+                          type="text"
+                          value={contentData.footer.links.terms}
+                          onChange={(e) => updateNestedContent('footer', 'links', 'terms', e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                          placeholder="예: /terms"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">사이트맵</label>
+                        <input
+                          type="text"
+                          value={contentData.footer.links.sitemap}
+                          onChange={(e) => updateNestedContent('footer', 'links', 'sitemap', e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                          placeholder="예: /sitemap"
                         />
                       </div>
                     </div>

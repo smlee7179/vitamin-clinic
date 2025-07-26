@@ -91,6 +91,20 @@ export default function Home() {
             parking: '건물 지하 주차장 이용 가능',
             subway: '2호선 해운대역 3번 출구 도보 5분',
             bus: '해운대역 정류장 하차 후 도보 3분'
+          },
+          footer: {
+            companyName: '비타민마취통증의학과의원',
+            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
+            phone: '051-746-7582',
+            email: 'info@vitamin-clinic.co.kr',
+            businessNumber: '123-45-67890',
+            representative: '김철수',
+            copyright: '© 2024 비타민마취통증의학과의원. All rights reserved.',
+            links: {
+              privacy: '/privacy',
+              terms: '/terms',
+              sitemap: '/sitemap'
+            }
           }
         };
         setContentData(defaultData);
@@ -180,11 +194,25 @@ export default function Home() {
                 saturday: '토요일: 09:00 - 13:00',
                 sunday: '일요일 및 공휴일: 휴진'
               },
-              parking: '건물 지하 주차장 이용 가능',
-              subway: '2호선 해운대역 3번 출구 도보 5분',
-              bus: '해운대역 정류장 하차 후 도보 3분'
+                          parking: '건물 지하 주차장 이용 가능',
+            subway: '2호선 해운대역 3번 출구 도보 5분',
+            bus: '해운대역 정류장 하차 후 도보 3분'
+          },
+          footer: {
+            companyName: '비타민마취통증의학과의원',
+            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
+            phone: '051-746-7582',
+            email: 'info@vitamin-clinic.co.kr',
+            businessNumber: '123-45-67890',
+            representative: '김철수',
+            copyright: '© 2024 비타민마취통증의학과의원. All rights reserved.',
+            links: {
+              privacy: '/privacy',
+              terms: '/terms',
+              sitemap: '/sitemap'
             }
-          };
+          }
+        };
           setContentData(defaultData);
         }
       } catch (e) {
@@ -681,12 +709,16 @@ export default function Home() {
                     <i className="ri-hospital-line text-white text-lg sm:text-xl"></i>
                   </div>
                   <h3 className="text-lg sm:text-xl font-bold" style={{fontFamily: 'Pacifico, serif'}}>
-                    비타민마취통증의학과의원
+                    {contentData?.footer?.companyName || '비타민마취통증의학과의원'}
                   </h3>
                 </div>
                 <p className="text-gray-400 mb-4 text-sm sm:text-base leading-relaxed">
                   부산 정형외과 전문 병원으로 환자분들의 건강한 삶을 위해 최선을 다하겠습니다.
                 </p>
+                <div className="text-gray-400 text-sm space-y-1">
+                  <p>대표자: {contentData?.footer?.representative || '김철수'}</p>
+                  <p>사업자등록번호: {contentData?.footer?.businessNumber || '123-45-67890'}</p>
+                </div>
               </div>
               
               <div>
@@ -704,24 +736,37 @@ export default function Home() {
                 <div className="space-y-2 text-sm sm:text-base">
                   <p className="text-gray-400">
                     <i className="ri-phone-line mr-2"></i>
-                    051-746-7582
+                    {contentData?.footer?.phone || '051-746-7582'}
                   </p>
                   <p className="text-gray-400">
                     <i className="ri-map-pin-line mr-2"></i>
-                    부산광역시 해운대구 중동 1394-65
+                    {contentData?.footer?.address || '부산광역시 해운대구 중동 1394-65'}
                   </p>
                   <p className="text-gray-400">
-                    <i className="ri-time-line mr-2"></i>
-                    평일 09:00 - 18:00
+                    <i className="ri-mail-line mr-2"></i>
+                    {contentData?.footer?.email || 'info@vitamin-clinic.co.kr'}
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center">
-              <p className="text-gray-400 text-sm sm:text-base">
-                2024 비타민마취통증의학과의원. All rights reserved.
-              </p>
+            <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8">
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <p className="text-gray-400 text-sm sm:text-base">
+                  {contentData?.footer?.copyright || '© 2024 비타민마취통증의학과의원. All rights reserved.'}
+                </p>
+                <div className="flex space-x-4 mt-4 md:mt-0">
+                  <Link href={contentData?.footer?.links?.privacy || '/privacy'} className="text-gray-400 hover:text-orange-400 transition-colors text-sm">
+                    개인정보처리방침
+                  </Link>
+                  <Link href={contentData?.footer?.links?.terms || '/terms'} className="text-gray-400 hover:text-orange-400 transition-colors text-sm">
+                    이용약관
+                  </Link>
+                  <Link href={contentData?.footer?.links?.sitemap || '/sitemap'} className="text-gray-400 hover:text-orange-400 transition-colors text-sm">
+                    사이트맵
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
