@@ -21,8 +21,86 @@ export default function Home() {
     
     try {
       const saved = localStorage.getItem('hospitalContent');
-      if (saved) setContentData(JSON.parse(saved));
-      else setContentData(null);
+      if (saved) {
+        setContentData(JSON.parse(saved));
+      } else {
+        // localStorage에 데이터가 없으면 기본 데이터 사용
+        const defaultData = {
+          hero: {
+            title: '건강한 삶을 위한\n전문적인 치료',
+            subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
+            mainButton: '진료 예약하기',
+            secondButton: '진료과목 보기',
+            backgroundImage: 'Modern medical facility interior with warm orange lighting, clean and professional orthopedic clinic waiting area, comfortable seating, large windows with natural light, elderly-friendly design, Korean hospital atmosphere, warm and welcoming environment, medical equipment visible in background, professional healthcare setting',
+            backgroundImageFile: ''
+          },
+          services: {
+            title: '주요 진료과목',
+            subtitle: '전문적이고 체계적인 치료로 건강을 회복하세요',
+            orthopedic: {
+              title: '정형외과',
+              description: '관절염, 골절, 척추질환 등 근골격계 질환의 전문적인 진단과 치료',
+              items: ['관절염 치료', '척추질환 치료', '골절 치료', '스포츠 외상'],
+              image: '',
+              imageFile: ''
+            },
+            anesthesia: {
+              title: '마취통증의학과',
+              description: '다양한 통증 질환의 정확한 진단과 효과적인 치료',
+              items: ['만성 통증 치료', '신경차단술', '근막동통증후군', '대상포진 후 신경통'],
+              image: '',
+              imageFile: ''
+            },
+            rehabilitation: {
+              title: '재활의학과',
+              description: '기능 회복과 삶의 질 향상을 위한 전문적인 재활치료',
+              items: ['물리치료', '작업치료', '운동치료', '전기치료'],
+              image: '',
+              imageFile: ''
+            }
+          },
+          doctors: {
+            title: '의료진 소개',
+            subtitle: '풍부한 경험과 전문성을 갖춘 의료진이 함께합니다',
+            list: [
+              {
+                name: '김철수 원장',
+                position: '정형외과 전문의',
+                career: ['부산대학교 의과대학 졸업', '부산대학교병원 정형외과 전공의', '대한정형외과학회 정회원', '20년 이상의 임상경험'],
+                image: '',
+                imageFile: ''
+              }
+            ]
+          },
+          facilities: {
+            title: '시설 안내',
+            subtitle: '최신 의료장비와 편리한 시설로 최상의 진료를 제공합니다',
+            list: [
+              {
+                name: '접수 및 대기실',
+                description: '편안하고 깨끗한 환경에서 진료를 기다리실 수 있습니다.',
+                image: '',
+                imageFile: ''
+              }
+            ]
+          },
+          contact: {
+            title: '오시는 길',
+            subtitle: '편리한 교통과 주차시설을 제공합니다',
+            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
+            phone: '051-746-7582',
+            hours: {
+              weekday: '평일: 09:00 - 18:00',
+              saturday: '토요일: 09:00 - 13:00',
+              sunday: '일요일 및 공휴일: 휴진'
+            },
+            parking: '건물 지하 주차장 이용 가능',
+            subway: '2호선 해운대역 3번 출구 도보 5분',
+            bus: '해운대역 정류장 하차 후 도보 3분'
+          }
+        };
+        setContentData(defaultData);
+      }
     } catch (e) {
       setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
     }
@@ -35,7 +113,86 @@ export default function Home() {
     const loadData = () => {
       try {
         const saved = localStorage.getItem('hospitalContent');
-        if (saved) setContentData(JSON.parse(saved));
+        if (saved) {
+          setContentData(JSON.parse(saved));
+        } else {
+          // localStorage에 데이터가 없으면 기본 데이터 사용
+          const defaultData = {
+            hero: {
+              title: '건강한 삶을 위한\n전문적인 치료',
+              subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
+              mainButton: '진료 예약하기',
+              secondButton: '진료과목 보기',
+              backgroundImage: 'Modern medical facility interior with warm orange lighting, clean and professional orthopedic clinic waiting area, comfortable seating, large windows with natural light, elderly-friendly design, Korean hospital atmosphere, warm and welcoming environment, medical equipment visible in background, professional healthcare setting',
+              backgroundImageFile: ''
+            },
+            services: {
+              title: '주요 진료과목',
+              subtitle: '전문적이고 체계적인 치료로 건강을 회복하세요',
+              orthopedic: {
+                title: '정형외과',
+                description: '관절염, 골절, 척추질환 등 근골격계 질환의 전문적인 진단과 치료',
+                items: ['관절염 치료', '척추질환 치료', '골절 치료', '스포츠 외상'],
+                image: '',
+                imageFile: ''
+              },
+              anesthesia: {
+                title: '마취통증의학과',
+                description: '다양한 통증 질환의 정확한 진단과 효과적인 치료',
+                items: ['만성 통증 치료', '신경차단술', '근막동통증후군', '대상포진 후 신경통'],
+                image: '',
+                imageFile: ''
+              },
+              rehabilitation: {
+                title: '재활의학과',
+                description: '기능 회복과 삶의 질 향상을 위한 전문적인 재활치료',
+                items: ['물리치료', '작업치료', '운동치료', '전기치료'],
+                image: '',
+                imageFile: ''
+              }
+            },
+            doctors: {
+              title: '의료진 소개',
+              subtitle: '풍부한 경험과 전문성을 갖춘 의료진이 함께합니다',
+              list: [
+                {
+                  name: '김철수 원장',
+                  position: '정형외과 전문의',
+                  career: ['부산대학교 의과대학 졸업', '부산대학교병원 정형외과 전공의', '대한정형외과학회 정회원', '20년 이상의 임상경험'],
+                  image: '',
+                  imageFile: ''
+                }
+              ]
+            },
+            facilities: {
+              title: '시설 안내',
+              subtitle: '최신 의료장비와 편리한 시설로 최상의 진료를 제공합니다',
+              list: [
+                {
+                  name: '접수 및 대기실',
+                  description: '편안하고 깨끗한 환경에서 진료를 기다리실 수 있습니다.',
+                  image: '',
+                  imageFile: ''
+                }
+              ]
+            },
+            contact: {
+              title: '오시는 길',
+              subtitle: '편리한 교통과 주차시설을 제공합니다',
+              address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
+              phone: '051-746-7582',
+              hours: {
+                weekday: '평일: 09:00 - 18:00',
+                saturday: '토요일: 09:00 - 13:00',
+                sunday: '일요일 및 공휴일: 휴진'
+              },
+              parking: '건물 지하 주차장 이용 가능',
+              subway: '2호선 해운대역 3번 출구 도보 5분',
+              bus: '해운대역 정류장 하차 후 도보 3분'
+            }
+          };
+          setContentData(defaultData);
+        }
       } catch (e) {
         setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
       }
