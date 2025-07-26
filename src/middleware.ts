@@ -41,15 +41,15 @@ export function middleware(request: NextRequest) {
     response.headers.set(key, value)
   })
 
-  // 관리자 페이지 접근 제한 (IP 화이트리스트)
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
-    const allowedIPs = process.env.ALLOWED_ADMIN_IPS?.split(',') || ['127.0.0.1', '::1']
-    
-    if (!allowedIPs.includes(clientIP)) {
-      return new NextResponse('Access Denied', { status: 403 })
-    }
-  }
+  // 관리자 페이지 접근 제한 (IP 화이트리스트) - 임시 비활성화
+  // if (request.nextUrl.pathname.startsWith('/admin')) {
+  //   const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+  //   const allowedIPs = process.env.ALLOWED_ADMIN_IPS?.split(',') || ['127.0.0.1', '::1']
+  //   
+  //   if (!allowedIPs.includes(clientIP)) {
+  //     return new NextResponse('Access Denied', { status: 403 })
+  //   }
+  // }
 
   // API 요청 제한 (Rate Limiting)
   if (request.nextUrl.pathname.startsWith('/api/')) {
