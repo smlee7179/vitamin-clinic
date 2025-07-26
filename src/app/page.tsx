@@ -315,7 +315,8 @@ export default function Home() {
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMobileMenu}
-                className="sm:hidden w-8 h-8 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-colors cursor-pointer"
+                className="sm:hidden w-10 h-10 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-colors cursor-pointer bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md z-50 relative"
+                aria-label="메뉴 열기"
               >
                 <i className={`text-xl ${isMobileMenuOpen ? 'ri-close-line' : 'ri-menu-line'}`}></i>
               </button>
@@ -323,7 +324,7 @@ export default function Home() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-              <div className="sm:hidden border-t border-gray-200 py-4">
+              <div className="sm:hidden border-t border-gray-200 py-4 bg-white shadow-lg relative z-40">
                 <nav className="flex flex-col space-y-4">
                   <Link 
                     href="#home" 
