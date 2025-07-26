@@ -442,92 +442,133 @@ export default function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
+          {/* Sidebar - 개선된 디자인 */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">페이지 섹션</h2>
-              <nav className="space-y-2">
+            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24 border border-gray-100">
+              <div className="flex items-center mb-6">
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
+                  <i className="ri-layout-line text-white text-sm"></i>
+                </div>
+                <h2 className="text-lg font-bold text-gray-900">페이지 섹션</h2>
+              </div>
+              <nav className="space-y-3">
                 <button
                   onClick={() => setActiveTab('hero')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
-                    activeTab === 'hero' ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'hero' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
-                  <i className="ri-home-line mr-2"></i>
-                  메인 화면
+                  <i className="ri-home-line mr-3 text-lg"></i>
+                  <span className="font-medium">메인 화면</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('services')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
-                    activeTab === 'services' ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'services' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
-                  <i className="ri-hospital-line mr-2"></i>
-                  진료과목
+                  <i className="ri-hospital-line mr-3 text-lg"></i>
+                  <span className="font-medium">진료과목</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('doctors')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
-                    activeTab === 'doctors' ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'doctors' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
-                  <i className="ri-user-line mr-2"></i>
-                  의료진 소개
+                  <i className="ri-user-line mr-3 text-lg"></i>
+                  <span className="font-medium">의료진 소개</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('facilities')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
-                    activeTab === 'facilities' ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'facilities' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
-                  <i className="ri-building-line mr-2"></i>
-                  시설 안내
+                  <i className="ri-building-line mr-3 text-lg"></i>
+                  <span className="font-medium">시설 안내</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('contact')}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
-                    activeTab === 'contact' ? 'bg-orange-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
+                    activeTab === 'contact' 
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
-                  <i className="ri-map-pin-line mr-2"></i>
-                  오시는 길
+                  <i className="ri-map-pin-line mr-3 text-lg"></i>
+                  <span className="font-medium">오시는 길</span>
                 </button>
               </nav>
+              
+              {/* Quick Stats */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">빠른 통계</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">의료진</span>
+                    <span className="font-medium text-orange-600">{contentData?.doctors?.list?.filter((d: any) => d.name).length || 0}명</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">시설</span>
+                    <span className="font-medium text-orange-600">{contentData?.facilities?.list?.filter((f: any) => f.name).length || 0}개</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Main Content */}
+          {/* Main Content - 개선된 디자인 */}
           <div className="lg:col-span-3">
             {activeTab === 'hero' && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">메인 화면 설정</h2>
+              <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                <div className="flex items-center mb-8">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mr-4">
+                    <i className="ri-home-line text-white text-lg"></i>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">메인 화면 설정</h2>
+                    <p className="text-gray-600">홈페이지 메인 화면의 제목, 부제목, 버튼을 관리합니다.</p>
+                  </div>
+                </div>
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">메인 제목</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">메인 제목</label>
                     <textarea
                       value={contentData.hero.title}
                       onChange={(e) => updateContent('hero', 'title', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 resize-none"
                       rows={3}
+                      placeholder="메인 화면에 표시될 제목을 입력하세요"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">부제목</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">부제목</label>
                     <textarea
                       value={contentData.hero.subtitle}
                       onChange={(e) => updateContent('hero', 'subtitle', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 resize-none"
                       rows={3}
+                      placeholder="메인 화면에 표시될 부제목을 입력하세요"
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">첫 번째 버튼 텍스트</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">첫 번째 버튼 텍스트</label>
                       <input
                         type="text"
                         value={contentData.hero.mainButton}
                         onChange={(e) => updateContent('hero', 'mainButton', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
+                        placeholder="예: 전화 연결하기"
                       />
                     </div>
                     <div>

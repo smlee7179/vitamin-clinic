@@ -428,7 +428,16 @@ export default function Home() {
                 <i className="ri-phone-line text-lg"></i>
                 {contentData?.hero?.mainButton || '전화 연결하기'}
               </a>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-white/20 transition-colors whitespace-nowrap cursor-pointer">
+              <button 
+                onClick={() => {
+                  const servicesSection = document.getElementById('services');
+                  if (servicesSection) {
+                    servicesSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-white/20 transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
+              >
+                <i className="ri-arrow-down-line text-lg"></i>
                 {contentData?.hero?.secondButton || '진료과목 보기'}
               </button>
             </div>

@@ -40,7 +40,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https: data: blob:; style-src 'self' 'unsafe-inline' https: data: blob:; font-src 'self' https: data: blob:; img-src 'self' data: https: blob: *; connect-src 'self' https: data: blob:; frame-src 'self' https: data: blob:; object-src 'none'; base-uri 'self'; form-action 'self';",
+            value: "default-src 'self' https: data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https: data: blob:; style-src 'self' 'unsafe-inline' https: data: blob:; font-src 'self' https: data: blob:; img-src 'self' data: https: blob: *; connect-src 'self' https: data: blob:; frame-src 'self' https: data: blob: https://*.google.com https://www.google.com https://maps.google.com https://www.google.com/maps https://maps.googleapis.com https://www.google.com/maps/embed; object-src 'none'; base-uri 'self'; form-action 'self';",
           },
         ],
       },
