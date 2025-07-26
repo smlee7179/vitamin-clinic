@@ -8,9 +8,17 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [contentData, setContentData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  // 클라이언트 사이드 하이드레이션 확인
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   // 초기 로딩
   useEffect(() => {
+    if (!hydrated) return;
+    
     try {
       const saved = localStorage.getItem('hospitalContent');
       if (saved) setContentData(JSON.parse(saved));
@@ -18,10 +26,12 @@ export default function Home() {
     } catch (e) {
       setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
     }
-  }, []);
+  }, [hydrated]);
 
   // 여러 탭 동기화
   useEffect(() => {
+    if (!hydrated) return;
+    
     const loadData = () => {
       try {
         const saved = localStorage.getItem('hospitalContent');
@@ -32,24 +42,60 @@ export default function Home() {
     };
     window.addEventListener('storage', loadData);
     return () => window.removeEventListener('storage', loadData);
-  }, []);
+  }, [hydrated]);
 
   // 이미지 렌더링 함수
   const getImageSrc = (key: string | undefined, fallback: string) => {
-    if (!key) return fallback;
+    if (!key || !hydrated) return fallback;
     try {
-      const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
+      const img = localStorage.getItem(key);
       return img || fallback;
     } catch {
       return fallback;
     }
   };
 
-  if (!contentData) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      {error ? <div className="text-red-500 font-bold">{error}</div> : <div>로딩 중...</div>}
-    </div>
-  );
+  // 하이드레이션 전에는 기본 UI 표시
+  if (!hydrated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="ri-hospital-line text-white text-base sm:text-2xl"></i>
+            </div>
+            <h1 className="text-sm sm:text-2xl font-bold text-orange-600 mb-2" style={{fontFamily: 'Pacifico, serif'}}>
+              비타민마취통증의학과
+            </h1>
+            <p className="text-gray-600">로딩 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 데이터 로딩 중
+  if (!contentData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="ri-hospital-line text-white text-base sm:text-2xl"></i>
+            </div>
+            <h1 className="text-sm sm:text-2xl font-bold text-orange-600 mb-2" style={{fontFamily: 'Pacifico, serif'}}>
+              비타민마취통증의학과
+            </h1>
+            {error ? (
+              <div className="text-red-500 font-bold">{error}</div>
+            ) : (
+              <p className="text-gray-600">콘텐츠를 불러오는 중...</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // 이미지 변경 핸들러
   // handleImageChange, handleImageDelete 함수 전체 삭제
@@ -170,8 +216,8 @@ export default function Home() {
             style={{
               backgroundImage: (() => {
                 const key = contentData?.hero?.backgroundImageFile;
-                if (key) {
-                  const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
+                if (key && hydrated) {
+                  const img = localStorage.getItem(key);
                   if (img) return `url('${img}')`;
                 }
                 return contentData?.hero?.backgroundImage
