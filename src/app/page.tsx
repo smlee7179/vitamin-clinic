@@ -26,11 +26,11 @@ export default function Home() {
       } else {
         // localStorage에 데이터가 없으면 기본 데이터 사용
         const defaultData = {
-          hero: {
-            title: '건강한 삶을 위한\n전문적인 치료',
-            subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
-            mainButton: '진료 예약하기',
-            secondButton: '진료과목 보기',
+                      hero: {
+              title: '건강한 삶을 위한\n전문적인 치료',
+              subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
+              mainButton: '전화 연결하기',
+              secondButton: '진료과목 보기',
             backgroundImage: 'Modern medical facility interior with warm orange lighting, clean and professional orthopedic clinic waiting area, comfortable seating, large windows with natural light, elderly-friendly design, Korean hospital atmosphere, warm and welcoming environment, medical equipment visible in background, professional healthcare setting',
             backgroundImageFile: ''
           },
@@ -121,7 +121,7 @@ export default function Home() {
             hero: {
               title: '건강한 삶을 위한\n전문적인 치료',
               subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
-              mainButton: '진료 예약하기',
+              mainButton: '전화 연결하기',
               secondButton: '진료과목 보기',
               backgroundImage: 'Modern medical facility interior with warm orange lighting, clean and professional orthopedic clinic waiting area, comfortable seating, large windows with natural light, elderly-friendly design, Korean hospital atmosphere, warm and welcoming environment, medical equipment visible in background, professional healthcare setting',
               backgroundImageFile: ''
@@ -315,10 +315,11 @@ export default function Home() {
               {/* Mobile Menu Button */}
               <button
                 onClick={toggleMobileMenu}
-                className="sm:hidden w-10 h-10 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-colors cursor-pointer bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md z-50 relative"
+                className="sm:hidden w-12 h-12 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-colors cursor-pointer bg-white rounded-lg shadow-lg border-2 border-orange-200 hover:border-orange-300 hover:shadow-xl z-50 relative min-w-[48px] min-h-[48px]"
                 aria-label="메뉴 열기"
+                style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
               >
-                <i className={`text-xl ${isMobileMenuOpen ? 'ri-close-line' : 'ri-menu-line'}`}></i>
+                <i className={`text-2xl font-bold ${isMobileMenuOpen ? 'ri-close-line' : 'ri-menu-line'}`}></i>
               </button>
             </div>
 
@@ -402,8 +403,9 @@ export default function Home() {
               ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <a href="tel:051-746-7582" className="bg-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer">
-                {contentData?.hero?.mainButton || '진료 예약하기'}
+              <a href="tel:051-746-7582" className="bg-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2">
+                <i className="ri-phone-line text-lg"></i>
+                {contentData?.hero?.mainButton || '전화 연결하기'}
               </a>
               <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-white/20 transition-colors whitespace-nowrap cursor-pointer">
                 {contentData?.hero?.secondButton || '진료과목 보기'}
