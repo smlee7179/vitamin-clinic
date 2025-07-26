@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import StructuredData from "../components/seo/StructuredData";
+import { fixHospitalContent } from '../lib/fixHospitalContent';
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,10 +23,10 @@ export default function Home() {
     try {
       const saved = localStorage.getItem('hospitalContent');
       if (saved) {
-        setContentData(JSON.parse(saved));
+        setContentData(fixHospitalContent(JSON.parse(saved)));
       } else {
         // localStorage에 데이터가 없으면 기본 데이터 사용
-        const defaultData = {
+        const defaultData = fixHospitalContent({
                       hero: {
               title: '건강한 삶을 위한\n전문적인 치료',
               subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
@@ -81,8 +82,8 @@ export default function Home() {
           contact: {
             title: '오시는 길',
             subtitle: '편리한 교통과 주차시설을 제공합니다',
-            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
-            phone: '051-746-7582',
+            address: '부산 동구 중앙대로 375 (수정동) 강남빌딩 3층',
+            phone: '051-469-7581',
             hours: {
               weekday: '평일: 09:00 - 18:00',
               saturday: '토요일: 09:00 - 13:00',
@@ -94,8 +95,8 @@ export default function Home() {
           },
           footer: {
             companyName: '비타민마취통증의학과의원',
-            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
-            phone: '051-746-7582',
+            address: '부산 동구 중앙대로 375 (수정동) 강남빌딩 3층',
+            phone: '051-469-7581',
             email: 'info@vitamin-clinic.co.kr',
             businessNumber: '123-45-67890',
             representative: '김철수',
@@ -106,7 +107,7 @@ export default function Home() {
               sitemap: '/sitemap'
             }
           }
-        };
+        });
         setContentData(defaultData);
       }
     } catch (e) {
@@ -122,10 +123,10 @@ export default function Home() {
       try {
         const saved = localStorage.getItem('hospitalContent');
         if (saved) {
-          setContentData(JSON.parse(saved));
+          setContentData(fixHospitalContent(JSON.parse(saved)));
         } else {
           // localStorage에 데이터가 없으면 기본 데이터 사용
-          const defaultData = {
+          const defaultData = fixHospitalContent({
             hero: {
               title: '건강한 삶을 위한\n전문적인 치료',
               subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
@@ -187,8 +188,8 @@ export default function Home() {
             contact: {
               title: '오시는 길',
               subtitle: '편리한 교통과 주차시설을 제공합니다',
-              address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
-              phone: '051-746-7582',
+              address: '부산 동구 중앙대로 375 (수정동) 강남빌딩 3층',
+              phone: '051-469-7581',
               hours: {
                 weekday: '평일: 09:00 - 18:00',
                 saturday: '토요일: 09:00 - 13:00',
@@ -200,8 +201,8 @@ export default function Home() {
           },
           footer: {
             companyName: '비타민마취통증의학과의원',
-            address: '부산광역시 해운대구 중동 1394-65 비타민빌딩 3층',
-            phone: '051-746-7582',
+            address: '부산 동구 중앙대로 375 (수정동) 강남빌딩 3층',
+            phone: '051-469-7581',
             email: 'info@vitamin-clinic.co.kr',
             businessNumber: '123-45-67890',
             representative: '김철수',
@@ -212,7 +213,7 @@ export default function Home() {
               sitemap: '/sitemap'
             }
           }
-        };
+        });
           setContentData(defaultData);
         }
       } catch (e) {
@@ -452,7 +453,7 @@ export default function Home() {
               ))}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <a href="tel:051-746-7582" className="bg-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2">
+              <a href="tel:051-469-7581" className="bg-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-orange-600 transition-colors whitespace-nowrap cursor-pointer flex items-center justify-center gap-2">
                 <i className="ri-phone-line text-lg"></i>
                 {contentData?.hero?.mainButton || '전화 연결하기'}
               </a>
@@ -613,7 +614,7 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900 text-sm sm:text-base">주소</p>
-                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed">부산광역시 해운대구 중동 1394-65 비타민빌딩 3층</p>
+                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed">부산 동구 중앙대로 375 (수정동) 강남빌딩 3층</p>
                       </div>
                     </div>
                     
@@ -623,7 +624,7 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900 text-sm sm:text-base">전화번호</p>
-                        <p className="text-gray-600 text-sm sm:text-base">051-746-7582</p>
+                        <p className="text-gray-600 text-sm sm:text-base">051-469-7581</p>
                       </div>
                     </div>
                     
@@ -736,7 +737,7 @@ export default function Home() {
                 <div className="space-y-2 text-sm sm:text-base">
                   <p className="text-gray-400">
                     <i className="ri-phone-line mr-2"></i>
-                    {contentData?.footer?.phone || '051-746-7582'}
+                    {contentData?.footer?.phone || '051-469-7581'}
                   </p>
                   <p className="text-gray-400">
                     <i className="ri-map-pin-line mr-2"></i>
