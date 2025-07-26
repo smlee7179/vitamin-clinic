@@ -211,6 +211,11 @@ export default function AdminPage() {
     if (contentData) {
       try {
         localStorage.setItem('hospitalContent', JSON.stringify(contentData));
+        // storage 이벤트를 수동으로 발생시켜 다른 탭에서 즉시 반영되도록 함
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'hospitalContent',
+          newValue: JSON.stringify(contentData)
+        }));
       } catch (e) {
         setError('로컬 저장소 용량이 초과되었습니다. 이미지를 줄여주세요.');
       }
@@ -649,17 +654,20 @@ export default function AdminPage() {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={e => e.target.files && handleImageUpload('image_hero_bg', e.target.files[0], (key) => setContentData(prev => {
-                          const base = prev ?? DEFAULT_CONTENT_DATA;
-                          return {
-                            hero: { ...base.hero, backgroundImageFile: key },
-                            services: { ...base.services },
-                            doctors: { ...base.doctors },
-                            facilities: { ...base.facilities },
-                            contact: { ...base.contact },
-                            footer: { ...base.footer }
-                          };
-                        }))}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleImageUpload('image_hero_bg', file, (key) => {
+                              setContentData(prev => {
+                                const base = prev ?? DEFAULT_CONTENT_DATA;
+                                return {
+                                  ...base,
+                                  hero: { ...base.hero, backgroundImageFile: key }
+                                };
+                              });
+                            });
+                          }
+                        }}
                       />
                       <label htmlFor="hero-image-upload" className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
                         이미지 업로드/변경
@@ -675,22 +683,36 @@ export default function AdminPage() {
                           }
                           return '';
                         })()}
-                        onChange={e => handleImageUpload(e.target.value, '', () => {})}
+                        onChange={(e) => {
+                          const url = e.target.value;
+                          if (url) {
+                            handleImageUpload('image_hero_bg_url', url, (key) => {
+                              setContentData(prev => {
+                                const base = prev ?? DEFAULT_CONTENT_DATA;
+                                return {
+                                  ...base,
+                                  hero: { ...base.hero, backgroundImageFile: key }
+                                };
+                              });
+                            });
+                          }
+                        }}
                         className="w-full px-2 py-1 border rounded text-xs"
                       />
                       <button
+                        type="button"
                         className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                        onClick={() => handleImageDelete(contentData.hero.backgroundImageFile, () => setContentData(prev => {
-                          const base = prev ?? DEFAULT_CONTENT_DATA;
-                          return {
-                            hero: { ...base.hero, backgroundImageFile: '' },
-                            services: { ...base.services },
-                            doctors: { ...base.doctors },
-                            facilities: { ...base.facilities },
-                            contact: { ...base.contact },
-                            footer: { ...base.footer }
-                          };
-                        }))}
+                        onClick={() => {
+                          handleImageDelete(contentData.hero.backgroundImageFile, () => {
+                            setContentData(prev => {
+                              const base = prev ?? DEFAULT_CONTENT_DATA;
+                              return {
+                                ...base,
+                                hero: { ...base.hero, backgroundImageFile: '' }
+                              };
+                            });
+                          });
+                        }}
                         disabled={!contentData.hero.backgroundImageFile}
                       >
                         이미지 삭제
@@ -770,17 +792,23 @@ export default function AdminPage() {
                             type="file"
                             accept="image/*"
                             className="hidden"
-                            onChange={e => e.target.files && handleImageUpload(`image_services_orthopedic`, e.target.files[0], (key) => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, orthopedic: { ...base.services.orthopedic, imageFile: key } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleImageUpload(`image_services_orthopedic`, file, (key) => {
+                                  setContentData(prev => {
+                                    const base = prev ?? DEFAULT_CONTENT_DATA;
+                                    return {
+                                      ...base,
+                                      services: { 
+                                        ...base.services, 
+                                        orthopedic: { ...base.services.orthopedic, imageFile: key } 
+                                      }
+                                    };
+                                  });
+                                });
+                              }
+                            }}
                           />
                           <label htmlFor={`orthopedic-image-upload`} className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
                             이미지 업로드/변경
@@ -796,22 +824,42 @@ export default function AdminPage() {
                               }
                               return '';
                             })()}
-                            onChange={e => handleImageUpload(e.target.value, '', () => {})}
+                            onChange={(e) => {
+                              const url = e.target.value;
+                              if (url) {
+                                handleImageUpload(`image_services_orthopedic_url`, url, (key) => {
+                                  setContentData(prev => {
+                                    const base = prev ?? DEFAULT_CONTENT_DATA;
+                                    return {
+                                      ...base,
+                                      services: { 
+                                        ...base.services, 
+                                        orthopedic: { ...base.services.orthopedic, imageFile: key } 
+                                      }
+                                    };
+                                  });
+                                });
+                              }
+                            }}
                             className="w-full px-2 py-1 border rounded text-xs"
                           />
                           <button
+                            type="button"
                             className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                            onClick={() => handleImageDelete(contentData.services.orthopedic.imageFile, () => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, orthopedic: { ...base.services.orthopedic, imageFile: '' } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
+                            onClick={() => {
+                              handleImageDelete(contentData.services.orthopedic.imageFile, () => {
+                                setContentData(prev => {
+                                  const base = prev ?? DEFAULT_CONTENT_DATA;
+                                  return {
+                                    ...base,
+                                    services: { 
+                                      ...base.services, 
+                                      orthopedic: { ...base.services.orthopedic, imageFile: '' } 
+                                    }
+                                  };
+                                });
+                              });
+                            }}
                             disabled={!contentData.services.orthopedic.imageFile}
                           >
                             이미지 삭제
