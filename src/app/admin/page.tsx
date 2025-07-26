@@ -160,23 +160,23 @@ export default function AdminPage() {
 
   // 2. 초기 로딩
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('hospitalContent');
-        console.log('hospitalContent(localStorage):', saved);
-        if (saved) {
-          setContentData(JSON.parse(saved));
-          console.log('setContentData: loaded from localStorage');
-        } else {
-          setContentData(DEFAULT_CONTENT_DATA);
-          console.log('setContentData: DEFAULT_CONTENT_DATA');
-        }
-      } catch (e) {
-        setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
-        console.log('setError:', e);
+    if (!hydrated) return;
+    
+    try {
+      const saved = localStorage.getItem('hospitalContent');
+      console.log('hospitalContent(localStorage):', saved);
+      if (saved) {
+        setContentData(JSON.parse(saved));
+        console.log('setContentData: loaded from localStorage');
+      } else {
+        setContentData(DEFAULT_CONTENT_DATA);
+        console.log('setContentData: DEFAULT_CONTENT_DATA');
       }
+    } catch (e) {
+      setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
+      console.log('setError:', e);
     }
-  }, []);
+  }, [hydrated]);
 
   // 3. 저장
   useEffect(() => {
@@ -191,6 +191,8 @@ export default function AdminPage() {
 
   // 4. 여러 탭 동기화
   useEffect(() => {
+    if (!hydrated) return;
+    
     const loadData = () => {
       try {
         const saved = localStorage.getItem('hospitalContent');
@@ -201,7 +203,7 @@ export default function AdminPage() {
     };
     window.addEventListener('storage', loadData);
     return () => window.removeEventListener('storage', loadData);
-  }, []);
+  }, [hydrated]);
 
   // 5. 이미지 업로드/변경/삭제
   const handleImageUpload = (key: string, fileOrUrl: File | string, updateField: (imgKey: string) => void) => {
@@ -236,9 +238,9 @@ export default function AdminPage() {
 
   // 6. 이미지 렌더링 함수
   const getImageSrc = (key: string | undefined, fallback: string) => {
-    if (!key) return fallback;
+    if (!key || !hydrated) return fallback;
     try {
-      const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
+      const img = localStorage.getItem(key);
       return img || fallback;
     } catch {
       return fallback;
@@ -346,7 +348,10 @@ export default function AdminPage() {
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div>로딩 중...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">관리자 페이지를 불러오는 중...</p>
+        </div>
       </div>
     );
   }
@@ -378,7 +383,10 @@ export default function AdminPage() {
   if (!contentData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div>로딩 중...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">콘텐츠를 불러오는 중...</p>
+        </div>
       </div>
     );
   }
