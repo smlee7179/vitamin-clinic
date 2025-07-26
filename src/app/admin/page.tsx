@@ -90,7 +90,7 @@ export default function AdminPage() {
     hero: {
       title: '건강한 삶을 위한\n전문적인 치료',
       subtitle: '부산 정형외과 전문 비타민마취통증의학과의원에서\n정확한 진단과 효과적인 치료를 받으세요',
-      mainButton: '진료 예약하기',
+      mainButton: '전화 연결하기',
       secondButton: '진료과목 보기',
       backgroundImage: 'Modern medical facility interior with warm orange lighting, clean and professional orthopedic clinic waiting area, comfortable seating, large windows with natural light, elderly-friendly design, Korean hospital atmosphere, warm and welcoming environment, medical equipment visible in background, professional healthcare setting',
       backgroundImageFile: ''
@@ -392,24 +392,30 @@ export default function AdminPage() {
   }
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      {/* Header - 개선된 디자인 */}
+      <header className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <i className="ri-settings-3-line text-white text-xl"></i>
               </div>
-              <h1 className="text-xl font-bold text-gray-900">홈페이지 관리자</h1>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">홈페이지 관리자</h1>
+                <p className="text-sm text-gray-500">콘텐츠 관리 및 수정</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-orange-600 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-3">
+              <Link 
+                href="/" 
+                className="flex items-center px-4 py-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+              >
                 <i className="ri-home-line mr-2"></i>
                 홈페이지 보기
               </Link>
               <button
                 onClick={handleSave}
-                className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-medium whitespace-nowrap cursor-pointer"
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium whitespace-nowrap cursor-pointer shadow-md hover:shadow-lg flex items-center"
               >
                 <i className="ri-save-line mr-2"></i>
                 저장하기
@@ -419,11 +425,18 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {/* Save Notification */}
+      {/* Save Notification - 개선된 디자인 */}
       {showSaveNotification && (
-        <div className="fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-          <i className="ri-check-line mr-2"></i>
-          변경사항이 저장되었습니다!
+        <div className="fixed top-20 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 border border-green-400 transform transition-all duration-300 animate-in slide-in-from-right-5">
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3">
+              <i className="ri-check-line text-lg"></i>
+            </div>
+            <div>
+              <p className="font-semibold">저장 완료!</p>
+              <p className="text-sm opacity-90">변경사항이 홈페이지에 반영되었습니다.</p>
+            </div>
+          </div>
         </div>
       )}
 

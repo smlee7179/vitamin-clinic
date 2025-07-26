@@ -63,25 +63,19 @@ export default function Home() {
             title: '의료진 소개',
             subtitle: '풍부한 경험과 전문성을 갖춘 의료진이 함께합니다',
             list: [
-              {
-                name: '김철수 원장',
-                position: '정형외과 전문의',
-                career: ['부산대학교 의과대학 졸업', '부산대학교병원 정형외과 전공의', '대한정형외과학회 정회원', '20년 이상의 임상경험'],
-                image: '',
-                imageFile: ''
-              }
+              { name: '', position: '', career: [], image: '', imageFile: '' },
+              { name: '', position: '', career: [], image: '', imageFile: '' },
+              { name: '', position: '', career: [], image: '', imageFile: '' }
             ]
           },
           facilities: {
             title: '시설 안내',
             subtitle: '최신 의료장비와 편리한 시설로 최상의 진료를 제공합니다',
             list: [
-              {
-                name: '접수 및 대기실',
-                description: '편안하고 깨끗한 환경에서 진료를 기다리실 수 있습니다.',
-                image: '',
-                imageFile: ''
-              }
+              { name: '', description: '', image: '', imageFile: '' },
+              { name: '', description: '', image: '', imageFile: '' },
+              { name: '', description: '', image: '', imageFile: '' },
+              { name: '', description: '', image: '', imageFile: '' }
             ]
           },
           contact: {
@@ -312,59 +306,86 @@ export default function Home() {
                 </Link>
               </nav>
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Button - 개선된 디자인 */}
               <button
                 onClick={toggleMobileMenu}
-                className="sm:hidden w-12 h-12 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-colors cursor-pointer bg-white rounded-lg shadow-lg border-2 border-orange-200 hover:border-orange-300 hover:shadow-xl z-50 relative min-w-[48px] min-h-[48px]"
+                className="sm:hidden relative w-10 h-10 flex items-center justify-center text-gray-700 hover:text-orange-600 transition-all duration-300 cursor-pointer bg-white rounded-full shadow-md hover:shadow-lg border border-gray-200 hover:border-orange-300 z-50"
                 aria-label="메뉴 열기"
-                style={{ boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
               >
-                <i className={`text-2xl font-bold ${isMobileMenuOpen ? 'ri-close-line' : 'ri-menu-line'}`}></i>
+                <div className="relative w-5 h-5">
+                  <span className={`absolute top-0 left-0 w-5 h-0.5 bg-current transform transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : 'translate-y-0'}`}></span>
+                  <span className={`absolute top-2 left-0 w-5 h-0.5 bg-current transform transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+                  <span className={`absolute top-4 left-0 w-5 h-0.5 bg-current transform transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : 'translate-y-0'}`}></span>
+                </div>
               </button>
             </div>
 
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-              <div className="sm:hidden border-t border-gray-200 py-4 bg-white shadow-lg relative z-40">
-                <nav className="flex flex-col space-y-4">
-                  <Link 
-                    href="#home" 
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base py-2 px-4 rounded-lg hover:bg-orange-50"
-                  >
-                    홈
-                  </Link>
-                  <Link 
-                    href="#about" 
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base py-2 px-4 rounded-lg hover:bg-orange-50"
-                  >
-                    의료진
-                  </Link>
-                  <Link 
-                    href="#services" 
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base py-2 px-4 rounded-lg hover:bg-orange-50"
-                  >
-                    진료과목
-                  </Link>
-                  <Link 
-                    href="#facilities" 
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base py-2 px-4 rounded-lg hover:bg-orange-50"
-                  >
-                    시설안내
-                  </Link>
-                  <Link 
-                    href="#contact" 
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base py-2 px-4 rounded-lg hover:bg-orange-50"
-                  >
-                    위치
-                  </Link>
-                </nav>
+            {/* Mobile Menu - 개선된 디자인 */}
+            <div className={`sm:hidden fixed inset-0 z-40 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+              {/* Backdrop */}
+              <div 
+                className="absolute inset-0 bg-black bg-opacity-50"
+                onClick={closeMobileMenu}
+              ></div>
+              
+              {/* Menu Panel */}
+              <div className={`absolute top-0 right-0 w-64 h-full bg-white shadow-2xl transform transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-lg font-bold text-gray-900">메뉴</h2>
+                    <button
+                      onClick={closeMobileMenu}
+                      className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <i className="ri-close-line text-xl"></i>
+                    </button>
+                  </div>
+                  
+                  <nav className="space-y-2">
+                    <Link 
+                      href="#home" 
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-home-line mr-3 text-lg"></i>
+                      홈
+                    </Link>
+                    <Link 
+                      href="#about" 
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-user-line mr-3 text-lg"></i>
+                      의료진
+                    </Link>
+                    <Link 
+                      href="#services" 
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-hospital-line mr-3 text-lg"></i>
+                      진료과목
+                    </Link>
+                    <Link 
+                      href="#facilities" 
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-building-line mr-3 text-lg"></i>
+                      시설안내
+                    </Link>
+                    <Link 
+                      href="#contact" 
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-map-pin-line mr-3 text-lg"></i>
+                      위치
+                    </Link>
+                  </nav>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </header>
 
