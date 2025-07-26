@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { fixHospitalContent } from '../../lib/fixHospitalContent';
 
 interface Doctor {
   name: string;
@@ -193,10 +194,10 @@ export default function AdminPage() {
       const saved = localStorage.getItem('hospitalContent');
       console.log('hospitalContent(localStorage):', saved);
       if (saved) {
-        setContentData(JSON.parse(saved));
+        setContentData(fixHospitalContent(JSON.parse(saved)));
         console.log('setContentData: loaded from localStorage');
       } else {
-        setContentData(DEFAULT_CONTENT_DATA);
+        setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
         console.log('setContentData: DEFAULT_CONTENT_DATA');
       }
     } catch (e) {
@@ -223,7 +224,7 @@ export default function AdminPage() {
     const loadData = () => {
       try {
         const saved = localStorage.getItem('hospitalContent');
-        if (saved) setContentData(JSON.parse(saved));
+        if (saved) setContentData(fixHospitalContent(JSON.parse(saved)));
       } catch (e) {
         setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
       }
