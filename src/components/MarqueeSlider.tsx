@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface MarqueeItem {
   icon: string;
   text: string;
 }
 
-const notices: MarqueeItem[] = [
+const DEFAULT_NOTICES: MarqueeItem[] = [
   { icon: '🏥', text: '비타민마취통증의학과의원 홈페이지 오픈하였습니다.' },
   { icon: '📋', text: '진료과목 ) 정형외과, 마취통증의학과, 재활의학과' },
   { icon: '✅', text: '비수술 척추 · 관절 클리닉 통증 치료 전문' },
@@ -15,6 +15,35 @@ const notices: MarqueeItem[] = [
 
 export default function MarqueeSlider() {
   const sliderRef = useRef<HTMLDivElement>(null);
+  const [notices, setNotices] = useState<MarqueeItem[]>(DEFAULT_NOTICES);
+
+  // Load notices from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('marqueeNotices');
+    if (saved) {
+      try {
+        setNotices(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load marquee notices');
+      }
+    }
+  }, []);
+
+  // Listen for storage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('marqueeNotices');
+      if (saved) {
+        try {
+          setNotices(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load marquee notices');
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   useEffect(() => {
     const slider = sliderRef.current;

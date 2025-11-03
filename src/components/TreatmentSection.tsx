@@ -1,6 +1,15 @@
 'use client';
 
-const treatments = [
+import { useState, useEffect } from 'react';
+
+interface Treatment {
+  title: string;
+  icon: string;
+  description: string;
+  features: string[];
+}
+
+const DEFAULT_TREATMENTS: Treatment[] = [
   {
     title: '신경차단술',
     icon: '💉',
@@ -28,6 +37,34 @@ const treatments = [
 ];
 
 export default function TreatmentSection() {
+  const [treatments, setTreatments] = useState<Treatment[]>(DEFAULT_TREATMENTS);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('treatments');
+    if (saved) {
+      try {
+        setTreatments(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load treatments');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('treatments');
+      if (saved) {
+        try {
+          setTreatments(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load treatments');
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return (
     <section id="treatments" className="py-16 sm:py-20 bg-gradient-to-br from-orange-50 to-amber-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

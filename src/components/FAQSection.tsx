@@ -1,8 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const faqs = [
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+const DEFAULT_FAQS: FAQ[] = [
   {
     question: '초진 시 필요한 서류가 있나요?',
     answer: '신분증과 건강보험증을 지참해 주시면 됩니다. 타 병원에서 치료 받으신 적이 있다면 관련 기록이나 영상 자료를 가져오시면 진단에 도움이 됩니다.'
@@ -31,6 +36,33 @@ const faqs = [
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [faqs, setFaqs] = useState<FAQ[]>(DEFAULT_FAQS);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('faqs');
+    if (saved) {
+      try {
+        setFaqs(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load FAQs');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('faqs');
+      if (saved) {
+        try {
+          setFaqs(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load FAQs');
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
