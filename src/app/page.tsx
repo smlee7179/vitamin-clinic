@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import StructuredData from "../components/seo/StructuredData";
 import { fixHospitalContent } from '../lib/fixHospitalContent';
+import MarqueeSlider from '../components/MarqueeSlider';
+import TreatmentSection from '../components/TreatmentSection';
+import FAQSection from '../components/FAQSection';
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -298,8 +301,11 @@ export default function Home() {
         type="medical-clinic"
         data={{}}
       />
-      
+
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+        {/* Marquee Slider */}
+        <MarqueeSlider />
+
         {/* Header */}
         <header className="bg-white shadow-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -327,8 +333,14 @@ export default function Home() {
                 <Link href="#services" className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base whitespace-nowrap">
                   진료과목
                 </Link>
+                <Link href="#treatments" className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base whitespace-nowrap">
+                  치료방법
+                </Link>
                 <Link href="#facilities" className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base whitespace-nowrap">
                   시설안내
+                </Link>
+                <Link href="#faq" className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base whitespace-nowrap">
+                  FAQ
                 </Link>
                 <Link href="#contact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer text-base whitespace-nowrap">
                   위치
@@ -387,21 +399,37 @@ export default function Home() {
                       <i className="ri-user-line mr-3 text-lg"></i>
                       의료진
                     </Link>
-                    <Link 
-                      href="#services" 
+                    <Link
+                      href="#services"
                       onClick={closeMobileMenu}
                       className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
                     >
                       <i className="ri-hospital-line mr-3 text-lg"></i>
                       진료과목
                     </Link>
-                    <Link 
-                      href="#facilities" 
+                    <Link
+                      href="#treatments"
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-syringe-line mr-3 text-lg"></i>
+                      치료방법
+                    </Link>
+                    <Link
+                      href="#facilities"
                       onClick={closeMobileMenu}
                       className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
                     >
                       <i className="ri-building-line mr-3 text-lg"></i>
                       시설안내
+                    </Link>
+                    <Link
+                      href="#faq"
+                      onClick={closeMobileMenu}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                    >
+                      <i className="ri-question-line mr-3 text-lg"></i>
+                      FAQ
                     </Link>
                     <Link 
                       href="#contact" 
@@ -531,6 +559,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Treatment Section */}
+        <TreatmentSection />
+
         {/* About Section */}
         <section id="about" className="py-16 sm:py-20 bg-gradient-to-br from-orange-50 to-amber-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -594,6 +625,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* FAQ Section */}
+        <FAQSection />
 
         {/* Contact Section */}
         <section id="contact" className="py-16 sm:py-20 bg-gradient-to-br from-orange-50 to-amber-50">
