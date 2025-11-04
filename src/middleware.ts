@@ -3,8 +3,11 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(request: NextRequest) {
-  // 관리자 페이지 인증 체크
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // 관리자 페이지 및 API 인증 체크
+  const needsAuth = request.nextUrl.pathname.startsWith('/admin') ||
+                    request.nextUrl.pathname.startsWith('/api/upload');
+
+  if (needsAuth) {
     // 로그인 페이지는 인증 불필요
     if (request.nextUrl.pathname === '/admin/login') {
       return NextResponse.next()
@@ -16,8 +19,11 @@ export async function middleware(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET,
     })
 
-    // 인증되지 않은 경우 로그인 페이지로 리디렉션
+    // 인증되지 않은 경우 로그인 페이지로 리디렉션 (admin) 또는 401 (API)
     if (!token) {
+      if (request.nextUrl.pathname.startsWith('/api/')) {
+        return new NextResponse('Unauthorized', { status: 401 })
+      }
       const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
       return NextResponse.redirect(loginUrl)

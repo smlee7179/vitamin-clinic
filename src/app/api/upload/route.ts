@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAdmin } from '@/lib/auth-helpers';
 import { put } from '@vercel/blob';
 
 export const runtime = 'edge';
 
+// Note: Authentication is handled by middleware for this route
 export async function POST(request: NextRequest) {
-  // Check admin authentication
-  const { error } = await requireAdmin();
-  if (error) return error;
-
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
