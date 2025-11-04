@@ -61,3 +61,44 @@ model Gallery {
   altText     String
   createdAt   DateTime @default(now())
 }
+
+// 새로운 관리자 시스템을 위한 모델들
+model MarqueeNotice {
+  id        String   @id @default(cuid())
+  icon      String
+  text      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Treatment {
+  id          String   @id @default(cuid())
+  title       String
+  icon        String
+  description String
+  features    String   // JSON array as string
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HospitalContent {
+  id        String   @id @default(cuid())
+  section   String   @unique // hero, services, doctors, facilities, contact, footer
+  data      String   // JSON data as string
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
