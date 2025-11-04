@@ -20,21 +20,53 @@ export default function MarqueeEditor({ onSave }: MarqueeEditorProps) {
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('marqueeNotices');
-    if (saved) {
-      try {
-        setNotices(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load marquee notices');
-      }
-    }
+    loadFromDB();
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem('marqueeNotices', JSON.stringify(notices));
-    setIsModified(false);
-    if (onSave) onSave();
-    alert('공지사항이 저장되었습니다!');
+  const loadFromDB = async () => {
+    try {
+      const response = await fetch('/api/marquee');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setNotices(data.map((item: any) => ({ icon: item.icon, text: item.text })));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load marquee notices from DB:', error);
+      // Fallback to localStorage
+      const saved = localStorage.getItem('marqueeNotices');
+      if (saved) {
+        try {
+          setNotices(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load marquee notices');
+        }
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/api/marquee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notices }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save');
+      }
+
+      // Also save to localStorage for backward compatibility
+      localStorage.setItem('marqueeNotices', JSON.stringify(notices));
+      setIsModified(false);
+      if (onSave) onSave();
+      alert('공지사항이 저장되었습니다!');
+    } catch (error) {
+      console.error('Error saving marquee notices:', error);
+      alert('저장 중 오류가 발생했습니다.');
+    }
   };
 
   const updateNotice = (index: number, field: 'icon' | 'text', value: string) => {

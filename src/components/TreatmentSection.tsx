@@ -40,6 +40,24 @@ export default function TreatmentSection() {
   const [treatments, setTreatments] = useState<Treatment[]>(DEFAULT_TREATMENTS);
 
   useEffect(() => {
+    loadTreatments();
+  }, []);
+
+  const loadTreatments = async () => {
+    try {
+      const response = await fetch('/api/treatments');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setTreatments(data);
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load from DB, using localStorage:', error);
+    }
+
+    // Fallback to localStorage
     const saved = localStorage.getItem('treatments');
     if (saved) {
       try {
@@ -48,18 +66,11 @@ export default function TreatmentSection() {
         console.error('Failed to load treatments');
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('treatments');
-      if (saved) {
-        try {
-          setTreatments(JSON.parse(saved));
-        } catch (e) {
-          console.error('Failed to load treatments');
-        }
-      }
+      loadTreatments();
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);

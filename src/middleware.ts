@@ -1,7 +1,34 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  // 관리자 페이지 인증 체크
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // 로그인 페이지는 인증 불필요
+    if (request.nextUrl.pathname === '/admin/login') {
+      return NextResponse.next()
+    }
+
+    // JWT 토큰 확인
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+
+    // 인증되지 않은 경우 로그인 페이지로 리디렉션
+    if (!token) {
+      const loginUrl = new URL('/admin/login', request.url)
+      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    // 관리자 권한 체크
+    if (token.role !== 'admin') {
+      return new NextResponse('Access Denied', { status: 403 })
+    }
+  }
+
   const response = NextResponse.next()
 
   // 보안 헤더 설정

@@ -39,6 +39,24 @@ export default function FAQSection() {
   const [faqs, setFaqs] = useState<FAQ[]>(DEFAULT_FAQS);
 
   useEffect(() => {
+    loadFAQs();
+  }, []);
+
+  const loadFAQs = async () => {
+    try {
+      const response = await fetch('/api/faqs');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setFaqs(data.map((item: any) => ({ question: item.question, answer: item.answer })));
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load from DB, using localStorage:', error);
+    }
+
+    // Fallback to localStorage
     const saved = localStorage.getItem('faqs');
     if (saved) {
       try {
@@ -47,18 +65,11 @@ export default function FAQSection() {
         console.error('Failed to load FAQs');
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('faqs');
-      if (saved) {
-        try {
-          setFaqs(JSON.parse(saved));
-        } catch (e) {
-          console.error('Failed to load FAQs');
-        }
-      }
+      loadFAQs();
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);

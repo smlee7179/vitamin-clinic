@@ -29,21 +29,53 @@ export default function FAQEditor({ onSave }: FAQEditorProps) {
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('faqs');
-    if (saved) {
-      try {
-        setFaqs(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load FAQs');
-      }
-    }
+    loadFromDB();
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem('faqs', JSON.stringify(faqs));
-    setIsModified(false);
-    if (onSave) onSave();
-    alert('FAQ가 저장되었습니다!');
+  const loadFromDB = async () => {
+    try {
+      const response = await fetch('/api/faqs');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setFaqs(data.map((item: any) => ({ question: item.question, answer: item.answer })));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load FAQs from DB:', error);
+      // Fallback to localStorage
+      const saved = localStorage.getItem('faqs');
+      if (saved) {
+        try {
+          setFaqs(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load FAQs');
+        }
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/api/faqs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ faqs }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save');
+      }
+
+      // Also save to localStorage for backward compatibility
+      localStorage.setItem('faqs', JSON.stringify(faqs));
+      setIsModified(false);
+      if (onSave) onSave();
+      alert('FAQ가 저장되었습니다!');
+    } catch (error) {
+      console.error('Error saving FAQs:', error);
+      alert('저장 중 오류가 발생했습니다.');
+    }
   };
 
   const updateFAQ = (index: number, field: 'question' | 'answer', value: string) => {

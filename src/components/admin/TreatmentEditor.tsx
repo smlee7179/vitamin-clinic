@@ -43,21 +43,53 @@ export default function TreatmentEditor({ onSave }: TreatmentEditorProps) {
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('treatments');
-    if (saved) {
-      try {
-        setTreatments(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load treatments');
-      }
-    }
+    loadFromDB();
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem('treatments', JSON.stringify(treatments));
-    setIsModified(false);
-    if (onSave) onSave();
-    alert('치료방법이 저장되었습니다!');
+  const loadFromDB = async () => {
+    try {
+      const response = await fetch('/api/treatments');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setTreatments(data);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load treatments from DB:', error);
+      // Fallback to localStorage
+      const saved = localStorage.getItem('treatments');
+      if (saved) {
+        try {
+          setTreatments(JSON.parse(saved));
+        } catch (e) {
+          console.error('Failed to load treatments');
+        }
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/api/treatments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ treatments }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save');
+      }
+
+      // Also save to localStorage for backward compatibility
+      localStorage.setItem('treatments', JSON.stringify(treatments));
+      setIsModified(false);
+      if (onSave) onSave();
+      alert('치료방법이 저장되었습니다!');
+    } catch (error) {
+      console.error('Error saving treatments:', error);
+      alert('저장 중 오류가 발생했습니다.');
+    }
   };
 
   const updateTreatment = (index: number, field: keyof Treatment, value: string | string[]) => {

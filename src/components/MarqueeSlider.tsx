@@ -17,8 +17,26 @@ export default function MarqueeSlider() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [notices, setNotices] = useState<MarqueeItem[]>(DEFAULT_NOTICES);
 
-  // Load notices from localStorage
+  // Load notices from DB (with localStorage fallback)
   useEffect(() => {
+    loadNotices();
+  }, []);
+
+  const loadNotices = async () => {
+    try {
+      const response = await fetch('/api/marquee');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length > 0) {
+          setNotices(data.map((item: any) => ({ icon: item.icon, text: item.text })));
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load from DB, using localStorage:', error);
+    }
+
+    // Fallback to localStorage
     const saved = localStorage.getItem('marqueeNotices');
     if (saved) {
       try {
@@ -27,19 +45,12 @@ export default function MarqueeSlider() {
         console.error('Failed to load marquee notices');
       }
     }
-  }, []);
+  };
 
   // Listen for storage changes
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('marqueeNotices');
-      if (saved) {
-        try {
-          setNotices(JSON.parse(saved));
-        } catch (e) {
-          console.error('Failed to load marquee notices');
-        }
-      }
+      loadNotices();
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
