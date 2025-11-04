@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fixHospitalContent } from '../../lib/fixHospitalContent';
 
@@ -92,13 +94,20 @@ interface ContentData {
 }
 
 export default function AdminPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('hero');
   const [showSaveNotification, setShowSaveNotification] = useState(false);
-  const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/admin/login');
+    }
+  }, [status, router]);
 
   const DEFAULT_CONTENT_DATA: ContentData = {
     hero: {
@@ -280,13 +289,6 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogin = () => {
-    if (password === 'vitamin2024') {
-      setIsAuthenticated(true);
-    } else {
-      alert('비밀번호가 올바르지 않습니다.');
-    }
-  };
 
   const handleSave = () => {
     localStorage.setItem('hospitalContent', JSON.stringify(contentData));
@@ -394,7 +396,7 @@ export default function AdminPage() {
   };
 
   // 7. 렌더링 조건
-  if (!hydrated) {
+  if (status === 'loading' || !hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
@@ -405,28 +407,8 @@ export default function AdminPage() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs">
-          <h2 className="text-2xl font-bold mb-4 text-center">관리자 로그인</h2>
-          <input
-            type="password"
-            className="w-full px-4 py-2 border rounded-lg mb-4"
-            placeholder="비밀번호를 입력하세요"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') handleLogin(); }}
-          />
-          <button
-            className="w-full bg-orange-500 text-white py-2 rounded-lg font-bold hover:bg-orange-600"
-            onClick={handleLogin}
-          >
-            로그인
-          </button>
-        </div>
-      </div>
-    );
+  if (status === 'unauthenticated') {
+    return null; // Will redirect to login
   }
 
   if (!contentData) {
