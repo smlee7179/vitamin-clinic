@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // 관리자 권한 체크
-    if (token.role !== 'admin') {
+    if (token.role !== 'ADMIN' && token.role !== 'admin') {
       return new NextResponse('Access Denied', { status: 403 })
     }
   }
