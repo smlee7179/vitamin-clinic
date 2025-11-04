@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth-helpers';
 
 export async function GET() {
   try {
@@ -15,6 +16,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // Check admin authentication
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { notices } = body;
@@ -40,6 +45,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+  // Check admin authentication
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { id, ...data } = body;
@@ -57,6 +66,10 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  // Check admin authentication
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

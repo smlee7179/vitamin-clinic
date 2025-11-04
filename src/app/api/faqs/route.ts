@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth-helpers';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
@@ -15,6 +16,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // Check admin authentication
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const body = await request.json();
     const { faqs } = body;
