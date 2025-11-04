@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminDashboard from '../../../components/admin/AdminDashboard';
 import MarqueeEditor from '../../../components/admin/MarqueeEditor';
@@ -9,42 +11,32 @@ import FAQEditor from '../../../components/admin/FAQEditor';
 import HospitalInfoEditor from '../../../components/admin/HospitalInfoEditor';
 
 export default function NewAdminPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [showSaveNotification, setShowSaveNotification] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
 
-  const handleLogin = () => {
-    if (password === 'vitamin2024') {
-      setIsAuthenticated(true);
-      localStorage.setItem('adminAuth', 'true');
-    } else {
-      alert('비밀번호가 올바르지 않습니다.');
-    }
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('adminAuth');
-    setPassword('');
-  };
-
+  // Redirect to login if not authenticated
   useEffect(() => {
-    const auth = localStorage.getItem('adminAuth');
-    if (auth === 'true') {
-      setIsAuthenticated(true);
+    if (status === 'unauthenticated') {
+      router.push('/admin/login');
     }
-  }, [hydrated]);
+  }, [status, router]);
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/admin/login' });
+  };
 
   const handleSave = () => {
     setShowSaveNotification(true);
     setTimeout(() => setShowSaveNotification(false), 3000);
   };
 
-  if (!hydrated) {
+  // Loading state
+  if (status === 'loading' || !hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
@@ -55,39 +47,9 @@ export default function NewAdminPage() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md border border-orange-100">
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <i className="ri-shield-keyhole-line text-white text-4xl"></i>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">관리자 로그인</h2>
-            <p className="text-gray-600">비타민마취통증의학과 관리 시스템</p>
-          </div>
-          <div className="space-y-4">
-            <input
-              type="password"
-              className="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-              placeholder="비밀번호를 입력하세요"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') handleLogin(); }}
-            />
-            <button
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl"
-              onClick={handleLogin}
-            >
-              로그인
-            </button>
-          </div>
-          <p className="text-xs text-gray-500 text-center mt-6">
-            보안을 위해 브라우저를 닫으면 자동으로 로그아웃됩니다.
-          </p>
-        </div>
-      </div>
-    );
+  // Redirect to login (will happen in useEffect)
+  if (status === 'unauthenticated') {
+    return null;
   }
 
   const tabs = [

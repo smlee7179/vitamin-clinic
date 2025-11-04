@@ -102,3 +102,22 @@ model HospitalContent {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
+
+// 변경 이력 관리
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  userEmail   String
+  action      String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+  entityType  String   // Content, Treatment, FAQ, HospitalContent, etc.
+  entityId    String?
+  entityName  String?  // 사용자가 알아보기 쉬운 이름
+  changes     String?  // JSON string of changes (before/after)
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([createdAt])
+}

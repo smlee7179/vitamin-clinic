@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
 
 export const runtime = 'edge';
 
@@ -65,11 +65,10 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'URL parameter required' }, { status: 400 });
     }
 
-    // For Vercel Blob, we would use the del() function
-    // But for now, we'll just return success
-    // In production, implement proper deletion
+    // Delete from Vercel Blob Storage
+    await del(url);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: 'File deleted successfully' });
   } catch (error) {
     console.error('Error deleting file:', error);
     return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
