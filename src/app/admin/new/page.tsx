@@ -6,6 +6,7 @@ import AdminDashboard from '../../../components/admin/AdminDashboard';
 import MarqueeEditor from '../../../components/admin/MarqueeEditor';
 import TreatmentEditor from '../../../components/admin/TreatmentEditor';
 import FAQEditor from '../../../components/admin/FAQEditor';
+import HospitalInfoEditor from '../../../components/admin/HospitalInfoEditor';
 
 export default function NewAdminPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -91,6 +92,7 @@ export default function NewAdminPage() {
 
   const tabs = [
     { id: 'dashboard', name: '대시보드', icon: 'ri-dashboard-line' },
+    { id: 'hospital', name: '병원 정보', icon: 'ri-hospital-line' },
     { id: 'marquee', name: '공지사항', icon: 'ri-megaphone-line' },
     { id: 'treatments', name: '치료방법', icon: 'ri-syringe-line' },
     { id: 'faq', name: 'FAQ', icon: 'ri-question-line' },
@@ -169,6 +171,7 @@ export default function NewAdminPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'dashboard' && <AdminDashboard />}
+        {activeTab === 'hospital' && <HospitalInfoEditor onSave={handleSave} />}
         {activeTab === 'marquee' && <MarqueeEditor onSave={handleSave} />}
         {activeTab === 'treatments' && <TreatmentEditor onSave={handleSave} />}
         {activeTab === 'faq' && <FAQEditor onSave={handleSave} />}
