@@ -199,20 +199,34 @@ export default function AdminPage() {
   // 2. 초기 로딩
   useEffect(() => {
     if (!hydrated) return;
-    
+
     try {
       const saved = localStorage.getItem('hospitalContent');
-      console.log('hospitalContent(localStorage):', saved);
+      console.log('📂 Loading from localStorage...');
       if (saved) {
-        setContentData(fixHospitalContent(JSON.parse(saved)));
-        console.log('setContentData: loaded from localStorage');
+        const parsed = JSON.parse(saved);
+        console.log('📥 Loaded data:', {
+          backgroundImageFile: parsed.hero?.backgroundImageFile,
+          orthopedicImageFile: parsed.services?.orthopedic?.imageFile,
+          anesthesiaImageFile: parsed.services?.anesthesia?.imageFile,
+          rehabilitationImageFile: parsed.services?.rehabilitation?.imageFile
+        });
+        const fixed = fixHospitalContent(parsed);
+        console.log('🔧 After fixHospitalContent:', {
+          backgroundImageFile: fixed.hero.backgroundImageFile,
+          orthopedicImageFile: fixed.services.orthopedic.imageFile,
+          anesthesiaImageFile: fixed.services.anesthesia.imageFile,
+          rehabilitationImageFile: fixed.services.rehabilitation.imageFile
+        });
+        setContentData(fixed);
+        console.log('✅ setContentData: loaded from localStorage');
       } else {
         setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
-        console.log('setContentData: DEFAULT_CONTENT_DATA');
+        console.log('✅ setContentData: DEFAULT_CONTENT_DATA');
       }
     } catch (e) {
       setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
-      console.log('setError:', e);
+      console.error('❌ Load error:', e);
     }
   }, [hydrated]);
 
@@ -220,14 +234,44 @@ export default function AdminPage() {
   useEffect(() => {
     if (contentData) {
       try {
-        localStorage.setItem('hospitalContent', JSON.stringify(contentData));
+        const dataStr = JSON.stringify(contentData);
+        const sizeKB = (dataStr.length / 1024).toFixed(2);
+
+        console.log('💾 Saving to localStorage:', {
+          backgroundImageFile: contentData.hero.backgroundImageFile,
+          orthopedicImageFile: contentData.services.orthopedic.imageFile,
+          anesthesiaImageFile: contentData.services.anesthesia.imageFile,
+          rehabilitationImageFile: contentData.services.rehabilitation.imageFile,
+          size: `${sizeKB} KB`
+        });
+
+        // 5MB 경고
+        if (dataStr.length > 5 * 1024 * 1024) {
+          console.warn('⚠️ Data size exceeds 5MB!');
+          setError('데이터 크기가 5MB를 초과했습니다. 이미지를 줄여주세요.');
+          return;
+        }
+
+        localStorage.setItem('hospitalContent', dataStr);
+
         // storage 이벤트를 수동으로 발생시켜 다른 탭에서 즉시 반영되도록 함
         window.dispatchEvent(new StorageEvent('storage', {
           key: 'hospitalContent',
-          newValue: JSON.stringify(contentData)
+          newValue: dataStr
         }));
+
+        console.log('✅ Saved successfully');
+
+        // 저장 성공 시 에러 메시지 초기화
+        if (error && error.includes('저장')) {
+          setError(null);
+        }
       } catch (e) {
-        setError('로컬 저장소 용량이 초과되었습니다. 이미지를 줄여주세요.');
+        console.error('❌ Save failed:', e);
+        const errorMsg = e instanceof Error && e.name === 'QuotaExceededError'
+          ? '로컬 저장소 용량이 초과되었습니다. 브라우저 설정에서 저장 공간을 확인해주세요.'
+          : '데이터 저장 중 오류가 발생했습니다.';
+        setError(errorMsg);
       }
     }
   }, [contentData]);
@@ -475,6 +519,33 @@ export default function AdminPage() {
               <p className="font-semibold">저장 완료!</p>
               <p className="text-sm opacity-90">변경사항이 홈페이지에 반영되었습니다.</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Notification */}
+      {error && (
+        <div className="fixed top-20 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 border border-red-400 max-w-md">
+          <div className="flex items-start">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+              <i className="ri-error-warning-line text-lg"></i>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold mb-1">오류 발생</p>
+              <p className="text-sm opacity-90 leading-relaxed">{error}</p>
+              <button
+                onClick={() => setError(null)}
+                className="mt-3 text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="ml-2 text-white/80 hover:text-white transition-colors flex-shrink-0"
+            >
+              <i className="ri-close-line text-xl"></i>
+            </button>
           </div>
         </div>
       )}
