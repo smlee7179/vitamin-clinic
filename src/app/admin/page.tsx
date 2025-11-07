@@ -282,6 +282,13 @@ export default function AdminPage() {
   // 6. 이미지 렌더링 함수
   const getImageSrc = (key: string | undefined, fallback: string) => {
     if (!key || !hydrated) return fallback;
+
+    // Check if it's already a URL (from Blob Storage)
+    if (key.startsWith('http://') || key.startsWith('https://')) {
+      return key;
+    }
+
+    // Otherwise, treat it as a localStorage key
     try {
       const img = localStorage.getItem(key);
       return img || fallback;
