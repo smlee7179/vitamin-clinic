@@ -620,14 +620,27 @@ export default function AdminPage() {
                 <button
                   onClick={() => setActiveTab('footer')}
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center ${
-                    activeTab === 'footer' 
-                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md' 
+                    activeTab === 'footer'
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
                       : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
                   <i className="ri-file-text-line mr-3 text-lg"></i>
                   <span className="font-medium">푸터 정보</span>
                 </button>
+
+                {/* 구분선 */}
+                <div className="my-4 border-t border-gray-200"></div>
+
+                {/* 자료실 링크 */}
+                <Link
+                  href="/admin/gallery"
+                  className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer flex items-center text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                >
+                  <i className="ri-image-2-line mr-3 text-lg"></i>
+                  <span className="font-medium">이미지 자료실</span>
+                  <i className="ri-external-link-line ml-auto text-sm"></i>
+                </Link>
               </nav>
               
               {/* Quick Stats */}

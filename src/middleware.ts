@@ -5,7 +5,8 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(request: NextRequest) {
   // 관리자 페이지 및 API 인증 체크
   const needsAuth = request.nextUrl.pathname.startsWith('/admin') ||
-                    request.nextUrl.pathname.startsWith('/api/upload');
+                    request.nextUrl.pathname.startsWith('/api/upload') ||
+                    request.nextUrl.pathname.startsWith('/api/images');
 
   if (needsAuth) {
     // 로그인 페이지는 인증 불필요
