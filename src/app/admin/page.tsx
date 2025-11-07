@@ -633,16 +633,19 @@ export default function AdminPage() {
                 <div className="my-4 border-t border-gray-200"></div>
 
                 {/* 자료실 링크 */}
-                <Link
-                  href="/admin/gallery"
-                  className="block w-full text-left px-4 py-3 rounded-xl transition-all duration-200 hover:bg-purple-50 hover:text-purple-600 text-gray-700"
+                <button
+                  onClick={() => {
+                    console.log('🔗 Navigating to /admin/gallery...');
+                    router.push('/admin/gallery');
+                  }}
+                  className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200 hover:bg-purple-50 hover:text-purple-600 text-gray-700 cursor-pointer"
                 >
                   <div className="flex items-center">
                     <i className="ri-image-2-line mr-3 text-lg"></i>
                     <span className="font-medium">이미지 자료실</span>
                     <i className="ri-external-link-line ml-auto text-sm"></i>
                   </div>
-                </Link>
+                </button>
               </nav>
               
               {/* Quick Stats */}
