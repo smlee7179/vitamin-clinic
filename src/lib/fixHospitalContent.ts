@@ -168,24 +168,75 @@ const DEFAULT: HospitalContent = {
 };
 
 export function fixHospitalContent(content: any): HospitalContent {
-  return {
-    hero: { ...DEFAULT.hero, ...(content.hero || {}) },
+  console.log('🔧 fixHospitalContent called with:', {
+    hasHero: !!content.hero,
+    heroBackgroundImageFile: content.hero?.backgroundImageFile,
+    hasServices: !!content.services,
+    orthopedicImageFile: content.services?.orthopedic?.imageFile,
+    anesthesiaImageFile: content.services?.anesthesia?.imageFile,
+    rehabilitationImageFile: content.services?.rehabilitation?.imageFile
+  });
+
+  const result: HospitalContent = {
+    hero: {
+      ...DEFAULT.hero,
+      ...(content.hero || {}),
+      // spread 연산자가 이미 올바르게 덮어쓰기 때문에 명시적 설정 불필요
+      // 하지만 undefined 방지를 위해 명시적 처리
+      backgroundImageFile: content.hero?.hasOwnProperty('backgroundImageFile')
+        ? content.hero.backgroundImageFile
+        : DEFAULT.hero.backgroundImageFile
+    },
     services: {
       ...DEFAULT.services,
       ...(content.services || {}),
-      orthopedic: { ...DEFAULT.services.orthopedic, ...((content.services && content.services.orthopedic) || {}) },
-      anesthesia: { ...DEFAULT.services.anesthesia, ...((content.services && content.services.anesthesia) || {}) },
-      rehabilitation: { ...DEFAULT.services.rehabilitation, ...((content.services && content.services.rehabilitation) || {}) },
+      orthopedic: {
+        ...DEFAULT.services.orthopedic,
+        ...((content.services && content.services.orthopedic) || {}),
+        imageFile: content.services?.orthopedic?.hasOwnProperty('imageFile')
+          ? content.services.orthopedic.imageFile
+          : DEFAULT.services.orthopedic.imageFile
+      },
+      anesthesia: {
+        ...DEFAULT.services.anesthesia,
+        ...((content.services && content.services.anesthesia) || {}),
+        imageFile: content.services?.anesthesia?.hasOwnProperty('imageFile')
+          ? content.services.anesthesia.imageFile
+          : DEFAULT.services.anesthesia.imageFile
+      },
+      rehabilitation: {
+        ...DEFAULT.services.rehabilitation,
+        ...((content.services && content.services.rehabilitation) || {}),
+        imageFile: content.services?.rehabilitation?.hasOwnProperty('imageFile')
+          ? content.services.rehabilitation.imageFile
+          : DEFAULT.services.rehabilitation.imageFile
+      },
     },
     doctors: {
       ...DEFAULT.doctors,
       ...(content.doctors || {}),
-      list: (content.doctors && content.doctors.list) ? content.doctors.list.map((d: any) => ({ ...DEFAULT.doctors.list[0], ...d })) : DEFAULT.doctors.list
+      list: (content.doctors && content.doctors.list)
+        ? content.doctors.list.map((d: any) => ({
+            ...DEFAULT.doctors.list[0],
+            ...d,
+            imageFile: d.hasOwnProperty('imageFile')
+              ? d.imageFile
+              : DEFAULT.doctors.list[0].imageFile
+          }))
+        : DEFAULT.doctors.list
     },
     facilities: {
       ...DEFAULT.facilities,
       ...(content.facilities || {}),
-      list: (content.facilities && content.facilities.list) ? content.facilities.list.map((f: any) => ({ ...DEFAULT.facilities.list[0], ...f })) : DEFAULT.facilities.list
+      list: (content.facilities && content.facilities.list)
+        ? content.facilities.list.map((f: any) => ({
+            ...DEFAULT.facilities.list[0],
+            ...f,
+            imageFile: f.hasOwnProperty('imageFile')
+              ? f.imageFile
+              : DEFAULT.facilities.list[0].imageFile
+          }))
+        : DEFAULT.facilities.list
     },
     contact: {
       ...DEFAULT.contact,
@@ -198,4 +249,13 @@ export function fixHospitalContent(content: any): HospitalContent {
       links: { ...DEFAULT.footer.links, ...((content.footer && content.footer.links) || {}) }
     }
   };
+
+  console.log('✅ fixHospitalContent result:', {
+    heroBackgroundImageFile: result.hero.backgroundImageFile,
+    orthopedicImageFile: result.services.orthopedic.imageFile,
+    anesthesiaImageFile: result.services.anesthesia.imageFile,
+    rehabilitationImageFile: result.services.rehabilitation.imageFile
+  });
+
+  return result;
 } 

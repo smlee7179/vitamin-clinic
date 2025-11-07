@@ -22,12 +22,27 @@ export default function Home() {
   // 초기 로딩
   useEffect(() => {
     if (!hydrated) return;
-    
+
     try {
+      console.log('🏠 Homepage: Loading data from localStorage...');
       const saved = localStorage.getItem('hospitalContent');
+
       if (saved) {
-        setContentData(fixHospitalContent(JSON.parse(saved)));
+        console.log('✅ localStorage data found, size:', (saved.length / 1024).toFixed(2), 'KB');
+        const parsed = JSON.parse(saved);
+        console.log('📥 Parsed data before fixHospitalContent:', {
+          heroBackgroundImageFile: parsed.hero?.backgroundImageFile,
+          orthopedicImageFile: parsed.services?.orthopedic?.imageFile,
+          anesthesiaImageFile: parsed.services?.anesthesia?.imageFile,
+          rehabilitationImageFile: parsed.services?.rehabilitation?.imageFile
+        });
+
+        const fixed = fixHospitalContent(parsed);
+        setContentData(fixed);
+
+        console.log('✅ contentData set successfully');
       } else {
+        console.log('⚠️ No localStorage data found, using defaults');
         // localStorage에 데이터가 없으면 기본 데이터 사용
         const defaultData = fixHospitalContent({
                       hero: {
@@ -121,13 +136,25 @@ export default function Home() {
   // 여러 탭 동기화
   useEffect(() => {
     if (!hydrated) return;
-    
+
     const loadData = () => {
       try {
+        console.log('🔄 Storage event triggered, reloading data...');
         const saved = localStorage.getItem('hospitalContent');
+
         if (saved) {
-          setContentData(fixHospitalContent(JSON.parse(saved)));
+          console.log('✅ Storage data found');
+          const parsed = JSON.parse(saved);
+          console.log('📥 Parsed data:', {
+            heroBackgroundImageFile: parsed.hero?.backgroundImageFile
+          });
+
+          const fixed = fixHospitalContent(parsed);
+          setContentData(fixed);
+
+          console.log('✅ Data reloaded from storage event');
         } else {
+          console.log('⚠️ Storage event: No data found');
           // localStorage에 데이터가 없으면 기본 데이터 사용
           const defaultData = fixHospitalContent({
             hero: {
