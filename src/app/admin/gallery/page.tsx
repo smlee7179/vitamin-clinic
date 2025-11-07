@@ -39,14 +39,27 @@ export default function GalleryPage() {
     setLoading(true);
     setError(null);
     try {
+      console.log('📂 Loading images from /api/images...');
       const response = await fetch('/api/images');
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
       if (!response.ok) {
-        throw new Error('Failed to load images');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ API error:', errorData);
+        throw new Error(errorData.details || errorData.error || `HTTP ${response.status}: Failed to load images`);
       }
+
       const data = await response.json();
-      setImages(data.images);
+      console.log('✅ Received data:', data);
+
+      setImages(data.images || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load images');
+      console.error('❌ Load images error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load images';
+      setError(errorMessage);
+      alert('이미지 로드 실패: ' + errorMessage);
     } finally {
       setLoading(false);
     }
