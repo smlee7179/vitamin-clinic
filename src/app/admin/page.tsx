@@ -302,10 +302,56 @@ export default function AdminPage() {
     }
   }, [contentData]);
 
-  // 4. 여러 탭 동기화
+  // 4. 실시간 서버 동기화 (60초마다 - 관리자는 덜 자주 체크)
   useEffect(() => {
     if (!hydrated) return;
-    
+
+    console.log('🔄 Admin: Starting auto-refresh polling (60s interval)');
+
+    const intervalId = setInterval(async () => {
+      try {
+        console.log('⏰ Admin Polling: Checking for updates from other admins...');
+        const response = await fetch('/api/content?section=all');
+
+        if (response.ok) {
+          const serverData = await response.json();
+
+          if (Object.keys(serverData).length > 0) {
+            // 현재 데이터와 비교
+            const currentStr = JSON.stringify(contentData);
+            const newStr = JSON.stringify(serverData);
+
+            if (currentStr !== newStr) {
+              console.log('🆕 Admin: Content updated by another admin, syncing...');
+              const fixed = fixHospitalContent(serverData);
+              setContentData(fixed);
+
+              // localStorage 캐시 업데이트
+              localStorage.setItem('hospitalContent', JSON.stringify(serverData));
+
+              // 사용자에게 알림
+              alert('다른 관리자가 콘텐츠를 변경했습니다. 최신 데이터로 업데이트되었습니다.');
+              console.log('✅ Admin: Content auto-updated');
+            } else {
+              console.log('✓ Admin: Content is up to date');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('⚠️ Admin polling error (will retry):', error);
+      }
+    }, 60000); // 60초마다 (관리자는 덜 자주 체크)
+
+    return () => {
+      console.log('🛑 Admin: Stopping auto-refresh polling');
+      clearInterval(intervalId);
+    };
+  }, [hydrated, contentData]);
+
+  // 5. 여러 탭 동기화 (같은 브라우저)
+  useEffect(() => {
+    if (!hydrated) return;
+
     const loadData = () => {
       try {
         const saved = localStorage.getItem('hospitalContent');
@@ -318,7 +364,7 @@ export default function AdminPage() {
     return () => window.removeEventListener('storage', loadData);
   }, [hydrated]);
 
-  // 5. 이미지 업로드/변경/삭제
+  // 6. 이미지 업로드/변경/삭제
   const handleImageUpload = (key: string, fileOrUrl: File | string, updateField: (imgKey: string) => void) => {
     if (typeof fileOrUrl === 'string') {
       try {

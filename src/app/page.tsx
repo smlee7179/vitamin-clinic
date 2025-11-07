@@ -189,6 +189,49 @@ export default function Home() {
     loadContent();
   }, [hydrated]);
 
+  // 실시간 동기화 (30초마다 서버 확인)
+  useEffect(() => {
+    if (!hydrated) return;
+
+    console.log('🔄 Starting auto-refresh polling (30s interval)');
+
+    const intervalId = setInterval(async () => {
+      try {
+        console.log('⏰ Polling: Checking for updates...');
+        const response = await fetch('/api/content?section=all');
+
+        if (response.ok) {
+          const serverData = await response.json();
+
+          if (Object.keys(serverData).length > 0) {
+            // 현재 데이터와 비교 (간단한 체크)
+            const currentStr = JSON.stringify(contentData);
+            const newStr = JSON.stringify(serverData);
+
+            if (currentStr !== newStr) {
+              console.log('🆕 New content detected, updating...');
+              const fixed = fixHospitalContent(serverData);
+              setContentData(fixed);
+
+              // localStorage 캐시 업데이트
+              localStorage.setItem('hospitalContent', JSON.stringify(serverData));
+              console.log('✅ Content auto-updated');
+            } else {
+              console.log('✓ Content is up to date');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('⚠️ Polling error (will retry):', error);
+      }
+    }, 30000); // 30초마다
+
+    return () => {
+      console.log('🛑 Stopping auto-refresh polling');
+      clearInterval(intervalId);
+    };
+  }, [hydrated, contentData]);
+
   // 여러 탭 동기화
   useEffect(() => {
     if (!hydrated) return;
