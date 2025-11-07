@@ -325,18 +325,26 @@ export default function AdminPage() {
 
   // 6. 이미지 렌더링 함수
   const getImageSrc = (key: string | undefined, fallback: string) => {
-    if (!key || !hydrated) return fallback;
+    console.log('🔍 getImageSrc called with key:', key, 'hydrated:', hydrated);
+
+    if (!key || !hydrated) {
+      console.log('❌ Returning fallback (no key or not hydrated):', fallback);
+      return fallback;
+    }
 
     // Check if it's already a URL (from Blob Storage)
     if (key.startsWith('http://') || key.startsWith('https://')) {
+      console.log('✅ Key is a URL, returning:', key);
       return key;
     }
 
     // Otherwise, treat it as a localStorage key
     try {
       const img = localStorage.getItem(key);
+      console.log('📦 localStorage.getItem result:', img);
       return img || fallback;
     } catch {
+      console.log('❌ localStorage error, returning fallback:', fallback);
       return fallback;
     }
   };
@@ -727,19 +735,29 @@ export default function AdminPage() {
                   <div>
                     <ModernImageUpload
                       label="배경 이미지"
-                      currentImage={getImageSrc(contentData.hero.backgroundImageFile, '')}
+                      currentImage={(() => {
+                        const imageFile = contentData.hero.backgroundImageFile;
+                        console.log('🖼️ Hero backgroundImageFile from contentData:', imageFile);
+                        const result = getImageSrc(imageFile, '');
+                        console.log('🎯 currentImage prop value:', result);
+                        return result;
+                      })()}
                       aspectRatio="landscape"
                       showUrlInput={true}
                       onUpload={(url) => {
+                        console.log('📤 Hero onUpload called with URL:', url);
                         setContentData(prev => {
                           const base = prev ?? DEFAULT_CONTENT_DATA;
-                          return {
+                          const updated = {
                             ...base,
                             hero: { ...base.hero, backgroundImageFile: url }
                           };
+                          console.log('💾 Updated contentData.hero.backgroundImageFile:', updated.hero.backgroundImageFile);
+                          return updated;
                         });
                       }}
                       onDelete={() => {
+                        console.log('🗑️ Hero onDelete called');
                         setContentData(prev => {
                           const base = prev ?? DEFAULT_CONTENT_DATA;
                           return {

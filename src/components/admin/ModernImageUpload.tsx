@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 interface ModernImageUploadProps {
   currentImage?: string;
@@ -27,6 +27,18 @@ export default function ModernImageUpload({
   const [dragActive, setDragActive] = useState(false);
   const [showActions, setShowActions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // currentImage prop이 변경될 때 preview 업데이트
+  useEffect(() => {
+    console.log('🔄 ModernImageUpload: currentImage changed:', currentImage);
+    if (currentImage && currentImage !== preview) {
+      setPreview(currentImage);
+      console.log('✅ Preview updated to:', currentImage);
+    } else if (!currentImage && preview) {
+      setPreview(null);
+      console.log('🗑️ Preview cleared');
+    }
+  }, [currentImage]);
 
   // 종횡비에 따른 컨테이너 클래스
   const getAspectRatioClass = () => {
