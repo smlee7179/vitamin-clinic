@@ -452,9 +452,14 @@ export default function Home() {
             className="absolute inset-0 z-0"
             style={{
               backgroundImage: (() => {
-                const key = contentData?.hero?.backgroundImageFile;
-                if (key && hydrated) {
-                  const img = localStorage.getItem(key);
+                const imageFile = contentData?.hero?.backgroundImageFile;
+                if (imageFile && hydrated) {
+                  // Check if it's a URL (from Blob Storage)
+                  if (imageFile.startsWith('http')) {
+                    return `url('${imageFile}')`;
+                  }
+                  // Check if it's a localStorage key
+                  const img = localStorage.getItem(imageFile);
                   if (img) return `url('${img}')`;
                 }
                 return contentData?.hero?.backgroundImage
