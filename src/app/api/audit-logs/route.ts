@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { getAuditLogs, getRecentActivity, getUserActivityStats } from '@/lib/auditLog';
 
+// Edge runtime은 Prisma를 지원하지 않으므로 Node.js runtime 사용
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Check authentication

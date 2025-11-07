@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth-helpers';
 
+// Prisma는 Edge runtime을 지원하지 않으므로 Node.js runtime 사용
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const notices = await prisma.marqueeNotice.findMany({
