@@ -200,48 +200,81 @@ export default function AdminPage() {
   useEffect(() => {
     if (!hydrated) return;
 
-    try {
-      const saved = localStorage.getItem('hospitalContent');
-      console.log('📂 Loading from localStorage...');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        console.log('📥 Loaded data:', {
-          backgroundImageFile: parsed.hero?.backgroundImageFile,
-          orthopedicImageFile: parsed.services?.orthopedic?.imageFile,
-          anesthesiaImageFile: parsed.services?.anesthesia?.imageFile,
-          rehabilitationImageFile: parsed.services?.rehabilitation?.imageFile
-        });
-        const fixed = fixHospitalContent(parsed);
-        console.log('🔧 After fixHospitalContent:', {
-          backgroundImageFile: fixed.hero.backgroundImageFile,
-          orthopedicImageFile: fixed.services.orthopedic.imageFile,
-          anesthesiaImageFile: fixed.services.anesthesia.imageFile,
-          rehabilitationImageFile: fixed.services.rehabilitation.imageFile
-        });
-        setContentData(fixed);
-        console.log('✅ setContentData: loaded from localStorage');
-      } else {
-        setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
-        console.log('✅ setContentData: DEFAULT_CONTENT_DATA');
+    const loadContent = async () => {
+      try {
+        console.log('🔄 Loading content...');
+
+        // 1️⃣ 먼저 localStorage에서 즉시 로드 (빠른 표시)
+        const cached = localStorage.getItem('hospitalContent');
+        if (cached) {
+          console.log('📦 Found cached data in localStorage');
+          const parsed = JSON.parse(cached);
+          const fixed = fixHospitalContent(parsed);
+          setContentData(fixed);
+          console.log('✅ Initial data loaded from cache');
+        }
+
+        // 2️⃣ 서버에서 최신 데이터 가져오기
+        console.log('📡 Fetching latest data from server...');
+        const response = await fetch('/api/content?section=all');
+
+        if (response.ok) {
+          const serverData = await response.json();
+          console.log('✅ Server data received:', Object.keys(serverData));
+
+          // 서버 데이터가 비어있지 않으면 사용
+          if (Object.keys(serverData).length > 0) {
+            const fixed = fixHospitalContent(serverData);
+            setContentData(fixed);
+
+            // localStorage 캐시 업데이트
+            localStorage.setItem('hospitalContent', JSON.stringify(serverData));
+            console.log('✅ Content loaded from server and cached');
+          } else {
+            console.log('⚠️ Server returned empty data');
+            // 서버에 데이터가 없으면 캐시나 기본값 사용
+            if (!cached) {
+              setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
+              console.log('✅ Using default data');
+            }
+          }
+        } else {
+          console.warn('⚠️ Server fetch failed:', response.status);
+          // 서버 실패 시 캐시나 기본값 사용
+          if (!cached) {
+            setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
+            console.log('✅ Using default data (server failed)');
+          }
+        }
+      } catch (e) {
+        console.error('❌ Load error:', e);
+        // 오류 발생 시 캐시나 기본값 사용
+        const cached = localStorage.getItem('hospitalContent');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          const fixed = fixHospitalContent(parsed);
+          setContentData(fixed);
+          console.log('✅ Using cached data (error fallback)');
+        } else {
+          setContentData(fixHospitalContent(DEFAULT_CONTENT_DATA));
+          console.log('✅ Using default data (error fallback)');
+        }
       }
-    } catch (e) {
-      setError('로컬 저장소에서 데이터를 불러오지 못했습니다.');
-      console.error('❌ Load error:', e);
-    }
+    };
+
+    loadContent();
   }, [hydrated]);
 
-  // 3. 저장
+  // 3. 임시 저장 (localStorage 캐시만, 서버는 저장 버튼 클릭 시에만)
+  // 주의: contentData 변경 시마다 실행되므로 너무 자주 호출될 수 있음
+  // 서버 저장은 handleSave에서만 수행
   useEffect(() => {
     if (contentData) {
       try {
         const dataStr = JSON.stringify(contentData);
         const sizeKB = (dataStr.length / 1024).toFixed(2);
 
-        console.log('💾 Saving to localStorage:', {
-          backgroundImageFile: contentData.hero.backgroundImageFile,
-          orthopedicImageFile: contentData.services.orthopedic.imageFile,
-          anesthesiaImageFile: contentData.services.anesthesia.imageFile,
-          rehabilitationImageFile: contentData.services.rehabilitation.imageFile,
+        console.log('💾 Auto-caching to localStorage (임시 저장):', {
           size: `${sizeKB} KB`
         });
 
@@ -252,25 +285,18 @@ export default function AdminPage() {
           return;
         }
 
+        // localStorage에만 임시 캐시 (서버 저장은 "저장하기" 버튼 클릭 시)
         localStorage.setItem('hospitalContent', dataStr);
-
-        // storage 이벤트를 수동으로 발생시켜 다른 탭에서 즉시 반영되도록 함
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: 'hospitalContent',
-          newValue: dataStr
-        }));
-
-        console.log('✅ Saved successfully');
 
         // 저장 성공 시 에러 메시지 초기화
         if (error && error.includes('저장')) {
           setError(null);
         }
       } catch (e) {
-        console.error('❌ Save failed:', e);
+        console.error('❌ Cache failed:', e);
         const errorMsg = e instanceof Error && e.name === 'QuotaExceededError'
           ? '로컬 저장소 용량이 초과되었습니다. 브라우저 설정에서 저장 공간을 확인해주세요.'
-          : '데이터 저장 중 오류가 발생했습니다.';
+          : '데이터 캐시 중 오류가 발생했습니다.';
         setError(errorMsg);
       }
     }
@@ -350,10 +376,48 @@ export default function AdminPage() {
   };
 
 
-  const handleSave = () => {
-    localStorage.setItem('hospitalContent', JSON.stringify(contentData));
-    setShowSaveNotification(true);
-    setTimeout(() => setShowSaveNotification(false), 3000);
+  const handleSave = async () => {
+    try {
+      console.log('💾 Starting save process...');
+      setShowSaveNotification(false);
+
+      // 1️⃣ 서버에 저장 (Primary Storage - Prisma DB)
+      console.log('📡 Sending data to server...');
+      const response = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          section: 'all',
+          data: contentData
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || '서버 저장 실패');
+      }
+
+      const result = await response.json();
+      console.log('✅ Server save successful:', result);
+
+      // 2️⃣ localStorage에도 캐시 (빠른 로딩을 위한 보조 저장소)
+      localStorage.setItem('hospitalContent', JSON.stringify(contentData));
+      console.log('✅ localStorage cache updated');
+
+      // 3️⃣ storage 이벤트 발생 (같은 브라우저의 다른 탭에 알림)
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'hospitalContent',
+        newValue: JSON.stringify(contentData)
+      }));
+
+      setShowSaveNotification(true);
+      setTimeout(() => setShowSaveNotification(false), 3000);
+
+      console.log('🎉 All save operations completed successfully!');
+    } catch (error) {
+      console.error('❌ Save failed:', error);
+      alert(`저장에 실패했습니다.\n\n오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}\n\n다시 시도해주세요.`);
+    }
   };
 
   const updateContent = (section: string, field: string, value: string | string[]) => {
