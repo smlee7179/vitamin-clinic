@@ -31,15 +31,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if Vercel Blob is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN is not configured');
+      return NextResponse.json(
+        {
+          error: 'Vercel Blob Storage is not configured. Please connect Blob Storage in Vercel Dashboard.',
+          details: 'Go to your Vercel project -> Storage -> Connect Store -> Blob'
+        },
+        { status: 500 }
+      );
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+    console.log('Uploading file:', filename, 'Size:', file.size, 'Type:', file.type);
 
     // Upload to Vercel Blob
     const blob = await put(filename, file, {
       access: 'public',
       addRandomSuffix: true,
     });
+
+    console.log('Upload successful:', blob.url);
 
     return NextResponse.json({
       url: blob.url,
@@ -49,8 +65,18 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error uploading file:', error);
+
+    // Provide more detailed error information
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorDetails = error instanceof Error ? error.stack : '';
+
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      {
+        error: 'Failed to upload file',
+        message: errorMessage,
+        details: errorDetails,
+        hint: 'Please ensure Vercel Blob Storage is connected in your project settings'
+      },
       { status: 500 }
     );
   }

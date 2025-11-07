@@ -79,14 +79,19 @@ export default function ModernImageUpload({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '업로드 실패');
+        const errorMsg = error.details
+          ? `${error.error}\n상세: ${error.details}`
+          : error.message || error.error || '업로드 실패';
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
       setPreview(data.url);
       onUpload(data.url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '업로드 중 오류가 발생했습니다');
+      const errorMessage = err instanceof Error ? err.message : '업로드 중 오류가 발생했습니다';
+      console.error('Upload error:', errorMessage);
+      setError(errorMessage);
       setPreview(currentImage || null);
     } finally {
       setUploading(false);
