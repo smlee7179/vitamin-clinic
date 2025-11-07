@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fixHospitalContent } from '../../lib/fixHospitalContent';
+import ModernImageUpload from '../../components/admin/ModernImageUpload';
 
 interface Doctor {
   name: string;
@@ -623,83 +624,33 @@ export default function AdminPage() {
                       />
                     </div>
                   </div>
-                  {/* hero 섹션 내 ImageUploadComponent 대신 아래 UI로 대체 */}
-                  <div className="relative w-64 h-40 mb-4 flex flex-col items-center">
-                    <img
-                      src={getImageSrc(contentData.hero.backgroundImageFile, 'https://readdy.ai/api/search-image?query=Modern%20medical%20facility%20interior&width=640&height=400&seq=hero-bg-1&orientation=landscape')}
-                      alt="배경 이미지"
-                      className="w-full h-full object-cover rounded-lg border"
+
+                  {/* 배경 이미지 업로드 */}
+                  <div>
+                    <ModernImageUpload
+                      label="배경 이미지"
+                      currentImage={getImageSrc(contentData.hero.backgroundImageFile, '')}
+                      aspectRatio="landscape"
+                      showUrlInput={true}
+                      onUpload={(url) => {
+                        setContentData(prev => {
+                          const base = prev ?? DEFAULT_CONTENT_DATA;
+                          return {
+                            ...base,
+                            hero: { ...base.hero, backgroundImageFile: url }
+                          };
+                        });
+                      }}
+                      onDelete={() => {
+                        setContentData(prev => {
+                          const base = prev ?? DEFAULT_CONTENT_DATA;
+                          return {
+                            ...base,
+                            hero: { ...base.hero, backgroundImageFile: '' }
+                          };
+                        });
+                      }}
                     />
-                    <div className="flex flex-col gap-1 mt-2 w-full">
-                      <input
-                        id="hero-image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleImageUpload('image_hero_bg', file, (key) => {
-                              setContentData(prev => {
-                                const base = prev ?? DEFAULT_CONTENT_DATA;
-                                return {
-                                  ...base,
-                                  hero: { ...base.hero, backgroundImageFile: key }
-                                };
-                              });
-                            });
-                          }
-                        }}
-                      />
-                      <label htmlFor="hero-image-upload" className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
-                        이미지 업로드/변경
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="이미지 URL 입력(선택)"
-                        value={(() => {
-                          const key = contentData.hero.backgroundImageFile;
-                          if (key) {
-                            const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
-                            if (img) return img;
-                          }
-                          return '';
-                        })()}
-                        onChange={(e) => {
-                          const url = e.target.value;
-                          if (url) {
-                            handleImageUpload('image_hero_bg_url', url, (key) => {
-                              setContentData(prev => {
-                                const base = prev ?? DEFAULT_CONTENT_DATA;
-                                return {
-                                  ...base,
-                                  hero: { ...base.hero, backgroundImageFile: key }
-                                };
-                              });
-                            });
-                          }
-                        }}
-                        className="w-full px-2 py-1 border rounded text-xs"
-                      />
-                      <button
-                        type="button"
-                        className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                        onClick={() => {
-                          handleImageDelete(contentData.hero.backgroundImageFile, () => {
-                            setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                ...base,
-                                hero: { ...base.hero, backgroundImageFile: '' }
-                              };
-                            });
-                          });
-                        }}
-                        disabled={!contentData.hero.backgroundImageFile}
-                      >
-                        이미지 삭제
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -761,93 +712,35 @@ export default function AdminPage() {
                           rows={4}
                         />
                       </div>
-                      {/* ImageUploadComponent 대신 아래 UI로 대체 */}
-                      <div className="relative w-32 h-32 mb-4 flex flex-col items-center">
-                        <img
-                          src={getImageSrc(contentData.services.orthopedic.imageFile, 'https://readdy.ai/api/search-image?query=orthopedic&width=320&height=320&seq=orthopedic-1')}
-                          alt="정형외과 이미지"
-                          className="w-full h-full object-cover rounded-lg border"
-                        />
-                        <div className="flex flex-col gap-1 mt-2 w-full">
-                          <input
-                            id={`orthopedic-image-upload`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleImageUpload(`image_services_orthopedic`, file, (key) => {
-                                  setContentData(prev => {
-                                    const base = prev ?? DEFAULT_CONTENT_DATA;
-                                    return {
-                                      ...base,
-                                      services: { 
-                                        ...base.services, 
-                                        orthopedic: { ...base.services.orthopedic, imageFile: key } 
-                                      }
-                                    };
-                                  });
-                                });
+                      <ModernImageUpload
+                        label="정형외과 이미지"
+                        currentImage={getImageSrc(contentData.services.orthopedic.imageFile, '')}
+                        aspectRatio="square"
+                        onUpload={(url) => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                orthopedic: { ...base.services.orthopedic, imageFile: url }
                               }
-                            }}
-                          />
-                          <label htmlFor={`orthopedic-image-upload`} className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
-                            이미지 업로드/변경
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="이미지 URL 입력(선택)"
-                            value={(() => {
-                              const key = contentData.services.orthopedic.imageFile;
-                              if (key) {
-                                const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
-                                if (img) return img;
+                            };
+                          });
+                        }}
+                        onDelete={() => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                orthopedic: { ...base.services.orthopedic, imageFile: '' }
                               }
-                              return '';
-                            })()}
-                            onChange={(e) => {
-                              const url = e.target.value;
-                              if (url) {
-                                handleImageUpload(`image_services_orthopedic_url`, url, (key) => {
-                                  setContentData(prev => {
-                                    const base = prev ?? DEFAULT_CONTENT_DATA;
-                                    return {
-                                      ...base,
-                                      services: { 
-                                        ...base.services, 
-                                        orthopedic: { ...base.services.orthopedic, imageFile: key } 
-                                      }
-                                    };
-                                  });
-                                });
-                              }
-                            }}
-                            className="w-full px-2 py-1 border rounded text-xs"
-                          />
-                          <button
-                            type="button"
-                            className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                            onClick={() => {
-                              handleImageDelete(contentData.services.orthopedic.imageFile, () => {
-                                setContentData(prev => {
-                                  const base = prev ?? DEFAULT_CONTENT_DATA;
-                                  return {
-                                    ...base,
-                                    services: { 
-                                      ...base.services, 
-                                      orthopedic: { ...base.services.orthopedic, imageFile: '' } 
-                                    }
-                                  };
-                                });
-                              });
-                            }}
-                            disabled={!contentData.services.orthopedic.imageFile}
-                          >
-                            이미지 삭제
-                          </button>
-                        </div>
-                      </div>
+                            };
+                          });
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -882,67 +775,35 @@ export default function AdminPage() {
                           rows={4}
                         />
                       </div>
-                      {/* ImageUploadComponent 대신 아래 UI로 대체 */}
-                      <div className="relative w-32 h-32 mb-4 flex flex-col items-center">
-                        <img
-                          src={getImageSrc(contentData.services.anesthesia.imageFile, 'https://readdy.ai/api/search-image?query=anesthesia&width=320&height=320&seq=anesthesia-1')}
-                          alt="마취통증의학과 이미지"
-                          className="w-full h-full object-cover rounded-lg border"
-                        />
-                        <div className="flex flex-col gap-1 mt-2 w-full">
-                          <input
-                            id={`anesthesia-image-upload`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={e => e.target.files && handleImageUpload(`image_services_anesthesia`, e.target.files[0], (key) => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, anesthesia: { ...base.services.anesthesia, imageFile: key } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
-                          />
-                          <label htmlFor={`anesthesia-image-upload`} className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
-                            이미지 업로드/변경
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="이미지 URL 입력(선택)"
-                            value={(() => {
-                              const key = contentData.services.anesthesia.imageFile;
-                              if (key) {
-                                const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
-                                if (img) return img;
+                      <ModernImageUpload
+                        label="마취통증의학과 이미지"
+                        currentImage={getImageSrc(contentData.services.anesthesia.imageFile, '')}
+                        aspectRatio="square"
+                        onUpload={(url) => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                anesthesia: { ...base.services.anesthesia, imageFile: url }
                               }
-                              return '';
-                            })()}
-                            onChange={e => handleImageUpload(e.target.value, '', () => {})}
-                            className="w-full px-2 py-1 border rounded text-xs"
-                          />
-                          <button
-                            className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                            onClick={() => handleImageDelete(contentData.services.anesthesia.imageFile, () => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, anesthesia: { ...base.services.anesthesia, imageFile: '' } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
-                            disabled={!contentData.services.anesthesia.imageFile}
-                          >
-                            이미지 삭제
-                          </button>
-                        </div>
-                      </div>
+                            };
+                          });
+                        }}
+                        onDelete={() => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                anesthesia: { ...base.services.anesthesia, imageFile: '' }
+                              }
+                            };
+                          });
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -977,67 +838,35 @@ export default function AdminPage() {
                           rows={4}
                         />
                       </div>
-                      {/* ImageUploadComponent 대신 아래 UI로 대체 */}
-                      <div className="relative w-32 h-32 mb-4 flex flex-col items-center">
-                        <img
-                          src={getImageSrc(contentData.services.rehabilitation.imageFile, 'https://readdy.ai/api/search-image?query=rehabilitation&width=320&height=320&seq=rehabilitation-1')}
-                          alt="재활의학과 이미지"
-                          className="w-full h-full object-cover rounded-lg border"
-                        />
-                        <div className="flex flex-col gap-1 mt-2 w-full">
-                          <input
-                            id={`rehabilitation-image-upload`}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={e => e.target.files && handleImageUpload(`image_services_rehabilitation`, e.target.files[0], (key) => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, rehabilitation: { ...base.services.rehabilitation, imageFile: key } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
-                          />
-                          <label htmlFor={`rehabilitation-image-upload`} className="bg-blue-500 text-white px-3 py-1 rounded-lg cursor-pointer text-xs font-medium text-center hover:bg-blue-600">
-                            이미지 업로드/변경
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="이미지 URL 입력(선택)"
-                            value={(() => {
-                              const key = contentData.services.rehabilitation.imageFile;
-                              if (key) {
-                                const img = typeof window !== 'undefined' ? localStorage.getItem(key) : '';
-                                if (img) return img;
+                      <ModernImageUpload
+                        label="재활의학과 이미지"
+                        currentImage={getImageSrc(contentData.services.rehabilitation.imageFile, '')}
+                        aspectRatio="square"
+                        onUpload={(url) => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                rehabilitation: { ...base.services.rehabilitation, imageFile: url }
                               }
-                              return '';
-                            })()}
-                            onChange={e => handleImageUpload(e.target.value, '', () => {})}
-                            className="w-full px-2 py-1 border rounded text-xs"
-                          />
-                          <button
-                            className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-600 mt-1"
-                            onClick={() => handleImageDelete(contentData.services.rehabilitation.imageFile, () => setContentData(prev => {
-                              const base = prev ?? DEFAULT_CONTENT_DATA;
-                              return {
-                                hero: base.hero,
-                                services: { ...base.services, rehabilitation: { ...base.services.rehabilitation, imageFile: '' } },
-                                doctors: base.doctors,
-                                facilities: base.facilities,
-                                contact: base.contact,
-                                footer: base.footer
-                              };
-                            }))}
-                            disabled={!contentData.services.rehabilitation.imageFile}
-                          >
-                            이미지 삭제
-                          </button>
-                        </div>
-                      </div>
+                            };
+                          });
+                        }}
+                        onDelete={() => {
+                          setContentData(prev => {
+                            const base = prev ?? DEFAULT_CONTENT_DATA;
+                            return {
+                              ...base,
+                              services: {
+                                ...base.services,
+                                rehabilitation: { ...base.services.rehabilitation, imageFile: '' }
+                              }
+                            };
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
