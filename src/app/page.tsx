@@ -229,18 +229,33 @@ export default function Home() {
 
   // 이미지 렌더링 함수
   const getImageSrc = (key: string | undefined, fallback: string) => {
-    if (!key || !hydrated) return fallback;
+    // 하이드레이션 전이거나 key가 없으면 fallback 반환
+    if (!hydrated) return fallback;
+    if (!key || key.trim() === '') return fallback;
 
-    // Check if it's already a URL (from Blob Storage)
+    // 절대 경로 URL인 경우 (Blob Storage에서 온 URL)
     if (key.startsWith('http://') || key.startsWith('https://')) {
+      console.log('✅ Using Blob Storage URL:', key);
       return key;
     }
 
-    // Otherwise, treat it as a localStorage key
+    // 상대 경로인 경우 (예: /images/...)
+    if (key.startsWith('/')) {
+      console.log('✅ Using relative path:', key);
+      return key;
+    }
+
+    // localStorage key로 취급
     try {
       const img = localStorage.getItem(key);
-      return img || fallback;
-    } catch {
+      if (img) {
+        console.log('📦 Retrieved from localStorage:', key, '→', img);
+        return img;
+      }
+      console.log('⚠️ No image found in localStorage for key:', key, ', using fallback');
+      return fallback;
+    } catch (error) {
+      console.error('❌ localStorage error:', error);
       return fallback;
     }
   };
@@ -455,23 +470,25 @@ export default function Home() {
 
         {/* Hero Section */}
         <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-          <div 
+          <div
             className="absolute inset-0 z-0"
             style={{
               backgroundImage: (() => {
+                // 기본 fallback 이미지
+                const defaultFallback = contentData?.hero?.backgroundImage
+                  ? `https://readdy.ai/api/search-image?query=${encodeURIComponent(contentData.hero.backgroundImage)}&width=1920&height=1080&seq=hero-bg-1&orientation=landscape`
+                  : 'https://readdy.ai/api/search-image?query=Modern%20medical%20facility%20interior%20with%20warm%20orange%20lighting&width=1920&height=1080&seq=hero-bg-1&orientation=landscape';
+
                 const imageFile = contentData?.hero?.backgroundImageFile;
-                if (imageFile && hydrated) {
-                  // Check if it's a URL (from Blob Storage)
-                  if (imageFile.startsWith('http')) {
-                    return `url('${imageFile}')`;
-                  }
-                  // Check if it's a localStorage key
-                  const img = localStorage.getItem(imageFile);
-                  if (img) return `url('${img}')`;
-                }
-                return contentData?.hero?.backgroundImage
-                  ? `url('https://readdy.ai/api/search-image?query=${encodeURIComponent(contentData.hero.backgroundImage)}&width=1920&height=1080&seq=hero-bg-1&orientation=landscape')`
-                  : `url('https://readdy.ai/api/search-image?query=Modern%20medical%20facility%20interior%20with%20warm%20orange%20lighting&width=1920&height=1080&seq=hero-bg-1&orientation=landscape')`;
+                const imageSrc = getImageSrc(imageFile, defaultFallback);
+
+                console.log('🖼️ Hero background image:', {
+                  imageFile,
+                  imageSrc,
+                  isUrl: imageSrc.startsWith('http')
+                });
+
+                return `url('${imageSrc}')`;
               })(),
               backgroundSize: 'cover',
               backgroundPosition: 'center',
@@ -587,10 +604,19 @@ export default function Home() {
                 contentData.doctors.list.map((doctor: any, idx: number) => (
                   <div key={idx} className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg text-center">
                     <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-orange-100 rounded-full mx-auto mb-4 sm:mb-6 overflow-hidden">
-                      <img 
-                        src={getImageSrc(doctor?.imageFile, 'https://readdy.ai/api/search-image?query=Professional%20Korean%20male%20doctor%20in%20white%20coat%2C%20middle-aged%20orthopedic%20specialist%2C%20friendly%20smile%2C%20clean%20medical%20background%2C%20hospital%20setting%2C%20professional%20medical%20portrait%2C%20trustworthy%20appearance%2C%20warm%20lighting&width=320&height=320&seq=doctor-' + (idx+1))}
-                        alt={doctor?.name || ''}
+                      <img
+                        src={getImageSrc(
+                          doctor?.imageFile,
+                          `https://readdy.ai/api/search-image?query=Professional%20Korean%20male%20doctor%20in%20white%20coat%2C%20middle-aged%20orthopedic%20specialist%2C%20friendly%20smile%2C%20clean%20medical%20background%2C%20hospital%20setting%2C%20professional%20medical%20portrait%2C%20trustworthy%20appearance%2C%20warm%20lighting&width=320&height=320&seq=doctor-${idx+1}`
+                        )}
+                        alt={doctor?.name || `의료진 ${idx + 1}`}
                         className="w-full h-full object-cover object-top"
+                        onError={(e) => {
+                          console.error('❌ Doctor image load error:', doctor?.imageFile);
+                          const target = e.target as HTMLImageElement;
+                          // 에러 발생 시 기본 이미지로 대체
+                          target.src = `https://readdy.ai/api/search-image?query=Professional%20Korean%20male%20doctor%20in%20white%20coat&width=320&height=320&seq=doctor-fallback-${idx+1}`;
+                        }}
                       />
                       {/* 이미지 변경/삭제 UI 제거 */}
                     </div>
@@ -622,10 +648,19 @@ export default function Home() {
                 contentData.facilities.list.map((facility: any, idx: number) => (
                   <div key={idx} className="bg-gradient-to-br from-orange-50 to-amber-50 p-6 sm:p-8 rounded-2xl shadow-lg">
                     <div className="relative mb-4 sm:mb-6">
-                      <img 
-                        src={getImageSrc(facility?.imageFile, 'https://readdy.ai/api/search-image?query=Modern%20hospital%20reception%20area%20with%20orange%20accents%2C%20clean%20and%20bright%20interior%2C%20comfortable%20seating%20for%20elderly%20patients%2C%20Korean%20hospital%20setting%2C%20professional%20medical%20facility%2C%20warm%20lighting%2C%20accessible%20design%2C%20friendly%20atmosphere&width=600&height=400&seq=facility-' + (idx+1))}
-                        alt={facility?.name || ''}
+                      <img
+                        src={getImageSrc(
+                          facility?.imageFile,
+                          `https://readdy.ai/api/search-image?query=Modern%20hospital%20reception%20area%20with%20orange%20accents%2C%20clean%20and%20bright%20interior%2C%20comfortable%20seating%20for%20elderly%20patients%2C%20Korean%20hospital%20setting%2C%20professional%20medical%20facility%2C%20warm%20lighting%2C%20accessible%20design%2C%20friendly%20atmosphere&width=600&height=400&seq=facility-${idx+1}`
+                        )}
+                        alt={facility?.name || `시설 ${idx + 1}`}
                         className="w-full h-48 sm:h-64 object-cover object-top rounded-lg"
+                        onError={(e) => {
+                          console.error('❌ Facility image load error:', facility?.imageFile);
+                          const target = e.target as HTMLImageElement;
+                          // 에러 발생 시 기본 이미지로 대체
+                          target.src = `https://readdy.ai/api/search-image?query=Modern%20hospital%20interior%20with%20orange%20accents&width=600&height=400&seq=facility-fallback-${idx+1}`;
+                        }}
                       />
                       {/* 이미지 변경/삭제 UI 제거 */}
                     </div>
