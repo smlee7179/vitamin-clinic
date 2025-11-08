@@ -4,6 +4,7 @@ import { compare } from 'bcryptjs';
 import prisma from '@/lib/prisma';
 
 export const authOptions: NextAuthOptions = {
+  debug: process.env.NODE_ENV === 'development',
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -39,11 +40,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
+
+      // JWT 토큰에 만료 시간 설정 (7일)
+      if (!token.exp) {
+        const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+        token.exp = Math.floor(Date.now() / 1000) + maxAge;
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -61,6 +69,17 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60, // 7 days (보안 강화: 30일 → 7일)
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
