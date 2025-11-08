@@ -302,11 +302,11 @@ export default function AdminPage() {
     }
   }, [contentData]);
 
-  // 4. 실시간 서버 동기화 (60초마다 - 관리자는 덜 자주 체크)
+  // 4. 실시간 서버 동기화 (30초마다 - 빠른 다중 기기 동기화)
   useEffect(() => {
     if (!hydrated) return;
 
-    console.log('🔄 Admin: Starting auto-refresh polling (60s interval)');
+    console.log('🔄 Admin: Starting auto-refresh polling (30s interval)');
 
     const intervalId = setInterval(async () => {
       try {
@@ -340,7 +340,7 @@ export default function AdminPage() {
       } catch (error) {
         console.error('⚠️ Admin polling error (will retry):', error);
       }
-    }, 60000); // 60초마다 (관리자는 덜 자주 체크)
+    }, 30000); // 30초마다 (빠른 다중 기기 동기화)
 
     return () => {
       console.log('🛑 Admin: Stopping auto-refresh polling');
@@ -422,10 +422,12 @@ export default function AdminPage() {
   };
 
 
-  const handleSave = async () => {
+  const handleSave = async (silent = false) => {
     try {
-      console.log('💾 Starting save process...');
-      setShowSaveNotification(false);
+      if (!silent) {
+        console.log('💾 Starting save process...');
+        setShowSaveNotification(false);
+      }
 
       // 1️⃣ 서버에 저장 (Primary Storage - Prisma DB)
       console.log('📡 Sending data to server...');
@@ -440,6 +442,14 @@ export default function AdminPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+
+        // 인증 오류인 경우 로그인 페이지로 리디렉션
+        if (response.status === 401 || response.status === 403) {
+          alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+          window.location.href = '/admin/login';
+          return;
+        }
+
         throw new Error(errorData.details || errorData.error || '서버 저장 실패');
       }
 
@@ -456,15 +466,37 @@ export default function AdminPage() {
         newValue: JSON.stringify(contentData)
       }));
 
-      setShowSaveNotification(true);
-      setTimeout(() => setShowSaveNotification(false), 3000);
+      if (!silent) {
+        setShowSaveNotification(true);
+        setTimeout(() => setShowSaveNotification(false), 3000);
+      }
 
       console.log('🎉 All save operations completed successfully!');
     } catch (error) {
       console.error('❌ Save failed:', error);
-      alert(`저장에 실패했습니다.\n\n오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}\n\n다시 시도해주세요.`);
+      const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류';
+      if (!silent) {
+        alert(`저장에 실패했습니다.\n\n오류: ${errorMessage}\n\n다시 시도해주세요.`);
+      }
     }
   };
+
+  // 자동 저장 (이미지 업로드 등 contentData 변경 시)
+  useEffect(() => {
+    if (!hydrated) return;
+
+    // 초기 로드 시에는 자동 저장하지 않음
+    const isInitialLoad = !contentData || Object.keys(contentData).length === 0;
+    if (isInitialLoad) return;
+
+    // 5초 후 자동 저장 (debounce)
+    const autoSaveTimer = setTimeout(() => {
+      console.log('🔄 Auto-saving changes...');
+      handleSave(true); // silent mode
+    }, 5000);
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [contentData, hydrated]);
 
   const updateContent = (section: string, field: string, value: string | string[]) => {
     setContentData(prev => {
@@ -615,7 +647,7 @@ export default function AdminPage() {
                 홈페이지 보기
               </Link>
               <button
-                onClick={handleSave}
+                onClick={() => handleSave(false)}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium whitespace-nowrap cursor-pointer shadow-md hover:shadow-lg flex items-center"
               >
                 <i className="ri-save-line mr-2"></i>
