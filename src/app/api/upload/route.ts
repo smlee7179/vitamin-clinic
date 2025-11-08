@@ -1,10 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
 
-export const runtime = 'edge';
+// ⚠️ CRITICAL: Node.js runtime으로 변경 (세션 유지를 위해 필수)
+export const runtime = 'nodejs';
 
-// Note: Authentication is handled by middleware for this route
 export async function POST(request: NextRequest) {
+  // ✅ 인증 체크 추가
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    console.error('❌ Upload: No session');
+    return NextResponse.json(
+      { error: 'Unauthorized - Please login' },
+      { status: 401 }
+    );
+  }
+
+  if (session.user.role !== 'admin') {
+    console.error('❌ Upload: Not admin');
+    return NextResponse.json(
+      { error: 'Forbidden - Admin access required' },
+      { status: 403 }
+    );
+  }
+
+  console.log('✅ Upload: Authenticated user:', session.user.email);
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -83,6 +105,16 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  // ✅ 인증 체크 추가
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
@@ -94,6 +126,7 @@ export async function DELETE(request: NextRequest) {
     // Delete from Vercel Blob Storage
     await del(url);
 
+    console.log('✅ Delete: File deleted by:', session.user.email);
     return NextResponse.json({ success: true, message: 'File deleted successfully' });
   } catch (error) {
     console.error('Error deleting file:', error);
