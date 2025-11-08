@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ImageUpload from './ImageUpload';
+import ModernImageUpload from './ModernImageUpload';
 
 interface HospitalInfo {
   name: string;
@@ -211,18 +211,20 @@ export default function HospitalInfoEditor({ onSave }: HospitalInfoEditorProps) 
         <div className="border-t pt-6">
           <h4 className="text-lg font-semibold text-gray-900 mb-4">이미지 관리</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ImageUpload
+            <ModernImageUpload
               label="로고 이미지"
               currentImage={info.logo}
               onUpload={(url) => updateField('logo', url)}
               onDelete={() => updateField('logo', undefined)}
+              aspectRatio="square"
               maxSize={2}
             />
-            <ImageUpload
+            <ModernImageUpload
               label="메인 히어로 이미지"
               currentImage={info.heroImage}
               onUpload={(url) => updateField('heroImage', url)}
               onDelete={() => updateField('heroImage', undefined)}
+              aspectRatio="landscape"
               maxSize={5}
             />
           </div>
