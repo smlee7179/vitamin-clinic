@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function LoginForm() {
@@ -20,15 +19,17 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch('/api/auth/simple-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (result?.error) {
-        setError(result.error);
-      } else if (result?.ok) {
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || '로그인에 실패했습니다.');
+      } else if (data.success) {
         router.push(callbackUrl);
         router.refresh();
       }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fixHospitalContent } from '../../lib/fixHospitalContent';
@@ -95,20 +94,12 @@ interface ContentData {
 }
 
 export default function AdminPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('hero');
   const [showSaveNotification, setShowSaveNotification] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/admin/login');
-    }
-  }, [status, router]);
 
   const DEFAULT_CONTENT_DATA: ContentData = {
     hero: {
@@ -481,6 +472,18 @@ export default function AdminPage() {
     }
   };
 
+  // 로그아웃 함수
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/simple-logout', { method: 'POST' });
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // 에러가 발생해도 로그인 페이지로 이동
+      router.push('/admin/login');
+    }
+  };
+
   // 자동 저장 (이미지 업로드 등 contentData 변경 시)
   useEffect(() => {
     if (!hydrated) return;
@@ -598,7 +601,7 @@ export default function AdminPage() {
   };
 
   // 7. 렌더링 조건
-  if (status === 'loading' || !hydrated) {
+  if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
@@ -607,10 +610,6 @@ export default function AdminPage() {
         </div>
       </div>
     );
-  }
-
-  if (status === 'unauthenticated') {
-    return null; // Will redirect to login
   }
 
   if (!contentData) {
@@ -639,13 +638,20 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="flex items-center px-4 py-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
               >
                 <i className="ri-home-line mr-2"></i>
                 홈페이지 보기
               </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 font-medium"
+              >
+                <i className="ri-logout-box-line mr-2"></i>
+                로그아웃
+              </button>
               <button
                 onClick={() => handleSave(false)}
                 className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-2 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 font-medium whitespace-nowrap cursor-pointer shadow-md hover:shadow-lg flex items-center"

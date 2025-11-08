@@ -1,7 +1,5 @@
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth-options';
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { getSession } from '@/lib/simple-auth';
 
 /**
  * Check if the current user is authenticated as an admin
@@ -9,18 +7,17 @@ import { headers } from 'next/headers';
  */
 export async function requireAdmin() {
   try {
-    // App Router에서 세션 가져오기
-    const session = await getServerSession(authOptions);
+    // 세션 가져오기
+    const session = await getSession();
 
     console.log('🔐 requireAdmin - Session check:', {
       hasSession: !!session,
-      hasUser: !!session?.user,
-      userEmail: session?.user?.email,
-      userRole: session?.user?.role,
+      userEmail: session?.email,
+      userRole: session?.role,
     });
 
-    if (!session || !session.user) {
-      console.error('❌ No session or user found');
+    if (!session) {
+      console.error('❌ No session found');
       return {
         error: NextResponse.json(
           { error: 'Unauthorized - Please login' },
@@ -30,8 +27,8 @@ export async function requireAdmin() {
       };
     }
 
-    if (session.user.role !== 'admin') {
-      console.error('❌ User is not admin:', session.user.role);
+    if (session.role !== 'admin' && session.role !== 'ADMIN') {
+      console.error('❌ User is not admin:', session.role);
       return {
         error: NextResponse.json(
           { error: 'Forbidden - Admin access required' },

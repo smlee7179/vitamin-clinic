@@ -1,32 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-options';
+import { requireAdmin } from '@/lib/simple-auth';
 
 // ⚠️ CRITICAL: Node.js runtime으로 변경 (세션 유지를 위해 필수)
 export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
   // ✅ 인증 체크 추가
-  const session = await getServerSession(authOptions);
-
-  if (!session || !session.user) {
-    console.error('❌ Upload: No session');
+  try {
+    const session = await requireAdmin();
+    console.log('✅ Upload: Authenticated user:', session.email);
+  } catch (error) {
+    console.error('❌ Upload: Authentication failed');
     return NextResponse.json(
       { error: 'Unauthorized - Please login' },
       { status: 401 }
     );
   }
-
-  if (session.user.role !== 'admin') {
-    console.error('❌ Upload: Not admin');
-    return NextResponse.json(
-      { error: 'Forbidden - Admin access required' },
-      { status: 403 }
-    );
-  }
-
-  console.log('✅ Upload: Authenticated user:', session.user.email);
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -106,16 +96,9 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   // ✅ 인증 체크 추가
-  const session = await getServerSession(authOptions);
-
-  if (!session || !session.user || session.user.role !== 'admin') {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-
   try {
+    const session = await requireAdmin();
+
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
 
@@ -126,9 +109,12 @@ export async function DELETE(request: NextRequest) {
     // Delete from Vercel Blob Storage
     await del(url);
 
-    console.log('✅ Delete: File deleted by:', session.user.email);
+    console.log('✅ Delete: File deleted by:', session.email);
     return NextResponse.json({ success: true, message: 'File deleted successfully' });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message === 'Forbidden')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     console.error('Error deleting file:', error);
     return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });
   }

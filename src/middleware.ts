@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'
+import { verifyToken } from '@/lib/simple-auth'
 
 export async function middleware(request: NextRequest) {
   // 관리자 페이지 및 API 인증 체크
@@ -15,13 +15,23 @@ export async function middleware(request: NextRequest) {
     }
 
     // JWT 토큰 확인
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
+    const token = request.cookies.get('admin-session')?.value;
 
-    // 인증되지 않은 경우 로그인 페이지로 리디렉션 (admin) 또는 401 (API)
     if (!token) {
+      // 인증되지 않은 경우 로그인 페이지로 리디렉션 (admin) 또는 401 (API)
+      if (request.nextUrl.pathname.startsWith('/api/')) {
+        return new NextResponse('Unauthorized', { status: 401 })
+      }
+      const loginUrl = new URL('/admin/login', request.url)
+      loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    // 토큰 검증
+    const session = await verifyToken(token);
+
+    if (!session) {
+      // 유효하지 않은 토큰
       if (request.nextUrl.pathname.startsWith('/api/')) {
         return new NextResponse('Unauthorized', { status: 401 })
       }
@@ -31,7 +41,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // 관리자 권한 체크
-    if (token.role !== 'ADMIN' && token.role !== 'admin') {
+    if (session.role !== 'ADMIN' && session.role !== 'admin') {
       return new NextResponse('Access Denied', { status: 403 })
     }
   }
