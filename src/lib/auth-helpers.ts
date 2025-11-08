@@ -1,35 +1,58 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth-options';
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 
 /**
  * Check if the current user is authenticated as an admin
  * Returns the session if authenticated, otherwise returns an error response
  */
 export async function requireAdmin() {
-  const session = await getServerSession(authOptions);
+  try {
+    // App Router에서 세션 가져오기
+    const session = await getServerSession(authOptions);
 
-  if (!session || !session.user) {
+    console.log('🔐 requireAdmin - Session check:', {
+      hasSession: !!session,
+      hasUser: !!session?.user,
+      userEmail: session?.user?.email,
+      userRole: session?.user?.role,
+    });
+
+    if (!session || !session.user) {
+      console.error('❌ No session or user found');
+      return {
+        error: NextResponse.json(
+          { error: 'Unauthorized - Please login' },
+          { status: 401 }
+        ),
+        session: null,
+      };
+    }
+
+    if (session.user.role !== 'admin') {
+      console.error('❌ User is not admin:', session.user.role);
+      return {
+        error: NextResponse.json(
+          { error: 'Forbidden - Admin access required' },
+          { status: 403 }
+        ),
+        session: null,
+      };
+    }
+
+    console.log('✅ Admin authentication successful');
+    return { error: null, session };
+  } catch (error) {
+    console.error('❌ Error in requireAdmin:', error);
     return {
       error: NextResponse.json(
-        { error: 'Unauthorized - Please login' },
-        { status: 401 }
+        { error: 'Authentication error', details: error instanceof Error ? error.message : 'Unknown' },
+        { status: 500 }
       ),
       session: null,
     };
   }
-
-  if (session.user.role !== 'admin') {
-    return {
-      error: NextResponse.json(
-        { error: 'Forbidden - Admin access required' },
-        { status: 403 }
-      ),
-      session: null,
-    };
-  }
-
-  return { error: null, session };
 }
 
 /**

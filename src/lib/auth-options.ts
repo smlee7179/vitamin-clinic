@@ -4,7 +4,7 @@ import { compare } from 'bcryptjs';
 import prisma from '@/lib/prisma';
 
 export const authOptions: NextAuthOptions = {
-  debug: process.env.NODE_ENV === 'development',
+  debug: true, // 프로덕션에서도 디버그 활성화 (문제 해결 후 false로 변경)
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -40,25 +40,53 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, account }) {
+      // 로그인 시 사용자 정보를 토큰에 저장
       if (user) {
+        console.log('🔑 JWT callback - User login:', user.email);
         token.id = user.id;
+        token.email = user.email;
         token.role = user.role;
-      }
 
-      // JWT 토큰에 만료 시간 설정 (7일)
-      if (!token.exp) {
+        // 명시적으로 만료 시간 설정
         const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
         token.exp = Math.floor(Date.now() / 1000) + maxAge;
+        token.iat = Math.floor(Date.now() / 1000);
       }
+
+      // 토큰 갱신 시에도 만료 시간 확인
+      if (trigger === 'update' && token.exp && typeof token.exp === 'number') {
+        const now = Math.floor(Date.now() / 1000);
+        if (token.exp - now < 24 * 60 * 60) { // 24시간 이내 만료 예정
+          console.log('🔄 JWT callback - Refreshing token expiration');
+          const maxAge = 7 * 24 * 60 * 60;
+          token.exp = now + maxAge;
+        }
+      }
+
+      console.log('🔑 JWT callback - Token:', {
+        hasId: !!token.id,
+        hasRole: !!token.role,
+        email: token.email,
+        exp: token.exp && typeof token.exp === 'number' ? new Date(token.exp * 1000).toISOString() : 'not set',
+      });
 
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
+      // 토큰에서 세션으로 데이터 복사
+      if (session.user && token) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
         session.user.role = token.role as string;
+
+        console.log('👤 Session callback - User:', {
+          id: session.user.id,
+          email: session.user.email,
+          role: session.user.role,
+        });
       }
+
       return session;
     },
   },
@@ -68,11 +96,36 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 7 days (보안 강화: 30일 → 7일)
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    updateAge: 24 * 60 * 60, // 세션을 24시간마다 업데이트
   },
   cookies: {
     sessionToken: {
-      name: `next-auth.session-token`,
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined,
+      },
+    },
+    callbackUrl: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.callback-url'
+        : 'next-auth.callback-url',
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+    csrfToken: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Host-next-auth.csrf-token'
+        : 'next-auth.csrf-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -82,4 +135,5 @@ export const authOptions: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
+  useSecureCookies: process.env.NODE_ENV === 'production',
 };
