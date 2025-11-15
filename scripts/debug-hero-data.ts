@@ -84,7 +84,7 @@ async function main() {
     // Step 6: Check for potential issues
     console.log('\n📊 Step 6: Checking for potential issues...\n');
 
-    const issues = [];
+    const issues: string[] = [];
 
     if (!parsedData.backgroundImage || parsedData.backgroundImage.trim() === '') {
       issues.push('❌ backgroundImage is empty or missing');
