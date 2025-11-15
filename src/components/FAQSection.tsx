@@ -39,40 +39,27 @@ export default function FAQSection() {
   const [faqs, setFaqs] = useState<FAQ[]>(DEFAULT_FAQS);
 
   useEffect(() => {
-    loadFAQs();
-  }, []);
-
-  const loadFAQs = async () => {
-    try {
-      const response = await fetch('/api/faqs');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.length > 0) {
-          setFaqs(data.map((item: any) => ({ question: item.question, answer: item.answer })));
-          return;
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load from DB, using localStorage:', error);
-    }
-
-    // Fallback to localStorage
-    const saved = localStorage.getItem('faqs');
-    if (saved) {
+    const loadFaqs = async () => {
       try {
-        setFaqs(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load FAQs');
+        const response = await fetch('/api/faqs');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            // API에서 반환된 데이터를 FAQ 형태로 변환
+            const faqsData = data.map((item: any) => ({
+              question: item.question,
+              answer: item.answer
+            }));
+            setFaqs(faqsData);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading FAQs:', error);
+        // Keep default FAQs on error
       }
-    }
-  };
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      loadFAQs();
     };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+
+    loadFaqs();
   }, []);
 
   const toggleFAQ = (index: number) => {
@@ -80,41 +67,46 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-16 sm:py-20 bg-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+    <section id="faq" className="section bg-white">
+      <div className="container max-w-4xl">
+        {/* 섹션 헤더 */}
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-display-1 md:text-4xl text-neutral-900 mb-3">
             자주 묻는 질문
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600">
+          <p className="text-body-1 text-neutral-600">
             환자분들이 자주 문의하시는 내용을 정리했습니다
           </p>
         </div>
 
-        <div className="space-y-4">
+        {/* FAQ 아코디언 */}
+        <div className="space-y-2">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border border-gray-200 rounded-xl overflow-hidden hover:border-orange-300 transition-colors"
+              className="bg-white border border-neutral-200 rounded-lg overflow-hidden"
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-orange-50 transition-colors"
+                className="w-full px-5 py-4 text-left flex items-center justify-between hover:bg-neutral-50 active:bg-neutral-100 transition-colors duration-fast touch-target"
               >
-                <span className="text-base sm:text-lg font-semibold text-gray-900 pr-4">
+                <span className="text-display-2 text-neutral-900 pr-4">
                   {faq.question}
                 </span>
-                <span className="text-orange-500 text-2xl flex-shrink-0">
+                <span className="text-neutral-400 text-xl flex-shrink-0 transition-transform duration-normal" style={{
+                  transform: openIndex === index ? 'rotate(180deg)' : 'rotate(0deg)'
+                }}>
                   {openIndex === index ? '−' : '+'}
                 </span>
               </button>
+
               <div
-                className={`overflow-hidden transition-all duration-300 ${
+                className={`overflow-hidden transition-all duration-normal ${
                   openIndex === index ? 'max-h-96' : 'max-h-0'
                 }`}
               >
-                <div className="px-6 py-4 bg-gradient-to-br from-orange-50 to-amber-50">
-                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                <div className="px-5 py-4 bg-neutral-50">
+                  <p className="text-body-1 text-neutral-700 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
@@ -123,13 +115,16 @@ export default function FAQSection() {
           ))}
         </div>
 
+        {/* CTA */}
         <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-4">더 궁금하신 사항이 있으신가요?</p>
+          <p className="text-body-1 text-neutral-600 mb-4">더 궁금하신 사항이 있으신가요?</p>
           <a
             href="tel:051-469-7581"
-            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-orange-600 transition-colors"
+            className="btn btn-primary text-lg px-8"
           >
-            <i className="ri-phone-line"></i>
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="mr-2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
             전화 문의하기
           </a>
         </div>

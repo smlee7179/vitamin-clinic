@@ -1,0 +1,38 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const manifest = {
+    name: '비타민마취통증의학과',
+    short_name: '비타민의원',
+    description: '부산 정형외과 전문 비타민마취통증의학과의원',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: '#f97316',
+    orientation: 'portrait-primary',
+    icons: [
+      {
+        src: '/icon-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any'
+      },
+      {
+        src: '/icon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any'
+      }
+    ],
+    categories: ['medical', 'health'],
+    lang: 'ko',
+    dir: 'ltr'
+  };
+
+  return NextResponse.json(manifest, {
+    headers: {
+      'Content-Type': 'application/manifest+json',
+      'Cache-Control': 'public, max-age=31536000, immutable'
+    }
+  });
+}

@@ -59,14 +59,21 @@ export async function verifyToken(token: string): Promise<SessionData | null> {
  * 쿠키에서 세션 가져오기
  */
 export async function getSession(): Promise<SessionData | null> {
-  const cookieStore = cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(COOKIE_NAME)?.value;
 
-  if (!token) {
+    if (!token) {
+      console.log('🔐 No session token found in cookies');
+      return null;
+    }
+
+    console.log('🔐 Session token found, verifying...');
+    return verifyToken(token);
+  } catch (error) {
+    console.error('❌ Error getting session:', error);
     return null;
   }
-
-  return verifyToken(token);
 }
 
 /**
@@ -75,15 +82,19 @@ export async function getSession(): Promise<SessionData | null> {
 export async function setSession(data: SessionData): Promise<string> {
   const token = await createToken(data);
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
+
+  // Cookie 옵션 설정
+  const isProduction = process.env.NODE_ENV === 'production';
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProduction, // HTTPS only in production
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 30, // 30 days
     path: '/',
   });
 
+  console.log('✅ Session cookie set successfully');
   return token;
 }
 
@@ -91,7 +102,7 @@ export async function setSession(data: SessionData): Promise<string> {
  * 세션 삭제
  */
 export async function deleteSession() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
 }
 

@@ -7,7 +7,7 @@ const notices = [
 export default function NoticeSection() {
   return (
     <section className="container py-4 sm:py-8">
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-primary-600">공지사항</h2>
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 text-vitamin-600">공지사항</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6 md:gap-8">
         {notices.map((n) => (
           <div key={n.title} className="glass-card p-3 sm:p-5 md:p-8 shadow-card flex flex-col gap-1 sm:gap-2 w-full">

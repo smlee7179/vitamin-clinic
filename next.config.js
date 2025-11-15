@@ -100,6 +100,20 @@ const nextConfig = {
 
   // 페이지 확장자 설정
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+
+  // Webpack 설정
+  webpack: (config, { isServer }) => {
+    // lenis를 클라이언트 사이드에서만 로드
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig; 

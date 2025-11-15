@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -13,7 +12,6 @@ interface Image {
 }
 
 export default function GalleryPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [images, setImages] = useState<Image[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,13 +20,26 @@ export default function GalleryPage() {
   const [deleting, setDeleting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'date' | 'size' | 'name'>('date');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  // Redirect to login if not authenticated
+  // Check authentication
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/admin/login');
-    }
-  }, [status, router]);
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/check-session');
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          router.push('/admin/login');
+        }
+      } catch (error) {
+        setIsAuthenticated(false);
+        router.push('/admin/login');
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   // Load images
   useEffect(() => {
@@ -133,7 +144,7 @@ export default function GalleryPage() {
       }
     });
 
-  if (status === 'loading') {
+  if (isAuthenticated === null || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center">
@@ -144,29 +155,29 @@ export default function GalleryPage() {
     );
   }
 
-  if (status === 'unauthenticated') {
+  if (!isAuthenticated) {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-vitamin-50 via-neutral-50 to-vitamin-100/30">
+      {/* Header - Vitamin 스타일 */}
+      <header className="bg-white/90 backdrop-blur-xl shadow-xl sticky top-0 z-50 border-b-2 border-vitamin-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <i className="ri-image-2-line text-white text-xl"></i>
+          <div className="flex justify-between items-center py-5">
+            <div className="flex items-center space-x-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-vitamin-500 to-vitamin-600 rounded-2xl flex items-center justify-center shadow-lg shadow-vitamin-500/30 animate-scale-in">
+                <i className="ri-image-2-line text-white text-2xl"></i>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">이미지 자료실</h1>
-                <p className="text-sm text-gray-500">업로드된 이미지 관리</p>
+                <h1 className="text-2xl font-extrabold text-neutral-900">이미지 자료실</h1>
+                <p className="text-sm font-semibold text-vitamin-600">업로드된 이미지 관리</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <Link
                 href="/admin"
-                className="flex items-center px-4 py-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 font-medium"
+                className="flex items-center px-5 py-2.5 text-neutral-700 hover:text-vitamin-600 hover:bg-vitamin-50 rounded-xl transition-all duration-200 font-semibold border-2 border-neutral-200 hover:border-vitamin-300"
               >
                 <i className="ri-arrow-left-line mr-2"></i>
                 관리자 홈

@@ -63,7 +63,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             <div className="space-y-3">
               <button
                 onClick={() => window.location.reload()}
-                className="w-full bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                className="w-full bg-vitamin-500 text-white px-4 py-2 rounded-lg hover:bg-vitamin-600 transition-colors"
               >
                 페이지 새로고침
               </button>

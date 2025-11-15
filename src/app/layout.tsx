@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter, Pacifico } from "next/font/google";
 import GoogleAnalytics from "../components/analytics/GoogleAnalytics";
 import PerformanceMonitor from "../components/analytics/PerformanceMonitor";
+import ProgressBar from "../components/layout/ProgressBar";
 import { Metadata } from "next";
 
 const pacifico = Pacifico({
@@ -79,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        {/* manifest는 Next.js가 manifest.ts에서 자동 생성 */}
         <meta name="theme-color" content="#ff6b35" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="format-detection" content="telephone=no" />
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} ${pacifico.variable} antialiased min-h-screen bg-neutral-50 text-neutral-900`}>
         <GoogleAnalytics />
         <PerformanceMonitor />
+        <ProgressBar />
         {children}
       </body>
     </html>

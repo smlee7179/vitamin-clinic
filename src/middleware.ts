@@ -3,14 +3,33 @@ import type { NextRequest } from 'next/server'
 import { verifyToken } from '@/lib/simple-auth'
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // Public API endpoints (GET only for displaying content on homepage)
+  const publicAPIs = [
+    '/api/content',
+    '/api/treatments',
+    '/api/faqs',
+    '/api/marquee',
+    '/api/health',
+    '/api/system-info',
+    '/manifest.json',  // PWA manifest
+  ];
+
+  // Check if this is a public API GET request
+  const isPublicAPIGet = publicAPIs.some(api => path.startsWith(api)) && request.method === 'GET';
+
+  // Check if this is admin login endpoint
+  const isAuthEndpoint = path.startsWith('/api/auth/');
+
   // 관리자 페이지 및 API 인증 체크
-  // ⚠️ /api/upload는 제외 (자체 인증 처리, Node.js runtime 필요)
-  const needsAuth = request.nextUrl.pathname.startsWith('/admin') ||
-                    request.nextUrl.pathname.startsWith('/api/images');
+  const needsAuth = (path.startsWith('/admin') || path.startsWith('/api/')) &&
+                    !isPublicAPIGet &&
+                    !isAuthEndpoint;
 
   if (needsAuth) {
     // 로그인 페이지는 인증 불필요
-    if (request.nextUrl.pathname === '/admin/login') {
+    if (path === '/admin/login') {
       return NextResponse.next()
     }
 
@@ -110,16 +129,10 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - manifest.json (PWA manifest)
-     * - robots.txt (SEO)
-     * - sitemap.xml (SEO)
-     * - *.png, *.jpg, *.jpeg, *.gif, *.svg, *.webp (images)
-     * - public folder
+     * Only match admin pages and API routes
+     * Explicitly exclude static assets
      */
-    '/((?!_next/static|_next/image|favicon.ico|manifest.json|robots.txt|sitemap.xml|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp|public/).*)',
+    '/admin/:path*',
+    '/api/:path*',
   ],
 } 

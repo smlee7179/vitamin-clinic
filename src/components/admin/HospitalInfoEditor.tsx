@@ -46,8 +46,9 @@ export default function HospitalInfoEditor({ onSave }: HospitalInfoEditorProps) 
       const response = await fetch('/api/content?section=hospital_info');
       if (response.ok) {
         const data = await response.json();
-        if (data) {
-          setInfo(JSON.parse(data.data));
+        if (data && Object.keys(data).length > 0) {
+          // API returns already-parsed data
+          setInfo(data);
         }
       }
     } catch (error) {
@@ -65,28 +66,48 @@ export default function HospitalInfoEditor({ onSave }: HospitalInfoEditorProps) 
   };
 
   const handleSave = async () => {
+    console.log('💾 Saving hospital info...', info);
     try {
       const response = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           section: 'hospital_info',
-          data: JSON.stringify(info),
+          data: info,
         }),
       });
 
+      console.log('📡 Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to save');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('❌ Error response:', errorData);
+
+        // 인증 오류 처리
+        if (response.status === 401) {
+          alert('❌ 로그인이 필요합니다. 관리자 로그인 페이지로 이동합니다.');
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        if (response.status === 403) {
+          alert('❌ 권한이 없습니다. 관리자 계정으로 로그인해주세요.');
+          window.location.href = '/admin/login';
+          return;
+        }
+
+        throw new Error(`서버 오류 (${response.status}): ${errorData.error || errorData.details || 'Unknown error'}`);
       }
 
+      console.log('✅ Save successful');
       // Also save to localStorage for backward compatibility
       localStorage.setItem('hospitalInfo', JSON.stringify(info));
       setIsModified(false);
       if (onSave) onSave();
-      alert('병원 정보가 저장되었습니다!');
+      alert('✅ 병원 정보가 저장되었습니다!');
     } catch (error) {
-      console.error('Error saving hospital info:', error);
-      alert('저장 중 오류가 발생했습니다.');
+      console.error('❌ Error saving hospital info:', error);
+      alert(`❌ 저장 실패: ${error instanceof Error ? error.message : '다시 시도해주세요'}`);
     }
   };
 

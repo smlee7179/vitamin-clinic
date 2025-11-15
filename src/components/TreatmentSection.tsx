@@ -40,81 +40,66 @@ export default function TreatmentSection() {
   const [treatments, setTreatments] = useState<Treatment[]>(DEFAULT_TREATMENTS);
 
   useEffect(() => {
+    const loadTreatments = async () => {
+      try {
+        const response = await fetch('/api/treatments');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setTreatments(data);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading treatments:', error);
+        // Keep default treatments on error
+      }
+    };
+
     loadTreatments();
   }, []);
 
-  const loadTreatments = async () => {
-    try {
-      const response = await fetch('/api/treatments');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.length > 0) {
-          setTreatments(data);
-          return;
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load from DB, using localStorage:', error);
-    }
-
-    // Fallback to localStorage
-    const saved = localStorage.getItem('treatments');
-    if (saved) {
-      try {
-        setTreatments(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load treatments');
-      }
-    }
-  };
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      loadTreatments();
-    };
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
   return (
-    <section id="treatments" className="py-16 sm:py-20 bg-gradient-to-br from-orange-50 to-amber-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">치료방법</h2>
-          <p className="text-lg sm:text-xl text-gray-600 px-4">
+    <section id="treatments" className="section bg-neutral-50">
+      <div className="container">
+        {/* 섹션 헤더 */}
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-display-1 md:text-4xl text-neutral-900 mb-3">치료방법</h2>
+          <p className="text-body-1 text-neutral-600">
             환자 개개인의 상태에 맞는 최적의 치료 방법을 제공합니다
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+        {/* 치료 카드 그리드 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {treatments.map((treatment, idx) => (
             <div
               key={idx}
-              className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="card hover:shadow-md transition-all duration-normal"
             >
-              <div className="flex items-start mb-4">
-                <div className="text-4xl sm:text-5xl mr-4 group-hover:scale-110 transition-transform">
+              {/* 아이콘 & 제목 */}
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-9 h-9 flex-shrink-0 text-3xl">
                   {treatment.icon}
                 </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                <div className="flex-1">
+                  <h3 className="text-display-2 text-neutral-900 mb-2">
                     {treatment.title}
                   </h3>
-                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  <p className="text-body-1 text-neutral-600 leading-relaxed">
                     {treatment.description}
                   </p>
                 </div>
               </div>
-              <div className="mt-4 pl-16">
-                <ul className="space-y-2 text-gray-700 text-sm sm:text-base">
-                  {treatment.features.map((feature, featureIdx) => (
-                    <li key={featureIdx} className="flex items-center">
-                      <span className="text-orange-500 mr-2">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
+              {/* 특징 리스트 */}
+              <ul className="space-y-1 pl-[52px]">
+                {treatment.features.map((feature, featureIdx) => (
+                  <li key={featureIdx} className="flex items-center text-body-2 text-neutral-700">
+                    <span className="w-4 h-4 mr-2 text-vitamin-500 flex-shrink-0">✓</span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>

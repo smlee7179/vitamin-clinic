@@ -1,31 +1,108 @@
-import Image from 'next/image';
+'use client';
 
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+interface HeroData {
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  backgroundImage?: string;
+}
+
+const DEFAULT_HERO: HeroData = {
+  title: '따뜻한 마음으로 치료하는\n비타민마취통증의학과',
+  subtitle: '부산 동구 중앙대로 375 | 051-469-7581\n노인 전문 마취통증의학과, 맞춤 재활 및 통증 치료',
+  buttonText: '전화 문의하기',
+  buttonLink: 'tel:051-469-7581',
+  backgroundImage: '/gallery1.jpg',
+};
 
 export default function HeroSection() {
+  const [heroData, setHeroData] = useState<HeroData>(DEFAULT_HERO);
+
+  useEffect(() => {
+    // Load data from API
+    const loadHeroData = async () => {
+      console.log('🔍 [HeroSection] Starting to load hero data...');
+      console.log('🔍 [HeroSection] Current default state:', DEFAULT_HERO);
+
+      try {
+        const response = await fetch('/api/content?section=hero');
+        console.log('🔍 [HeroSection] API response status:', response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('🔍 [HeroSection] Data received from API:', data);
+          console.log('🔍 [HeroSection] backgroundImage in API response:', data.backgroundImage);
+
+          if (data && Object.keys(data).length > 0) {
+            setHeroData(prev => {
+              const newHeroData = {
+                ...prev,
+                ...data
+              };
+              console.log('🔍 [HeroSection] Previous state:', prev);
+              console.log('🔍 [HeroSection] New merged state:', newHeroData);
+              console.log('🔍 [HeroSection] backgroundImage in new state:', newHeroData.backgroundImage);
+              return newHeroData;
+            });
+          } else {
+            console.log('⚠️ [HeroSection] API returned empty data, using defaults');
+          }
+        } else {
+          console.log('❌ [HeroSection] API response not OK:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('❌ [HeroSection] Error loading hero data:', error);
+        // Keep default data on error
+      }
+    };
+
+    loadHeroData();
+  }, []);
+
+
+  // Log when rendering
+  console.log('🎨 [HeroSection] Rendering with heroData:', heroData);
+  console.log('🎨 [HeroSection] backgroundImage for render:', heroData.backgroundImage);
+
   return (
-    <section className="relative w-full h-[320px] sm:h-[400px] md:h-[520px] flex items-center justify-center overflow-hidden">
-      <Image
-        src="/hero-hospital.jpg"
-        alt="비타민마취통증의학과의원 외관"
-        fill
-        className="object-cover object-center z-0"
-        priority
-      />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/90 via-primary-300/80 to-primary-100/60 z-10" />
-      <div className="relative z-20 flex flex-col items-center justify-center w-full h-full text-center px-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white drop-shadow-lg mb-4 leading-tight">따뜻한 마음으로 치료하는<br />비타민마취통증의학과의원</h1>
-        {/* 주소/전화번호 텍스트 제거 */}
-        {/* <p className="text-base sm:text-lg md:text-xl text-white/90 font-medium mb-8 drop-shadow">부산 동구 중앙대로 375 | 051-469-7581<br />노인 전문 마취통증의학과, 맞춤 재활 및 통증 치료</p> */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-lg mx-auto relative z-30">
-          <a href="tel:051-469-7581" className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out backdrop-blur-sm border border-white/20 relative z-40 min-w-[120px]">📞 전화걸기</a>
-          <Link href="/contact" className="bg-white border-2 border-white text-primary-600 hover:bg-white hover:text-primary-700 font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-2xl transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 relative z-40 min-w-[120px] whitespace-nowrap">오시는 길</Link>
+    <section className="relative w-full min-h-[480px] md:min-h-[600px] flex items-center justify-center overflow-hidden bg-white pt-[56px] md:pt-[64px]">
+      {/* 배경 이미지 - 항상 표시 */}
+      <div className="absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroData.backgroundImage || '/gallery1.jpg'})` }}
+        >
+          {/* 비타민 색상 그라디언트 오버레이 */}
+          <div className="absolute inset-0 bg-gradient-to-br from-vitamin-500/80 via-vitamin-400/70 to-vitamin-300/60" />
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full h-12 sm:h-16 md:h-20 z-30 pointer-events-none">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          <path d="M0 0h1440v40c-240 40-480 40-720 0S240 0 0 40V0z" fill="#fff" />
-        </svg>
+
+      {/* 컨텐츠 */}
+      <div className="container relative z-10 flex flex-col items-center text-center py-16 md:py-24">
+        {/* 메인 타이틀 */}
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 whitespace-pre-line max-w-4xl text-white">
+          {heroData.title}
+        </h1>
+
+        {/* 서브타이틀 */}
+        <p className="text-body-1 md:text-lg mb-8 md:mb-12 whitespace-pre-line max-w-2xl text-white/95">
+          {heroData.subtitle}
+        </p>
+
+        {/* CTA 버튼 */}
+        <a
+          href={heroData.buttonLink || 'tel:051-469-7581'}
+          className="btn btn-primary text-lg px-8 transition-all duration-300 ease-in-out"
+          style={{ minWidth: '180px' }}
+        >
+          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="mr-2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          <span className="transition-opacity duration-300">{heroData.buttonText || '전화 문의하기'}</span>
+        </a>
       </div>
     </section>
   );
