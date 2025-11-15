@@ -134,7 +134,5 @@ export const config = {
      */
     '/admin/:path*',
     '/api/:path*',
-    // Exclude public content
-    '!(/_next|/static|/public|/favicon.ico|/manifest.json)',
   ],
 } 
