@@ -130,9 +130,11 @@ export const config = {
   matcher: [
     /*
      * Only match admin pages and API routes
-     * Explicitly exclude static assets
+     * Explicitly exclude static assets and public pages
      */
     '/admin/:path*',
     '/api/:path*',
+    // Exclude public content
+    '!(/_next|/static|/public|/favicon.ico|/manifest.json)',
   ],
 } 
