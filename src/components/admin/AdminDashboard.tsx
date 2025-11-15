@@ -35,37 +35,22 @@ export default function AdminDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Calculate storage usage
-      let totalSize = 0;
-      let imageCount = 0;
-
-      for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
-          const item = localStorage.getItem(key);
-          if (item) {
-            totalSize += item.length;
-            if (key.includes('image') || key.includes('Image')) {
-              imageCount++;
-            }
-          }
-        }
+      // Fetch real-time statistics from API
+      const statsResponse = await fetch('/api/dashboard-stats');
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats({
+          totalSections: statsData.totalSections || 0,
+          lastUpdated: statsData.lastUpdated ? new Date(statsData.lastUpdated).toLocaleString('ko-KR') : '업데이트 없음',
+          storageUsed: `${(statsData.storageUsed / 1024).toFixed(2)} KB`,
+          imagesCount: statsData.imagesCount || 0
+        });
       }
 
-      // Get last updated
-      const content = localStorage.getItem('hospitalContent');
-      const lastMod = content ? new Date().toLocaleString('ko-KR') : '업데이트 없음';
-
-      setStats({
-        totalSections: 8,
-        lastUpdated: lastMod,
-        storageUsed: `${(totalSize / 1024).toFixed(2)} KB`,
-        imagesCount: imageCount
-      });
-
       // Fetch recent activity
-      const response = await fetch('/api/audit-logs?action=recent&limit=10');
-      if (response.ok) {
-        const data = await response.json();
+      const activityResponse = await fetch('/api/audit-logs?action=recent&limit=10');
+      if (activityResponse.ok) {
+        const data = await activityResponse.json();
         setRecentActivity(data.logs || []);
       }
     } catch (error) {
@@ -121,60 +106,60 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-8 rounded-2xl shadow-xl text-white">
-        <h1 className="text-3xl font-bold mb-2">비타민마취통증의학과 관리 시스템</h1>
-        <p className="text-orange-100">홈페이지 콘텐츠를 쉽고 빠르게 관리하세요</p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Welcome Banner - Vitamin 스타일 */}
+      <div className="bg-gradient-to-r from-vitamin-500 to-vitamin-600 p-8 rounded-3xl shadow-2xl shadow-vitamin-500/30 text-white border-2 border-vitamin-400">
+        <h1 className="text-4xl font-extrabold mb-3">비타민마취통증의학과 관리 시스템</h1>
+        <p className="text-vitamin-100 text-lg font-medium">홈페이지 콘텐츠를 쉽고 빠르게 관리하세요</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md border border-blue-200">
+      {/* Stats Grid - Vitamin 스타일 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:shadow-vitamin-glow transition-all duration-300 border-2 border-vitamin-100 hover:border-vitamin-300 animate-slide-up" style={{animationDelay: '0.1s'}}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1 font-medium">총 섹션</p>
-              <p className="text-3xl font-bold text-blue-600">{stats.totalSections}</p>
+              <p className="text-sm text-neutral-600 mb-2 font-semibold">총 섹션</p>
+              <p className="text-4xl font-extrabold text-vitamin-600">{stats.totalSections}</p>
             </div>
-            <div className="text-4xl">📋</div>
+            <div className="text-5xl opacity-20">📋</div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md border border-green-200">
+        <div className="bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:shadow-vitamin-glow transition-all duration-300 border-2 border-vitamin-100 hover:border-vitamin-300 animate-slide-up" style={{animationDelay: '0.2s'}}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1 font-medium">이미지</p>
-              <p className="text-3xl font-bold text-green-600">{stats.imagesCount}</p>
+              <p className="text-sm text-neutral-600 mb-2 font-semibold">이미지</p>
+              <p className="text-4xl font-extrabold text-vitamin-600">{stats.imagesCount}</p>
             </div>
-            <div className="text-4xl">🖼️</div>
+            <div className="text-5xl opacity-20">🖼️</div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl shadow-md border border-orange-200">
+        <div className="bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:shadow-vitamin-glow transition-all duration-300 border-2 border-vitamin-100 hover:border-vitamin-300 animate-slide-up" style={{animationDelay: '0.3s'}}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1 font-medium">저장 용량</p>
-              <p className="text-lg font-bold text-orange-600">{stats.storageUsed}</p>
+              <p className="text-sm text-neutral-600 mb-2 font-semibold">저장 용량</p>
+              <p className="text-xl font-extrabold text-vitamin-600">{stats.storageUsed}</p>
             </div>
-            <div className="text-4xl">💾</div>
+            <div className="text-5xl opacity-20">💾</div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-md border border-purple-200">
+        <div className="bg-white/90 backdrop-blur-xl p-6 rounded-2xl shadow-lg hover:shadow-vitamin-glow transition-all duration-300 border-2 border-vitamin-100 hover:border-vitamin-300 animate-slide-up" style={{animationDelay: '0.4s'}}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1 font-medium">최근 업데이트</p>
-              <p className="text-xs font-medium text-purple-600 mt-1">{stats.lastUpdated}</p>
+              <p className="text-sm text-neutral-600 mb-2 font-semibold">최근 업데이트</p>
+              <p className="text-xs font-bold text-vitamin-600 mt-1">{stats.lastUpdated}</p>
             </div>
-            <div className="text-4xl">⏰</div>
+            <div className="text-5xl opacity-20">⏰</div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Actions - Vitamin 스타일 */}
       <div>
-        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-          <i className="ri-rocket-line mr-2 text-orange-500"></i>
+        <h3 className="text-2xl font-extrabold text-neutral-900 mb-6 flex items-center">
+          <i className="ri-rocket-line mr-3 text-vitamin-500 text-3xl"></i>
           빠른 액세스
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -182,28 +167,29 @@ export default function AdminDashboard() {
             <Link
               key={idx}
               href={action.link}
-              className="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-center group cursor-pointer border border-gray-100 hover:border-orange-300"
+              className="bg-white/90 backdrop-blur-xl p-5 rounded-2xl shadow-lg hover:shadow-vitamin-glow transition-all duration-300 text-center group cursor-pointer border-2 border-vitamin-100 hover:border-vitamin-400 hover:-translate-y-1 animate-slide-up"
+              style={{animationDelay: `${0.1 * (idx + 1)}s`}}
             >
-              <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">{action.icon}</div>
-              <h4 className="font-semibold text-gray-900 text-sm mb-1">{action.title}</h4>
-              <p className="text-xs text-gray-500">{action.desc}</p>
+              <div className="text-5xl mb-3 group-hover:scale-125 transition-transform duration-300">{action.icon}</div>
+              <h4 className="font-bold text-neutral-900 text-sm mb-1 group-hover:text-vitamin-600 transition-colors">{action.title}</h4>
+              <p className="text-xs text-neutral-500">{action.desc}</p>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-100">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center">
-            <i className="ri-history-line mr-2 text-orange-500"></i>
+      {/* Recent Activity - Vitamin 스타일 */}
+      <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border-2 border-vitamin-100">
+        <div className="p-6 border-b-2 border-vitamin-100">
+          <h3 className="text-2xl font-extrabold text-neutral-900 flex items-center">
+            <i className="ri-history-line mr-3 text-vitamin-500 text-3xl"></i>
             최근 활동
           </h3>
         </div>
         <div className="divide-y divide-gray-100">
           {loading ? (
             <div className="p-8 text-center">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-vitamin-500 mx-auto mb-4"></div>
               <p className="text-gray-500">로딩 중...</p>
             </div>
           ) : recentActivity.length === 0 ? (
@@ -238,27 +224,27 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Tips */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border-l-4 border-blue-500 shadow-md">
-        <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-          <span className="mr-2">💡</span> 사용 팁
+      {/* Tips - Vitamin 스타일 */}
+      <div className="bg-gradient-to-br from-vitamin-50 via-vitamin-100/50 to-vitamin-50 p-8 rounded-3xl border-l-4 border-vitamin-500 shadow-xl">
+        <h3 className="text-2xl font-extrabold text-neutral-900 mb-5 flex items-center">
+          <span className="text-3xl mr-3">💡</span> 사용 팁
         </h3>
-        <ul className="space-y-2 text-sm text-gray-700">
+        <ul className="space-y-3 text-base text-neutral-700">
           <li className="flex items-start">
-            <i className="ri-check-line text-green-500 mr-2 mt-1"></i>
-            <span>변경 사항은 자동으로 저장되며, 메인 페이지에서 즉시 확인할 수 있습니다</span>
+            <i className="ri-check-line text-vitamin-500 text-xl mr-3 mt-1 font-bold"></i>
+            <span className="font-medium">변경 사항은 자동으로 저장되며, 메인 페이지에서 즉시 확인할 수 있습니다</span>
           </li>
           <li className="flex items-start">
-            <i className="ri-check-line text-green-500 mr-2 mt-1"></i>
-            <span>이미지는 Vercel Blob Storage에 저장되어 빠르고 안정적으로 제공됩니다</span>
+            <i className="ri-check-line text-vitamin-500 text-xl mr-3 mt-1 font-bold"></i>
+            <span className="font-medium">이미지는 Vercel Blob Storage에 저장되어 빠르고 안정적으로 제공됩니다</span>
           </li>
           <li className="flex items-start">
-            <i className="ri-check-line text-green-500 mr-2 mt-1"></i>
-            <span>모든 변경사항은 변경 이력에 기록되어 추적할 수 있습니다</span>
+            <i className="ri-check-line text-vitamin-500 text-xl mr-3 mt-1 font-bold"></i>
+            <span className="font-medium">모든 변경사항은 변경 이력에 기록되어 추적할 수 있습니다</span>
           </li>
           <li className="flex items-start">
-            <i className="ri-check-line text-green-500 mr-2 mt-1"></i>
-            <span>우측 상단의 '미리보기' 버튼을 눌러 실시간으로 확인할 수 있습니다</span>
+            <i className="ri-check-line text-vitamin-500 text-xl mr-3 mt-1 font-bold"></i>
+            <span className="font-medium">우측 상단의 '미리보기' 버튼을 눌러 실시간으로 확인할 수 있습니다</span>
           </li>
         </ul>
       </div>
