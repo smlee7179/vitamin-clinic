@@ -4,12 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminDashboard from '../../../components/admin/AdminDashboard';
-import HeroEditor from '../../../components/admin/HeroEditor';
-import ServiceCardsEditor from '../../../components/admin/ServiceCardsEditor';
-import GalleryEditor from '../../../components/admin/GalleryEditor';
-import UnifiedContentManager from '../../../components/admin/UnifiedContentManager';
-import FooterEditor from '../../../components/admin/FooterEditor';
-import FeatureSectionEditor from '../../../components/admin/FeatureSectionEditor';
+import CompleteUnifiedContentManager from '../../../components/admin/CompleteUnifiedContentManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -73,13 +68,7 @@ export default function NewAdminPage() {
 
   const tabs = [
     { id: 'dashboard', name: '대시보드', icon: 'ri-dashboard-line' },
-    { id: 'unified', name: '통합 콘텐츠 관리', icon: 'ri-file-edit-line' },
-    { id: 'home', name: '홈 (메인 화면)', icon: 'ri-home-line' },
-    { id: 'about', name: '병원 소개', icon: 'ri-building-line' },
-    { id: 'services', name: '진료과목', icon: 'ri-hospital-line' },
-    { id: 'health-info', name: '건강 정보', icon: 'ri-heart-pulse-line' },
-    { id: 'notices', name: '공지사항', icon: 'ri-notification-line' },
-    { id: 'contact', name: '오시는 길', icon: 'ri-map-pin-line' },
+    { id: 'content', name: '콘텐츠 관리', icon: 'ri-file-edit-line' },
   ];
 
   return (
@@ -154,135 +143,7 @@ export default function NewAdminPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'dashboard' && <AdminDashboard />}
-        {activeTab === 'unified' && <UnifiedContentManager />}
-        {activeTab === 'home' && (
-          <div className="space-y-8">
-            <HeroEditor onSave={handleSave} />
-            <FeatureSectionEditor />
-            <ServiceCardsEditor onSave={handleSave} />
-            <GalleryEditor onSave={handleSave} />
-            <FooterEditor />
-          </div>
-        )}
-        {activeTab === 'about' && (
-          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border-2 border-vitamin-100">
-            <h3 className="text-3xl font-extrabold text-neutral-900 flex items-center mb-6">
-              <span className="text-4xl mr-3">🏥</span> 병원 소개
-            </h3>
-            <p className="text-neutral-600 mb-4">
-              병원 소개 페이지는 다음 섹션으로 구성되어 있습니다:
-            </p>
-            <ul className="space-y-3 text-neutral-700">
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>원장 소개 (DirectorSection)</strong>
-                  <p className="text-sm text-neutral-600">원장님 정보는 Prisma Content 모델을 통해 <code className="bg-neutral-100 px-2 py-1 rounded">/admin</code> 페이지에서 관리됩니다.</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>진료 철학 (PhilosophySection)</strong>
-                  <p className="text-sm text-neutral-600">현재 하드코딩되어 있습니다.</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>갤러리 (GallerySection)</strong>
-                  <p className="text-sm text-neutral-600">이미지는 <Link href="/admin/gallery" className="text-vitamin-600 hover:underline">/admin/gallery</Link>에서 관리됩니다.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        )}
-        {activeTab === 'services' && (
-          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border-2 border-vitamin-100">
-            <h3 className="text-3xl font-extrabold text-neutral-900 flex items-center mb-6">
-              <span className="text-4xl mr-3">🏥</span> 진료과목
-            </h3>
-            <p className="text-neutral-600 mb-4">
-              진료과목 페이지는 다음 섹션으로 구성되어 있습니다:
-            </p>
-            <ul className="space-y-3 text-neutral-700">
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>진료 항목 그리드 (ServiceGrid)</strong>
-                  <p className="text-sm text-neutral-600">진료 항목은 Prisma Content 모델을 통해 <code className="bg-neutral-100 px-2 py-1 rounded">/admin</code> 페이지에서 관리됩니다.</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>진료 프로세스 (ProcessSection)</strong>
-                  <p className="text-sm text-neutral-600">현재 하드코딩되어 있습니다.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        )}
-        {activeTab === 'health-info' && (
-          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border-2 border-vitamin-100">
-            <h3 className="text-3xl font-extrabold text-neutral-900 flex items-center mb-6">
-              <span className="text-4xl mr-3">❤️</span> 건강 정보
-            </h3>
-            <p className="text-neutral-600 mb-4">
-              건강 정보는 Prisma Content 모델을 통해 관리됩니다.
-            </p>
-            <Link
-              href="/admin"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-vitamin-500 to-vitamin-600 text-white rounded-xl hover:from-vitamin-600 hover:to-vitamin-700 transition-all duration-200 font-bold shadow-lg"
-            >
-              <i className="ri-external-link-line mr-2"></i>
-              /admin 페이지에서 관리하기
-            </Link>
-          </div>
-        )}
-        {activeTab === 'notices' && (
-          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border-2 border-vitamin-100">
-            <h3 className="text-3xl font-extrabold text-neutral-900 flex items-center mb-6">
-              <span className="text-4xl mr-3">📢</span> 공지사항
-            </h3>
-            <p className="text-neutral-600 mb-4">
-              공지사항은 Prisma Content 모델을 통해 관리됩니다.
-            </p>
-            <Link
-              href="/admin"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-vitamin-500 to-vitamin-600 text-white rounded-xl hover:from-vitamin-600 hover:to-vitamin-700 transition-all duration-200 font-bold shadow-lg"
-            >
-              <i className="ri-external-link-line mr-2"></i>
-              /admin 페이지에서 관리하기
-            </Link>
-          </div>
-        )}
-        {activeTab === 'contact' && (
-          <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border-2 border-vitamin-100">
-            <h3 className="text-3xl font-extrabold text-neutral-900 flex items-center mb-6">
-              <span className="text-4xl mr-3">📍</span> 오시는 길
-            </h3>
-            <p className="text-neutral-600 mb-4">
-              오시는 길 페이지는 다음 섹션으로 구성되어 있습니다:
-            </p>
-            <ul className="space-y-3 text-neutral-700">
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>지도 섹션 (MapSection)</strong>
-                  <p className="text-sm text-neutral-600">현재 하드코딩되어 있습니다 (카카오맵 API).</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <span className="text-vitamin-500 mr-2">•</span>
-                <div>
-                  <strong>병원 정보 (InfoSection)</strong>
-                  <p className="text-sm text-neutral-600">병원 정보는 Prisma Content 모델을 통해 <code className="bg-neutral-100 px-2 py-1 rounded">/admin</code> 페이지에서 관리됩니다.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        )}
+        {activeTab === 'content' && <CompleteUnifiedContentManager />}
       </div>
 
       {/* Quick Link to Gallery */}
