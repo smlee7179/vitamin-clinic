@@ -8,7 +8,16 @@ const nextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: ['readdy.ai'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'readdy.ai',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+      },
+    ],
   },
 
 
