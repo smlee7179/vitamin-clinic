@@ -12,7 +12,7 @@ interface HeroData {
   buttonLink: string;
   secondButtonText?: string;
   secondButtonLink?: string;
-  backgroundImage: string;
+  imageUrl: string;
 }
 
 interface FeatureItem {
@@ -83,7 +83,7 @@ export default function CompleteUnifiedContentManager() {
     buttonLink: 'tel:051-469-7581',
     secondButtonText: '오시는 길',
     secondButtonLink: '/contact',
-    backgroundImage: '',
+    imageUrl: '',
   });
 
   const [features, setFeatures] = useState<FeatureItem[]>([
@@ -175,7 +175,7 @@ export default function CompleteUnifiedContentManager() {
         case 'services':
           endpoint = '/api/content?section=services';
           setter = (data: any) => {
-            if (data?.cards) setServiceCards(data.cards);
+            if (data?.services) setServiceCards(data.services);
           };
           break;
         case 'gallery':
@@ -246,7 +246,7 @@ export default function CompleteUnifiedContentManager() {
           break;
         case 'services':
           endpoint = '/api/content';
-          body = { section: 'services', data: { cards: serviceCards } };
+          body = { section: 'services', data: { services: serviceCards } };
           break;
         case 'gallery':
           endpoint = '/api/content';
@@ -296,8 +296,8 @@ export default function CompleteUnifiedContentManager() {
       <div>
         <label className="block text-sm font-semibold text-neutral-700 mb-2">배경 이미지</label>
         <ModernImageUpload
-          currentImage={heroData.backgroundImage}
-          onUpload={(url) => setHeroData({ ...heroData, backgroundImage: url })}
+          currentImage={heroData.imageUrl}
+          onUpload={(url) => setHeroData({ ...heroData, imageUrl: url })}
         />
       </div>
 
