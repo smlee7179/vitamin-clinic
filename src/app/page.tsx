@@ -1,27 +1,42 @@
 'use client';
 
-import HeroSection from '@/components/home/HeroSection';
-import ServiceCards from '@/components/home/ServiceCards';
-import FeatureSection from '@/components/home/FeatureSection';
-import ImageGallery from '@/components/home/ImageGallery';
-import TreatmentSection from '@/components/TreatmentSection';
-import FAQSection from '@/components/FAQSection';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import { useEffect, useState } from 'react';
+import ModernHeader from '@/components/modern/ModernHeader';
+import ModernHero from '@/components/modern/ModernHero';
+import ModernMarquee from '@/components/modern/ModernMarquee';
+import ModernFeatures from '@/components/modern/ModernFeatures';
+import ModernServices from '@/components/modern/ModernServices';
+import ModernTreatments from '@/components/modern/ModernTreatments';
+import ModernGallery from '@/components/modern/ModernGallery';
+import ModernFAQ from '@/components/modern/ModernFAQ';
+import ModernFooter from '@/components/modern/ModernFooter';
 
 export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <>
-      <Header />
-      <main>
-        <HeroSection />
-        <ServiceCards />
-        <FeatureSection />
-        <ImageGallery />
-        <TreatmentSection />
-        <FAQSection />
+    <div className="bg-white">
+      <ModernHeader scrolled={scrolled} />
+
+      <main className="overflow-hidden">
+        <ModernHero />
+        <ModernMarquee />
+        <ModernFeatures />
+        <ModernServices />
+        <ModernTreatments />
+        <ModernGallery />
+        <ModernFAQ />
       </main>
-      <Footer />
-    </>
+
+      <ModernFooter />
+    </div>
   );
 }
