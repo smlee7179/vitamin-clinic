@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
 import { requireAdmin } from '@/lib/simple-auth';
+import sharp from 'sharp';
 
 // ⚠️ CRITICAL: Node.js runtime으로 변경 (세션 유지를 위해 필수)
 export const runtime = 'nodejs';
+
+// 섹션별 권장 해상도 설정
+const IMAGE_PRESETS = {
+  hero: { width: 800, height: 1000, quality: 85 }, // 4:5 비율
+  service: { width: 1280, height: 720, quality: 85 }, // 16:9 비율
+  gallery: { width: 800, height: 800, quality: 85 }, // 1:1 비율
+  default: { width: 1200, height: 1200, quality: 85 }, // 기본값
+};
 
 export async function POST(request: NextRequest) {
   // ✅ 인증 체크 추가
@@ -20,6 +29,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    const preset = (formData.get('preset') as string) || 'default'; // hero, service, gallery, default
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -34,11 +44,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (5MB max)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Validate file size (10MB max before processing)
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 5MB.' },
+        { error: 'File too large. Maximum size is 10MB.' },
         { status: 400 }
       );
     }
@@ -55,16 +65,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get preset configuration
+    const config = IMAGE_PRESETS[preset as keyof typeof IMAGE_PRESETS] || IMAGE_PRESETS.default;
+
+    console.log('Processing image with preset:', preset, config);
+    console.log('Original file:', file.name, 'Size:', file.size, 'Type:', file.type);
+
+    // Convert File to Buffer
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Resize and optimize image with sharp
+    const processedImage = await sharp(buffer)
+      .resize(config.width, config.height, {
+        fit: 'cover', // 크롭하여 정확한 비율 유지
+        position: 'center',
+      })
+      .jpeg({ quality: config.quality }) // JPEG로 변환하여 최적화
+      .toBuffer();
+
     // Generate unique filename
     const timestamp = Date.now();
-    const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const baseFilename = file.name.replace(/\.[^/.]+$/, ''); // 확장자 제거
+    const filename = `${timestamp}-${baseFilename.replace(/[^a-zA-Z0-9.-]/g, '_')}.jpg`;
 
-    console.log('Uploading file:', filename, 'Size:', file.size, 'Type:', file.type);
+    console.log('Processed image size:', processedImage.length, 'bytes');
 
-    // Upload to Vercel Blob
-    const blob = await put(filename, file, {
+    // Upload processed image to Vercel Blob
+    const blob = await put(filename, processedImage, {
       access: 'public',
       addRandomSuffix: true,
+      contentType: 'image/jpeg',
     });
 
     console.log('Upload successful:', blob.url);
@@ -72,8 +102,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       url: blob.url,
       filename: filename,
-      size: file.size,
-      type: file.type,
+      originalSize: file.size,
+      processedSize: processedImage.length,
+      preset: preset,
+      dimensions: { width: config.width, height: config.height },
+      type: 'image/jpeg',
     });
   } catch (error) {
     console.error('Error uploading file:', error);

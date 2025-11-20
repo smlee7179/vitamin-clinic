@@ -5,20 +5,37 @@ import Link from 'next/link';
 
 export default function ModernFooter() {
   const [footerData, setFooterData] = useState({
-    name: '비타민마취통증의학과',
-    address: '부산 동구 중앙대로 375',
+    hospitalName: '비타민마취통증의학과',
+    englishName: 'Vitamin Pain Management Clinic',
+    description: '환자 한 분 한 분의 통증을 정확히 진단하고, 개인별 맞춤 치료를 제공합니다.',
+    address: '부산광역시 동구 중앙대로 375',
     phone: '051-469-7581',
     email: 'info@vitamin-clinic.com',
     hours: {
+      contactTitle: '연락처',
+      hoursTitle: '진료시간',
       weekday: '평일 09:00 - 18:00',
       saturday: '토요일 09:00 - 13:00',
-      closed: '일요일/공휴일 휴진',
+      closed: '일요일/공휴일 휴진'
     },
     social: {
       facebook: '',
       instagram: '',
       naver: '',
+      kakao: ''
     },
+    links: {
+      privacy: '개인정보처리방침',
+      privacyUrl: '/privacy',
+      terms: '이용약관',
+      termsUrl: '/terms',
+      admin: '관리자',
+      adminUrl: '/admin/login'
+    },
+    copyright: {
+      text: 'All rights reserved.',
+      showYear: true
+    }
   });
 
   useEffect(() => {
@@ -49,12 +66,12 @@ export default function ModernFooter() {
                 <i className="ri-hospital-line text-white text-3xl"></i>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">{footerData.name}</h3>
-                <p className="text-sm text-gray-400">Pain Management Clinic</p>
+                <h3 className="text-2xl font-bold">{footerData.hospitalName || '비타민마취통증의학과'}</h3>
+                <p className="text-sm text-gray-400">{footerData.englishName || 'Vitamin Pain Management Clinic'}</p>
               </div>
             </div>
             <p className="text-gray-400 leading-relaxed max-w-md mb-6">
-              환자 한 분 한 분의 통증을 정확히 진단하고, 개인별 맞춤 치료를 제공하는 통증 전문 의료기관입니다.
+              {footerData.description || '환자 한 분 한 분의 통증을 정확히 진단하고, 개인별 맞춤 치료를 제공합니다.'}
             </p>
 
             {/* Social Links */}
@@ -89,6 +106,16 @@ export default function ModernFooter() {
                   <i className="ri-map-pin-line text-xl"></i>
                 </a>
               )}
+              {footerData.social.kakao && (
+                <a
+                  href={footerData.social.kakao}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-orange-500 transition-colors duration-300"
+                >
+                  <i className="ri-kakao-talk-fill text-xl"></i>
+                </a>
+              )}
             </div>
           </div>
 
@@ -96,28 +123,28 @@ export default function ModernFooter() {
           <div>
             <h4 className="text-lg font-bold mb-4 flex items-center">
               <i className="ri-phone-line mr-2 text-orange-400"></i>
-              연락처
+              {footerData.hours?.contactTitle || '연락처'}
             </h4>
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-start">
                 <i className="ri-phone-fill mr-2 text-orange-400 mt-1"></i>
                 <div>
-                  <a href={`tel:${footerData.phone}`} className="hover:text-orange-400 transition-colors">
-                    {footerData.phone}
+                  <a href={`tel:${footerData.phone || '051-469-7581'}`} className="hover:text-orange-400 transition-colors">
+                    {footerData.phone || '051-469-7581'}
                   </a>
                 </div>
               </li>
               <li className="flex items-start">
                 <i className="ri-mail-fill mr-2 text-orange-400 mt-1"></i>
                 <div>
-                  <a href={`mailto:${footerData.email}`} className="hover:text-orange-400 transition-colors">
-                    {footerData.email}
+                  <a href={`mailto:${footerData.email || 'info@vitamin-clinic.com'}`} className="hover:text-orange-400 transition-colors">
+                    {footerData.email || 'info@vitamin-clinic.com'}
                   </a>
                 </div>
               </li>
               <li className="flex items-start">
                 <i className="ri-map-pin-fill mr-2 text-orange-400 mt-1"></i>
-                <div>{footerData.address}</div>
+                <div>{footerData.address || '부산광역시 동구 중앙대로 375'}</div>
               </li>
             </ul>
           </div>
@@ -126,20 +153,20 @@ export default function ModernFooter() {
           <div>
             <h4 className="text-lg font-bold mb-4 flex items-center">
               <i className="ri-time-line mr-2 text-orange-400"></i>
-              진료시간
+              {footerData.hours?.hoursTitle || '진료시간'}
             </h4>
             <ul className="space-y-2 text-gray-400">
               <li className="flex items-center">
                 <i className="ri-calendar-line mr-2 text-orange-400"></i>
-                {footerData.hours.weekday}
+                {footerData.hours?.weekday || '평일 09:00 - 18:00'}
               </li>
               <li className="flex items-center">
                 <i className="ri-calendar-line mr-2 text-orange-400"></i>
-                {footerData.hours.saturday}
+                {footerData.hours?.saturday || '토요일 09:00 - 13:00'}
               </li>
               <li className="flex items-center text-red-400">
                 <i className="ri-close-circle-line mr-2"></i>
-                {footerData.hours.closed}
+                {footerData.hours?.closed || '일요일/공휴일 휴진'}
               </li>
             </ul>
           </div>
@@ -149,17 +176,17 @@ export default function ModernFooter() {
         <div className="border-t border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} {footerData.name}. All rights reserved.
+              &copy; {footerData.copyright?.showYear ? new Date().getFullYear() : ''} {footerData.hospitalName || '비타민마취통증의학과'}. {footerData.copyright?.text || 'All rights reserved.'}
             </p>
             <div className="flex items-center space-x-6 text-sm">
-              <Link href="/privacy" className="text-gray-400 hover:text-orange-400 transition-colors">
-                개인정보처리방침
+              <Link href={footerData.links?.privacyUrl || '/privacy'} className="text-gray-400 hover:text-orange-400 transition-colors">
+                {footerData.links?.privacy || '개인정보처리방침'}
               </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-orange-400 transition-colors">
-                이용약관
+              <Link href={footerData.links?.termsUrl || '/terms'} className="text-gray-400 hover:text-orange-400 transition-colors">
+                {footerData.links?.terms || '이용약관'}
               </Link>
-              <Link href="/admin/login" className="text-gray-400 hover:text-orange-400 transition-colors">
-                관리자
+              <Link href={footerData.links?.adminUrl || '/admin/login'} className="text-gray-400 hover:text-orange-400 transition-colors">
+                {footerData.links?.admin || '관리자'}
               </Link>
             </div>
           </div>
@@ -168,7 +195,7 @@ export default function ModernFooter() {
 
       {/* Quick Contact Button */}
       <a
-        href={`tel:${footerData.phone}`}
+        href={`tel:${footerData.phone || '051-469-7581'}`}
         className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/50 hover:shadow-orange-500/70 hover:scale-110 transition-all duration-300 z-40"
       >
         <i className="ri-phone-line text-3xl text-white"></i>

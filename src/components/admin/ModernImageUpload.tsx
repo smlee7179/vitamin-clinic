@@ -10,6 +10,7 @@ interface ModernImageUploadProps {
   aspectRatio?: 'square' | 'landscape' | 'portrait' | 'auto';
   maxSize?: number; // in MB
   showUrlInput?: boolean;
+  preset?: 'hero' | 'service' | 'gallery' | 'default';
 }
 
 export default function ModernImageUpload({
@@ -20,6 +21,7 @@ export default function ModernImageUpload({
   aspectRatio = 'auto',
   maxSize = 5,
   showUrlInput = false,
+  preset = 'default',
 }: ModernImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
@@ -83,6 +85,7 @@ export default function ModernImageUpload({
       // Upload to server
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('preset', preset);
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -134,20 +137,34 @@ export default function ModernImageUpload({
   const handleDelete = async () => {
     if (!preview) return;
 
+    // Show confirmation dialog
+    const confirmed = window.confirm('이미지를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
+    if (!confirmed) return;
+
     try {
+      const imageToDelete = currentImage;
+
+      // Clear preview immediately
       setPreview(null);
+      onUpload(''); // Clear state in parent component
+
       if (onDelete) {
         onDelete();
       }
 
-      // Delete from server
-      if (currentImage && currentImage.startsWith('http')) {
-        await fetch(`/api/upload?url=${encodeURIComponent(currentImage)}`, {
+      // Delete from server if it's an uploaded image
+      if (imageToDelete && imageToDelete.startsWith('http')) {
+        const response = await fetch(`/api/upload?url=${encodeURIComponent(imageToDelete)}`, {
           method: 'DELETE',
         });
+
+        if (!response.ok) {
+          console.error('Failed to delete image from server');
+        }
       }
     } catch (err) {
       console.error('Error deleting image:', err);
+      setError('이미지 삭제 중 오류가 발생했습니다.');
     }
   };
 

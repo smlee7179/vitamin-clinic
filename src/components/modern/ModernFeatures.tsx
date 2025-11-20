@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 
 export default function ModernFeatures() {
   const [featuresData, setFeaturesData] = useState({
+    sectionTitle: '왜 비타민의원을 선택해야 할까요?',
+    sectionDescription: '환자 중심의 진료 철학과 첨단 의료 기술로 최상의 치료를 제공합니다.',
     features: [
       {
         icon: 'ri-user-heart-line',
@@ -45,10 +47,10 @@ export default function ModernFeatures() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            왜 비타민의원을 선택해야 할까요?
+            {featuresData.sectionTitle || '왜 비타민의원을 선택해야 할까요?'}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            환자 중심의 진료 철학과 최고의 의료 서비스로 여러분의 건강을 책임집니다.
+            {featuresData.sectionDescription || '환자 중심의 진료 철학과 첨단 의료 기술로 최상의 치료를 제공합니다.'}
           </p>
         </div>
 

@@ -178,9 +178,25 @@ vitamin-clinic/
 - 최대 크기: 5MB
 - Vercel Blob Storage에 저장
 
+## 📖 전체 문서
+
+**모든 문서가 하나의 파일로 통합되었습니다!**
+
+자세한 내용은 [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md)를 참조하세요.
+
+이 통합 문서에는 다음 내용이 포함되어 있습니다:
+- 프로젝트 개요 및 설치
+- 배포 가이드 (Vercel)
+- 보안 설정
+- SEO 최적화
+- 성능 모니터링
+- 관리자 가이드
+- 스크립트 및 자동화
+- 트러블슈팅
+
 ## 🚀 배포
 
-자세한 배포 가이드는 [DEPLOYMENT.md](./DEPLOYMENT.md)를 참조하세요.
+자세한 배포 가이드는 [PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md#5-배포-가이드)를 참조하세요.
 
 ### 빠른 배포 (Vercel)
 
