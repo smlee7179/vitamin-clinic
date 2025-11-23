@@ -1,42 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import ModernHeader from '@/components/modern/ModernHeader';
-import ModernHero from '@/components/modern/ModernHero';
-import ModernMarquee from '@/components/modern/ModernMarquee';
-import ModernFeatures from '@/components/modern/ModernFeatures';
-import ModernServices from '@/components/modern/ModernServices';
-import ModernTreatments from '@/components/modern/ModernTreatments';
-import ModernGallery from '@/components/modern/ModernGallery';
-import ModernFAQ from '@/components/modern/ModernFAQ';
-import ModernFooter from '@/components/modern/ModernFooter';
+import NewHeader from '@/components/new/NewHeader';
+import NewHero from '@/components/new/NewHero';
+import NewServices from '@/components/new/NewServices';
+import NewNotices from '@/components/new/NewNotices';
+import NewLocation from '@/components/new/NewLocation';
+import NewFooter from '@/components/new/NewFooter';
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="bg-white">
-      <ModernHeader scrolled={scrolled} />
+    <div className="bg-gray-50 dark:bg-[#101822]">
+      <NewHeader />
 
-      <main className="overflow-hidden">
-        <ModernHero />
-        <ModernMarquee />
-        <ModernFeatures />
-        <ModernServices />
-        <ModernTreatments />
-        <ModernGallery />
-        <ModernFAQ />
+      <main>
+        <NewHero />
+        <NewServices />
+        <NewNotices />
+        <NewLocation />
       </main>
 
-      <ModernFooter />
+      <NewFooter />
     </div>
   );
 }
