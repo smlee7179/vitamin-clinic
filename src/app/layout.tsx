@@ -89,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="geo.position" content="35.1586;129.1603" />
         <meta name="ICBM" content="35.1586, 129.1603" />
         <link rel="stylesheet" href="/remixicon.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
       </head>
       <body className={`${inter.variable} ${pacifico.variable} antialiased min-h-screen bg-neutral-50 text-neutral-900`}>
         <GoogleAnalytics />
