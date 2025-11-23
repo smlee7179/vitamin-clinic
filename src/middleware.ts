@@ -13,7 +13,11 @@ export async function middleware(request: NextRequest) {
     '/api/marquee',
     '/api/health',
     '/api/system-info',
-    '/manifest.json',  // PWA manifest
+    '/api/doctors',       // Public doctors list
+    '/api/hero-slides',   // Public hero slides
+    '/api/popups',        // Public popups
+    '/api/notices',       // Public notices
+    '/manifest.json',     // PWA manifest
   ];
 
   // Check if this is a public API GET request
