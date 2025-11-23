@@ -3,10 +3,10 @@
 export default function NewLocation() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
-      <h2 className="text-gray-900 dark:text-gray-200 text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-8 text-center">
+      <h2 className="text-[#111418] text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-8 text-center">
         오시는 길 및 연락처
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white dark:bg-[#101822] p-8 rounded-xl shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-xl shadow-sm">
         {/* Map */}
         <div className="w-full h-96 rounded-lg overflow-hidden">
           <div
@@ -18,7 +18,7 @@ export default function NewLocation() {
         </div>
 
         {/* Contact Info */}
-        <div className="flex flex-col gap-6 text-gray-800 dark:text-gray-300">
+        <div className="flex flex-col gap-6 text-gray-800">
           {/* Address */}
           <div className="flex items-start gap-4">
             <svg
@@ -41,7 +41,7 @@ export default function NewLocation() {
               />
             </svg>
             <div>
-              <h3 className="font-bold text-lg text-gray-900 dark:text-white">주소</h3>
+              <h3 className="font-bold text-lg text-[#111418]">주소</h3>
               <p className="mt-1">부산광역시 동구 중앙대로 375</p>
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function NewLocation() {
               />
             </svg>
             <div>
-              <h3 className="font-bold text-lg text-gray-900 dark:text-white">전화번호</h3>
+              <h3 className="font-bold text-lg text-[#111418]">전화번호</h3>
               <p className="mt-1">051-469-7581 (예약 및 상담)</p>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function NewLocation() {
               />
             </svg>
             <div>
-              <h3 className="font-bold text-lg text-gray-900 dark:text-white">진료 시간</h3>
+              <h3 className="font-bold text-lg text-[#111418]">진료 시간</h3>
               <p className="mt-1">
                 평일: 09:00 - 18:00
                 <br />

@@ -48,7 +48,7 @@ export default function NoticesPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
       <main>

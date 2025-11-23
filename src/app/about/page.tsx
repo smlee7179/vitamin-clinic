@@ -5,7 +5,7 @@ import NewFooter from '@/components/new/NewFooter';
 
 export default function AboutPage() {
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
       <main>
