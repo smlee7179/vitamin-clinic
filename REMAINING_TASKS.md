@@ -150,28 +150,32 @@
 
 ---
 
-### 4. API 통합 (중요!) - 높은 우선순위
+### 4. API 통합 ✅ (완료!)
 
-현재 모든 데이터가 하드코딩되어 있음. API 연결 필요:
+모든 주요 컴포넌트가 실제 데이터베이스 API에 연결되었습니다.
 
-#### 홈페이지 API 통합
-- [ ] NewServices: `/api/treatments` 연결
-- [ ] NewNotices: `/api/notices` 연결
-- [ ] NewLocation: 병원 정보 API 연결
+#### 홈페이지 API 통합 ✅
+- ✅ NewServices: `/api/treatments` 연결 완료
+- ✅ NewNotices: `/api/notices` 연결 완료
+- [ ] NewLocation: 병원 정보 API 연결 (낮은 우선순위)
 
-#### 관리자 API 통합
-- [ ] Dashboard: `/api/dashboard-stats` 연결
-- [ ] Notices: CRUD API 연결
-  - GET `/api/notices`
-  - POST `/api/notices`
-  - PUT `/api/notices/:id`
-  - DELETE `/api/notices/:id`
+#### 관리자 API 통합 ✅
+- ✅ Dashboard: `/api/dashboard-stats` 연결 완료
+- ✅ Notices: CRUD API 연결 완료
+  - ✅ GET `/api/notices`
+  - ✅ POST `/api/notices`
+  - ✅ PUT `/api/notices/:id`
+  - ✅ DELETE `/api/notices/:id`
+  - ✅ GET `/api/notices/[id]`
 
-**수정 필요 파일:**
-- `src/components/new/NewServices.tsx`
-- `src/components/new/NewNotices.tsx`
-- `src/app/admin-new/page.tsx`
-- `src/app/admin-new/notices/page.tsx`
+**완료된 파일:**
+- ✅ `src/components/new/NewServices.tsx` - 로딩 상태, 에러 처리 추가
+- ✅ `src/components/new/NewNotices.tsx` - 로딩 상태, 빈 상태, 중요 뱃지
+- ✅ `src/app/admin-new/page.tsx` - 실시간 통계, 최근 공지
+- ✅ `src/app/admin-new/notices/page.tsx` - 검색/필터, 로딩 상태
+- ✅ `src/app/api/notices/route.ts` - 새로 생성
+- ✅ `src/app/api/notices/[id]/route.ts` - 새로 생성
+- ✅ `src/app/api/dashboard-stats/route.ts` - 업데이트
 
 ---
 
@@ -245,27 +249,28 @@
 
 ## 📊 진행률
 
-### 전체 진행률: **35%**
+### 전체 진행률: **45%** ⬆️ (+10%)
 
 ```
 ✅ Phase 1: 디자인 시스템 구축        100% ███████████████████████
-✅ Phase 2: 메인 페이지 리뉴얼        75%  ████████████████░░░░░░░
+✅ Phase 2: 메인 페이지 리뉴얼        100% ███████████████████████ ⬆️
 ⏳ Phase 3: 서브 페이지 리뉴얼        0%   ░░░░░░░░░░░░░░░░░░░░░░░
-✅ Phase 4: 관리자 페이지 개선        30%  ███████░░░░░░░░░░░░░░░░
+✅ Phase 4: 관리자 페이지 개선        40%  █████████░░░░░░░░░░░░░░ ⬆️
 ⏳ Phase 5: 성능 최적화              0%   ░░░░░░░░░░░░░░░░░░░░░░░
 ⏳ Phase 6: 테스트 및 QA             0%   ░░░░░░░░░░░░░░░░░░░░░░░
 ```
 
 ### 완료된 작업
 - ✅ 홈페이지 기본 구조 (6개 컴포넌트)
+- ✅ 홈페이지 API 통합 (Services, Notices) ⭐ NEW
 - ✅ 관리자 레이아웃 (사이드바)
-- ✅ 관리자 대시보드
-- ✅ 공지사항 관리 페이지
+- ✅ 관리자 대시보드 + API 통합 ⭐ NEW
+- ✅ 공지사항 관리 페이지 + API 통합 ⭐ NEW
+- ✅ Notices CRUD API 구현 ⭐ NEW
 
 ### 남은 작업
 - 🔴 서브 페이지 5개 (About, Contact, Services, Notices, Treatments)
 - 🔴 관리자 페이지 5개 (About, Services, Treatments, Accounts, Settings)
-- 🔴 API 통합
 - 🔴 성능 최적화
 - 🔴 테스트 & QA
 
@@ -274,11 +279,12 @@
 ## 🎯 우선순위별 추천 작업 순서
 
 ### 🔥 즉시 (이번 주)
-1. **API 통합** - 데이터 연결 (2-3일)
-   - 홈페이지 API 연결
-   - 관리자 CRUD API 연결
+1. ~~**API 통합**~~ ✅ **완료!** (2024-11-23)
+   - ✅ 홈페이지 API 연결 (NewServices, NewNotices)
+   - ✅ 관리자 CRUD API 연결 (Dashboard, Notices)
+   - ✅ 로딩 상태, 에러 처리, 빈 상태 추가
 
-2. **Contact 페이지** - 중요 페이지 (1일)
+2. **Contact 페이지** - 중요 페이지 (1일) 👈 다음 작업
    - Google Maps 통합
    - 병원 정보 표시
 
@@ -312,75 +318,87 @@
 
 ## 📝 예상 소요 시간
 
-| 작업 | 예상 시간 | 우선순위 |
-|------|-----------|----------|
-| API 통합 | 2-3일 | 🔥 높음 |
-| About 페이지 | 1일 | 🔥 높음 |
-| Contact 페이지 | 1일 | 🔥 높음 |
-| Services 페이지 | 1일 | ⚡ 중간 |
-| Treatments 페이지 | 1일 | ⚡ 중간 |
-| Notices 페이지 | 1일 | ⚡ 중간 |
-| 관리자 페이지 5개 | 3-4일 | ⚡ 중간 |
-| 성능 최적화 | 2-3일 | 📅 낮음 |
-| 테스트 & QA | 3-4일 | 📅 배포 전 |
-| **총 예상 시간** | **15-20일** | - |
+| 작업 | 예상 시간 | 우선순위 | 상태 |
+|------|-----------|----------|------|
+| ~~API 통합~~ | ~~2-3일~~ | ~~🔥 높음~~ | ✅ **완료** |
+| About 페이지 | 1일 | 🔥 높음 | 🔴 대기 |
+| Contact 페이지 | 1일 | 🔥 높음 | 🔴 대기 |
+| Services 페이지 | 1일 | ⚡ 중간 | 🔴 대기 |
+| Treatments 페이지 | 1일 | ⚡ 중간 | 🔴 대기 |
+| Notices 페이지 | 1일 | ⚡ 중간 | 🔴 대기 |
+| 관리자 페이지 5개 | 3-4일 | ⚡ 중간 | 🔴 대기 |
+| 성능 최적화 | 2-3일 | 📅 낮음 | 🔴 대기 |
+| 테스트 & QA | 3-4일 | 📅 배포 전 | 🔴 대기 |
+| **총 예상 시간** | **13-17일** | - | **45% 완료** |
 
 ---
 
 ## 🚀 다음 단계
 
-### 옵션 1: API 통합 우선
-현재 작동하는 페이지들에 실제 데이터를 연결하여 기능 완성도를 높입니다.
+### ✅ 완료: Phase 1 - API 통합 (2024-11-23)
+~~API 통합을 최우선으로 완료했습니다!~~
+- ✅ 홈페이지 컴포넌트 → 실제 데이터 연결
+- ✅ 관리자 대시보드 → 실시간 통계
+- ✅ 공지사항 관리 → 전체 CRUD 기능
+
+### 👉 추천: Phase 2 - 서브 페이지 완성 (다음 작업)
+사용자 경험을 위해 주요 페이지들을 완성합니다.
 
 ```bash
 # 추천 순서
-1. NewServices → API 연결
-2. NewNotices → API 연결
-3. Admin Notices → CRUD API 연결
-4. Admin Dashboard → Stats API 연결
+1. Contact 페이지 (1일) - 가장 중요
+   - Google Maps 통합
+   - 진료 시간 표시
+   - 연락처 정보
+
+2. About 페이지 (1일)
+   - 병원 소개
+   - 의료진 정보
+   - 시설 안내
+
+3. Services 페이지 (1일)
+   - 진료과목 상세
+   - 치료 프로세스
+
+4. Treatments 페이지 (1일)
+   - 치료방법 상세
+   - 전후 사진 갤러리
+
+5. Notices 페이지 (1일)
+   - 목록 + 상세 페이지
 ```
 
-### 옵션 2: 서브 페이지 완성 우선
-사용자 경험을 위해 주요 페이지들을 먼저 완성합니다.
-
-```bash
-# 추천 순서
-1. About 페이지
-2. Contact 페이지
-3. Services 페이지
-4. Treatments 페이지
-5. Notices 페이지
-```
-
-### 옵션 3: 관리자 기능 완성 우선
-콘텐츠 관리를 위해 관리자 페이지를 먼저 완성합니다.
+### Phase 3 - 관리자 기능 완성
+콘텐츠 관리를 위한 관리자 페이지 완성
 
 ```bash
 # 추천 순서
 1. 관리자 About 관리
 2. 관리자 Services 관리
 3. 관리자 Treatments 관리
-4. 관리자 Settings
+4. 관리자 Accounts
+5. 관리자 Settings
 ```
 
 ---
 
 ## 💡 권장 사항
 
-1. **즉시 시작**: API 통합 (현재 페이지 기능화)
-2. **병행 작업**: Contact, About 페이지 (중요 페이지)
-3. **점진적 완성**: 나머지 서브 페이지 및 관리자 페이지
-4. **배포 전**: 성능 최적화 및 테스트
+1. ✅ ~~**즉시 시작**: API 통합~~ **완료!**
+2. 👉 **다음 작업**: Contact, About 페이지 (사용자 경험 개선)
+3. **그 다음**: 나머지 서브 페이지
+4. **이후**: 관리자 페이지 완성
+5. **배포 전**: 성능 최적화 및 테스트
 
 ---
 
-## 📞 질문사항
+## 🎉 최근 완료 작업 (2024-11-23)
 
-어떤 작업을 우선적으로 진행하시겠습니까?
+### API 통합 완료!
+- ✅ 5개 API 엔드포인트 생성/업데이트
+- ✅ 4개 컴포넌트 API 연결
+- ✅ 로딩 상태, 에러 처리, 빈 상태 구현
+- ✅ 빌드 성공 (32 routes, 87.2 kB)
+- ✅ 진행률: 35% → 45% (+10%)
 
-1. **API 통합** - 현재 페이지에 실제 데이터 연결
-2. **서브 페이지** - About, Contact 등 주요 페이지 완성
-3. **관리자 기능** - 관리자 페이지 완전 구축
-4. **모두 동시** - 작은 단위로 모든 부분 조금씩 진행
-
-알려주시면 해당 작업을 이어서 진행하겠습니다! 🚀
+**다음 추천 작업**: Contact 페이지 구현 (1일 예상)
