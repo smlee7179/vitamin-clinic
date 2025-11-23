@@ -43,14 +43,10 @@ export default function CreateTreatmentPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          treatments: [
-            {
-              title: formData.title,
-              description: formData.description,
-              icon: formData.icon,
-              features: formData.features.filter((f) => f.trim() !== ''),
-            },
-          ],
+          title: formData.title,
+          description: formData.description,
+          icon: formData.icon,
+          features: formData.features.filter((f) => f.trim() !== ''),
         }),
       });
 
