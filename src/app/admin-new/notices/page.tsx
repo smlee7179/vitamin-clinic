@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin-new/AdminLayout';
+import Link from 'next/link';
 
 interface Notice {
   id: string;
@@ -79,12 +80,15 @@ export default function NoticesPage() {
             병원의 최신 소식과 공지사항을 관리합니다.
           </p>
         </div>
-        <button className="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-[#f49d25] text-white text-sm font-bold leading-normal shadow-sm hover:bg-[#f49d25]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f49d25] transition-colors">
+        <Link
+          href="/admin-new/notices/create"
+          className="flex items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-[#f49d25] text-white text-sm font-bold leading-normal shadow-sm hover:bg-[#f49d25]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f49d25] transition-colors"
+        >
           <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
             add
           </span>
           <span className="truncate">새 글 작성</span>
-        </button>
+        </Link>
       </div>
 
       {/* Content Card */}
@@ -208,9 +212,9 @@ export default function NoticesPage() {
                         {getStatusBadge(notice.status)}
                       </td>
                       <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
-                        <a className="text-[#f49d25] hover:text-[#f49d25]/80" href="#">
+                        <Link className="text-[#f49d25] hover:text-[#f49d25]/80" href={`/admin-new/notices/${notice.id}`}>
                           수정
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   ))
