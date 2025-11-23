@@ -25,12 +25,12 @@ export default function SettingsPage() {
   const fetchSettings = async () => {
     try {
       const responses = await Promise.all([
-        fetch('/api/content?page=settings&section=hospital-name'),
-        fetch('/api/content?page=settings&section=phone'),
-        fetch('/api/content?page=settings&section=address'),
+        fetch('/api/content?section=settings-hospital-name'),
+        fetch('/api/content?section=settings-phone'),
+        fetch('/api/content?section=settings-address'),
       ]);
 
-      const data = await Promise.all(responses.map(r => r.json()));
+      const data = await Promise.all(responses.map(r => r.ok ? r.json() : null));
 
       setSettings({
         hospitalName: data[0]?.content || '비타민마취통증의학과',
@@ -48,9 +48,9 @@ export default function SettingsPage() {
     setSaving(true);
     try {
       const updates = [
-        { page: 'settings', section: 'hospital-name', content: settings.hospitalName },
-        { page: 'settings', section: 'phone', content: settings.phone },
-        { page: 'settings', section: 'address', content: settings.address },
+        { section: 'settings-hospital-name', data: { content: settings.hospitalName } },
+        { section: 'settings-phone', data: { content: settings.phone } },
+        { section: 'settings-address', data: { content: settings.address } },
       ];
 
       const responses = await Promise.all(

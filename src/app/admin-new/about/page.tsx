@@ -25,12 +25,12 @@ export default function AboutPage() {
   const fetchContent = async () => {
     try {
       const responses = await Promise.all([
-        fetch('/api/content?page=about&section=intro'),
-        fetch('/api/content?page=about&section=staff'),
-        fetch('/api/content?page=about&section=facilities'),
+        fetch('/api/content?section=about-intro'),
+        fetch('/api/content?section=about-staff'),
+        fetch('/api/content?section=about-facilities'),
       ]);
 
-      const data = await Promise.all(responses.map(r => r.json()));
+      const data = await Promise.all(responses.map(r => r.ok ? r.json() : null));
 
       setContent({
         intro: data[0]?.content || '비타민마취통증의학과는 부산 해운대구에 위치한 전문 의료기관입니다.',
@@ -48,9 +48,9 @@ export default function AboutPage() {
     setSaving(true);
     try {
       const updates = [
-        { page: 'about', section: 'intro', content: content.intro },
-        { page: 'about', section: 'staff', content: content.staff },
-        { page: 'about', section: 'facilities', content: content.facilities },
+        { section: 'about-intro', data: { content: content.intro } },
+        { section: 'about-staff', data: { content: content.staff } },
+        { section: 'about-facilities', data: { content: content.facilities } },
       ];
 
       const responses = await Promise.all(
