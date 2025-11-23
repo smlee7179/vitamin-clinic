@@ -11,19 +11,74 @@ interface Stat {
   icon: string;
 }
 
-export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stat[]>([
-    { label: '총 공지사항', value: '24', change: '+3', icon: 'campaign' },
-    { label: '게시된 치료', value: '12', change: '+2', icon: 'healing' },
-    { label: '활성 서비스', value: '8', change: '0', icon: 'medical_services' },
-    { label: '총 방문자', value: '1,234', change: '+156', icon: 'people' },
-  ]);
+interface Notice {
+  id: string;
+  title: string;
+  createdAt: string;
+}
 
-  const [recentNotices, setRecentNotices] = useState([
-    { id: '1', title: '병원 휴진 안내 (11월)', date: '2024-11-20' },
-    { id: '2', title: '새로운 도수치료 프로그램 도입', date: '2024-11-15' },
-    { id: '3', title: '홈페이지 리뉴얼 안내', date: '2024-11-10' },
-  ]);
+interface DashboardStats {
+  notices: { total: number; recent: number };
+  treatments: { total: number; recent: number };
+  services: { total: number; recent: number };
+  visitors: { total: number; recent: number };
+}
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [recentNotices, setRecentNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch dashboard stats
+        const statsResponse = await fetch('/api/dashboard-stats');
+        if (statsResponse.ok) {
+          const data: DashboardStats = await statsResponse.json();
+          setStats([
+            {
+              label: '총 공지사항',
+              value: data.notices.total.toString(),
+              change: `+${data.notices.recent}`,
+              icon: 'campaign',
+            },
+            {
+              label: '게시된 치료',
+              value: data.treatments.total.toString(),
+              change: `+${data.treatments.recent}`,
+              icon: 'healing',
+            },
+            {
+              label: '활성 서비스',
+              value: data.services.total.toString(),
+              change: `+${data.services.recent}`,
+              icon: 'medical_services',
+            },
+            {
+              label: '총 방문자',
+              value: data.visitors.total > 0 ? data.visitors.total.toLocaleString() : 'N/A',
+              change: data.visitors.recent > 0 ? `+${data.visitors.recent}` : '0',
+              icon: 'people',
+            },
+          ]);
+        }
+
+        // Fetch recent notices
+        const noticesResponse = await fetch('/api/notices?limit=3');
+        if (noticesResponse.ok) {
+          const noticesData = await noticesResponse.json();
+          setRecentNotices(noticesData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <AdminLayout>
@@ -39,31 +94,50 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
-                  {stat.label}
-                </p>
-                <p className="mt-2 text-gray-900 dark:text-gray-100 text-3xl font-bold">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-green-600 dark:text-green-400 text-sm font-medium">
-                  {stat.change} 이번 주
-                </p>
-              </div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#f49d25]/10">
-                <span className="material-symbols-outlined text-[#f49d25]" style={{ fontSize: '28px' }}>
-                  {stat.icon}
-                </span>
+        {loading ? (
+          // Loading skeleton
+          [1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm animate-pulse"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 mb-3" />
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-16 mb-2" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+                </div>
+                <div className="w-12 h-12 rounded-lg bg-gray-200 dark:bg-gray-700" />
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          stats.map((stat, index) => (
+            <div
+              key={index}
+              className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                    {stat.label}
+                  </p>
+                  <p className="mt-2 text-gray-900 dark:text-gray-100 text-3xl font-bold">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-green-600 dark:text-green-400 text-sm font-medium">
+                    {stat.change} 이번 주
+                  </p>
+                </div>
+                <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#f49d25]/10">
+                  <span className="material-symbols-outlined text-[#f49d25]" style={{ fontSize: '28px' }}>
+                    {stat.icon}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -112,26 +186,45 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {recentNotices.map((notice) => (
-            <div key={notice.id} className="p-6 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-900 dark:text-gray-100 font-medium">
-                    {notice.title}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                    {notice.date}
-                  </p>
+          {loading ? (
+            // Loading skeleton
+            [1, 2, 3].map((i) => (
+              <div key={i} className="p-6 animate-pulse">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24" />
+                  </div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12" />
                 </div>
-                <Link
-                  href={`/admin-new/notices/${notice.id}`}
-                  className="text-[#f49d25] text-sm font-medium hover:underline"
-                >
-                  수정
-                </Link>
               </div>
+            ))
+          ) : recentNotices.length === 0 ? (
+            <div className="p-6 text-center text-gray-500 dark:text-gray-400">
+              등록된 공지사항이 없습니다.
             </div>
-          ))}
+          ) : (
+            recentNotices.map((notice) => (
+              <div key={notice.id} className="p-6 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-900 dark:text-gray-100 font-medium">
+                      {notice.title}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+                      {new Date(notice.createdAt).toLocaleDateString('ko-KR')}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/admin-new/notices`}
+                    className="text-[#f49d25] text-sm font-medium hover:underline"
+                  >
+                    수정
+                  </Link>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </AdminLayout>

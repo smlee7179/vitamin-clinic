@@ -2,41 +2,59 @@
 
 import { useState, useEffect } from 'react';
 
-interface Service {
+interface Treatment {
   id: string;
   title: string;
   description: string;
-  image: string;
+  icon: string;
+  features: string[];
 }
 
 export default function NewServices() {
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: '1',
-      title: '통증클리닉',
-      description: '급성 및 만성 통증에 대한 전문적인 진단과 치료를 제공합니다.',
-      image: 'https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=800&h=600&fit=crop',
-    },
-    {
-      id: '2',
-      title: '마취과',
-      description: '안전하고 편안한 수술을 위한 마취 서비스를 제공합니다.',
-      image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&h=600&fit=crop',
-    },
-    {
-      id: '3',
-      title: '재활치료',
-      description: '수술 후 회복 및 기능 개선을 위한 맞춤형 재활 프로그램을 제공합니다.',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
-    },
-  ]);
+  const [services, setServices] = useState<Treatment[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 나중에 API에서 데이터 가져오기
-    // fetch('/api/treatments')
-    //   .then(res => res.json())
-    //   .then(data => setServices(data));
+    const fetchTreatments = async () => {
+      try {
+        const response = await fetch('/api/treatments');
+        if (response.ok) {
+          const data = await response.json();
+          setServices(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch treatments:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTreatments();
   }, []);
+
+  if (loading) {
+    return (
+      <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
+        <h2 className="text-gray-900 dark:text-gray-200 text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-8 text-center">
+          주요 진료 과목
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-4 p-6 bg-white dark:bg-[#101822] rounded-xl shadow-sm animate-pulse"
+            >
+              <div className="w-full aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg" />
+              <div>
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
@@ -49,10 +67,9 @@ export default function NewServices() {
             key={service.id}
             className="flex flex-col gap-4 p-6 bg-white dark:bg-[#101822] rounded-xl shadow-sm hover:shadow-md transition-shadow"
           >
-            <div
-              className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-              style={{ backgroundImage: `url("${service.image}")` }}
-            />
+            <div className="flex items-center justify-center w-full aspect-video bg-gradient-to-br from-[#f97316] to-[#fb923c] rounded-lg">
+              <span className="text-6xl">{service.icon}</span>
+            </div>
             <div>
               <p className="text-gray-900 dark:text-white text-lg font-bold leading-normal">
                 {service.title}
@@ -60,6 +77,16 @@ export default function NewServices() {
               <p className="text-gray-600 dark:text-gray-400 text-sm font-normal leading-normal mt-1">
                 {service.description}
               </p>
+              {service.features && service.features.length > 0 && (
+                <ul className="mt-3 space-y-1">
+                  {service.features.slice(0, 3).map((feature, index) => (
+                    <li key={index} className="text-xs text-gray-500 dark:text-gray-500 flex items-start">
+                      <span className="mr-1">•</span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         ))}

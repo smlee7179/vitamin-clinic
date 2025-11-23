@@ -12,46 +12,36 @@ interface Notice {
 }
 
 export default function NoticesPage() {
-  const [notices, setNotices] = useState<Notice[]>([
-    {
-      id: '1',
-      title: '병원 휴진 안내 (11월)',
-      author: '관리자',
-      date: '2024-11-20',
-      status: 'published',
-    },
-    {
-      id: '2',
-      title: '새로운 도수치료 프로그램 도입',
-      author: '관리자',
-      date: '2024-11-15',
-      status: 'published',
-    },
-    {
-      id: '3',
-      title: '홈페이지 리뉴얼 안내',
-      author: '관리자',
-      date: '2024-11-10',
-      status: 'published',
-    },
-    {
-      id: '4',
-      title: '연말 이벤트 준비',
-      author: '최고 관리자',
-      date: '2024-11-05',
-      status: 'draft',
-    },
-    {
-      id: '5',
-      title: '겨울맞이 통증 관리 이벤트',
-      author: '관리자',
-      date: '2024-10-20',
-      status: 'archived',
-    },
-  ]);
-
+  const [notices, setNotices] = useState<Notice[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const response = await fetch('/api/notices');
+        if (response.ok) {
+          const data = await response.json();
+          // Map API data to component format
+          const mappedNotices = data.map((notice: any) => ({
+            id: notice.id,
+            title: notice.title,
+            author: '관리자', // Default author since we don't have this field in the DB yet
+            date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
+            status: 'published' as const, // Default to published
+          }));
+          setNotices(mappedNotices);
+        }
+      } catch (error) {
+        console.error('Failed to fetch notices:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotices();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     const badges = {
@@ -173,27 +163,58 @@ export default function NoticesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-[#2c2c2c]">
-                {filteredNotices.map((notice) => (
-                  <tr key={notice.id}>
-                    <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {notice.title}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {notice.author}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {notice.date}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-sm">
-                      {getStatusBadge(notice.status)}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
-                      <a className="text-[#f49d25] hover:text-[#f49d25]/80" href="#">
-                        수정
-                      </a>
+                {loading ? (
+                  // Loading skeleton
+                  [1, 2, 3, 4, 5].map((i) => (
+                    <tr key={i}>
+                      <td className="px-4 py-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 animate-pulse" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 animate-pulse" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded-full w-16 animate-pulse" />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12 ml-auto animate-pulse" />
+                      </td>
+                    </tr>
+                  ))
+                ) : filteredNotices.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                      {searchTerm || filterStatus !== 'all'
+                        ? '검색 결과가 없습니다.'
+                        : '등록된 공지사항이 없습니다.'}
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredNotices.map((notice) => (
+                    <tr key={notice.id}>
+                      <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {notice.title}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+                        {notice.author}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+                        {notice.date}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-4 text-sm">
+                        {getStatusBadge(notice.status)}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
+                        <a className="text-[#f49d25] hover:text-[#f49d25]/80" href="#">
+                          수정
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
