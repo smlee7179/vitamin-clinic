@@ -48,7 +48,7 @@ export default function NoticesPage() {
   };
 
   return (
-    <div className="bg-white dark:bg-[#101822] min-h-screen">
+    <div className="bg-white min-h-screen">
       <NewHeader />
 
       <main>
@@ -72,7 +72,7 @@ export default function NoticesPage() {
                 className={`px-6 py-2 rounded-lg font-medium transition-all ${
                   selectedCategory === category.value
                     ? 'bg-[#f97316] text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-[#2c2c2c] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#3c3c3c]'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 {category.label}
@@ -88,18 +88,18 @@ export default function NoticesPage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-[#2c2c2c] p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 animate-pulse"
+                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 animate-pulse"
                 >
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-3" />
+                  <div className="h-4 bg-gray-200 rounded w-full mb-2" />
+                  <div className="h-4 bg-gray-200 rounded w-5/6" />
                 </div>
               ))}
             </div>
           ) : notices.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">📢</div>
-              <p className="text-gray-500 dark:text-gray-400 text-lg">
+              <p className="text-gray-500 text-lg">
                 등록된 공지사항이 없습니다.
               </p>
             </div>
@@ -108,10 +108,10 @@ export default function NoticesPage() {
               {notices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`bg-white dark:bg-[#2c2c2c] p-6 rounded-xl shadow-sm hover:shadow-md transition-all ${
+                  className={`bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all ${
                     notice.important
                       ? 'border-2 border-[#f97316]'
-                      : 'border border-gray-200 dark:border-gray-700'
+                      : 'border border-gray-200'
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -129,7 +129,7 @@ export default function NoticesPage() {
                             {notice.category}
                           </span>
                         )}
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <span className="text-sm text-gray-500">
                           {new Date(notice.createdAt).toLocaleDateString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
@@ -139,13 +139,13 @@ export default function NoticesPage() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100">
+                      <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">
                         {notice.title}
                       </h3>
 
                       {/* Content Preview */}
                       <div
-                        className="text-base text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3"
+                        className="text-base text-gray-600 leading-relaxed line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: notice.content }}
                       />
                     </div>
@@ -174,27 +174,27 @@ export default function NoticesPage() {
         </section>
 
         {/* Info Section */}
-        <section className="bg-gray-50 dark:bg-[#1a1a1a] py-16">
+        <section className="bg-gray-50 py-16">
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-4xl mb-4">📅</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">정기 업데이트</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">정기 업데이트</h3>
+                <p className="text-sm text-gray-600">
                   주요 소식은 정기적으로 업데이트됩니다
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-4xl mb-4">🔔</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">중요 공지</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">중요 공지</h3>
+                <p className="text-sm text-gray-600">
                   중요한 안내사항을 놓치지 마세요
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-4xl mb-4">📞</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">문의하기</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">문의하기</h3>
+                <p className="text-sm text-gray-600">
                   궁금한 사항은 전화로 문의해주세요
                 </p>
               </div>

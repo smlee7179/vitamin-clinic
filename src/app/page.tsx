@@ -9,7 +9,7 @@ import NewFooter from '@/components/new/NewFooter';
 
 export default function Home() {
   return (
-    <div className="bg-white dark:bg-[#101822]">
+    <div className="bg-white">
       <NewHeader />
 
       <main>

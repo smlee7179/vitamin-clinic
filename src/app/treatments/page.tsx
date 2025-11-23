@@ -35,7 +35,7 @@ export default function TreatmentsPage() {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-[#101822] min-h-screen">
+    <div className="bg-white min-h-screen">
       <NewHeader />
 
       <main>
@@ -54,40 +54,40 @@ export default function TreatmentsPage() {
           {loading ? (
             <div className="grid md:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white dark:bg-[#2c2c2c] p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 animate-pulse">
-                  <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4" />
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
+                <div key={i} className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 animate-pulse">
+                  <div className="w-16 h-16 bg-gray-200 rounded-lg mb-4" />
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-3" />
+                  <div className="h-4 bg-gray-200 rounded w-full mb-2" />
+                  <div className="h-4 bg-gray-200 rounded w-5/6" />
                 </div>
               ))}
             </div>
           ) : treatments.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">등록된 치료가 없습니다.</p>
+              <p className="text-gray-500">등록된 치료가 없습니다.</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8">
               {treatments.map((treatment) => (
                 <div
                   key={treatment.id}
-                  className="bg-white dark:bg-[#2c2c2c] p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+                  className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#f97316] to-[#fb923c] rounded-lg mb-4 text-3xl">
                     {treatment.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {treatment.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                  <p className="text-gray-600 mb-6 leading-relaxed">
                     {treatment.description}
                   </p>
                   {treatment.features && treatment.features.length > 0 && (
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">주요 특징:</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">주요 특징:</h4>
                       <ul className="space-y-2">
                         {treatment.features.map((feature, index) => (
-                          <li key={index} className="flex items-start text-gray-600 dark:text-gray-400">
+                          <li key={index} className="flex items-start text-gray-600">
                             <span className="text-[#f97316] mr-2">✓</span>
                             <span className="text-sm">{feature}</span>
                           </li>
@@ -102,37 +102,37 @@ export default function TreatmentsPage() {
         </section>
 
         {/* Benefits Section */}
-        <section className="bg-gray-50 dark:bg-[#1a1a1a] py-16">
+        <section className="bg-gray-50 py-16">
           <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-12 text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
               치료의 장점
             </h2>
             <div className="grid md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-4xl mb-4">⚡</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">빠른 효과</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">빠른 효과</h3>
+                <p className="text-sm text-gray-600">
                   즉각적인 통증 완화
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-4xl mb-4">🎯</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">정확한 치료</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">정확한 치료</h3>
+                <p className="text-sm text-gray-600">
                   원인 부위 집중 치료
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-4xl mb-4">✨</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">부작용 최소화</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">부작용 최소화</h3>
+                <p className="text-sm text-gray-600">
                   안전한 치료 방법
                 </p>
               </div>
               <div className="text-center">
                 <div className="text-4xl mb-4">🔄</div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">지속적 관리</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h3 className="font-bold text-gray-900 mb-2">지속적 관리</h3>
+                <p className="text-sm text-gray-600">
                   재발 방지 프로그램
                 </p>
               </div>

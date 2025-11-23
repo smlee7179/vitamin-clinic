@@ -44,7 +44,7 @@ const services = [
 
 export default function ServicesPage() {
   return (
-    <div className="bg-white dark:bg-[#101822] min-h-screen">
+    <div className="bg-white min-h-screen">
       <NewHeader />
 
       <main>
@@ -64,22 +64,22 @@ export default function ServicesPage() {
             {services.map((service, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-[#2c2c2c] p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+                className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#f97316] to-[#fb923c] rounded-lg mb-4 text-3xl">
                   {service.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-6 leading-relaxed">
                   {service.description}
                 </p>
                 <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">세부 항목:</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">세부 항목:</h4>
                   <ul className="space-y-2">
                     {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-gray-600 dark:text-gray-400">
+                      <li key={idx} className="flex items-start text-gray-600">
                         <span className="text-[#f97316] mr-2">•</span>
                         <span className="text-sm">{feature}</span>
                       </li>

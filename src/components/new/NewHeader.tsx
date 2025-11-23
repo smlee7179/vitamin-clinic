@@ -7,11 +7,11 @@ export default function NewHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#101822]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 h-20">
+        <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-4 text-gray-900 dark:text-white">
+          <Link href="/" className="flex items-center gap-4 text-gray-900">
             <svg className="w-8 h-8 text-[#f97316]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
               <g clipPath="url(#clip0_6_535)">
                 <path d="M24 0C10.7452 0 0 10.7452 0 24C0 37.2548 10.7452 48 24 48C37.2548 48 48 37.2548 48 24C48 10.7452 37.2548 0 24 0ZM34 26H26V34H22V26H14V22H22V14H26V22H34V26Z" fill="currentColor"></path>
@@ -30,31 +30,31 @@ export default function NewHeader() {
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/about"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
                 병원소개
               </Link>
               <Link
                 href="/services"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
                 진료안내
               </Link>
               <Link
                 href="/treatments"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
                 치료소개
               </Link>
               <Link
                 href="/notices"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
                 공지사항
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
                 오시는 길
               </Link>
@@ -71,7 +71,7 @@ export default function NewHeader() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-800 dark:text-gray-300"
+              className="md:hidden p-2 text-gray-800"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -86,39 +86,39 @@ export default function NewHeader() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="md:hidden py-4 border-b border-gray-200">
             <nav className="flex flex-col gap-4">
               <Link
                 href="/about"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 병원소개
               </Link>
               <Link
                 href="/services"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 진료안내
               </Link>
               <Link
                 href="/treatments"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 치료소개
               </Link>
               <Link
                 href="/notices"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 공지사항
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-800 dark:text-gray-300 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 오시는 길

@@ -4,12 +4,12 @@ import Link from 'next/link';
 
 export default function NewFooter() {
   return (
-    <footer className="bg-gray-100 dark:bg-[#101822] mt-24 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-100 mt-24 border-t border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Copyright */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 text-gray-900 dark:text-white">
+            <div className="flex items-center gap-2 text-gray-900">
               <svg
                 className="w-7 h-7 text-[#f97316]"
                 fill="none"
@@ -30,19 +30,19 @@ export default function NewFooter() {
               </svg>
               <h2 className="text-lg font-bold">비타민마취통증의학과</h2>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500">
               © 2024 비타민마취통증의학과. All Rights Reserved.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="text-sm">
-            <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3">바로가기</h3>
+            <h3 className="font-bold text-gray-800 mb-3">바로가기</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/about"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   병원소개
                 </Link>
@@ -50,7 +50,7 @@ export default function NewFooter() {
               <li>
                 <Link
                   href="/services"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   진료안내
                 </Link>
@@ -58,7 +58,7 @@ export default function NewFooter() {
               <li>
                 <Link
                   href="/treatments"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   치료소개
                 </Link>
@@ -66,7 +66,7 @@ export default function NewFooter() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   오시는 길
                 </Link>
@@ -76,12 +76,12 @@ export default function NewFooter() {
 
           {/* Info Links */}
           <div className="text-sm">
-            <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3">정보</h3>
+            <h3 className="font-bold text-gray-800 mb-3">정보</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/privacy"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   개인정보처리방침
                 </Link>
@@ -89,7 +89,7 @@ export default function NewFooter() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-gray-600 dark:text-gray-400 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors"
                 >
                   이용약관
                 </Link>
@@ -99,9 +99,9 @@ export default function NewFooter() {
 
           {/* Contact */}
           <div className="text-sm">
-            <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-3">문의</h3>
-            <p className="text-gray-600 dark:text-gray-400">부산광역시 동구 중앙대로 375</p>
-            <p className="text-gray-600 dark:text-gray-400">전화: 051-469-7581</p>
+            <h3 className="font-bold text-gray-800 mb-3">문의</h3>
+            <p className="text-gray-600">부산광역시 동구 중앙대로 375</p>
+            <p className="text-gray-600">전화: 051-469-7581</p>
           </div>
         </div>
       </div>
