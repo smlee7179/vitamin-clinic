@@ -114,6 +114,19 @@ model AuditLog {
   @@index([createdAt])
 }
 
+model Popup {
+  id             String   @id @default(cuid())
+  title          String
+  content        String
+  imageUrl       String?
+  active         Boolean  @default(true)
+  showDoNotShow  Boolean  @default(true)
+  startDate      DateTime?
+  endDate        DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   STAFF

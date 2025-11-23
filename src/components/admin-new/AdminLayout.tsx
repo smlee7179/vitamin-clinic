@@ -17,6 +17,7 @@ const menuItems: MenuItem[] = [
   { id: 'services', label: '진료 과목 안내', icon: 'medical_services', href: '/admin-new/services' },
   { id: 'treatments', label: '치료 소개 관리', icon: 'healing', href: '/admin-new/treatments' },
   { id: 'notices', label: '공지사항 관리', icon: 'campaign', href: '/admin-new/notices' },
+  { id: 'popups', label: '팝업 관리', icon: 'web_asset', href: '/admin-new/popups' },
   { id: 'accounts', label: '계정 관리', icon: 'group', href: '/admin-new/accounts' },
 ];
 

@@ -47,6 +47,12 @@ export default function NewHeader() {
                 치료소개
               </Link>
               <Link
+                href="/hours"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+              >
+                진료시간
+              </Link>
+              <Link
                 href="/notices"
                 className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
               >
@@ -108,6 +114,13 @@ export default function NewHeader() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 치료소개
+              </Link>
+              <Link
+                href="/hours"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                진료시간
               </Link>
               <Link
                 href="/notices"
