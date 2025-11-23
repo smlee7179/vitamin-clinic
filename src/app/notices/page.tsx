@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -106,9 +107,10 @@ export default function NoticesPage() {
           ) : (
             <div className="space-y-4">
               {notices.map((notice) => (
-                <div
+                <Link
                   key={notice.id}
-                  className={`bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all ${
+                  href={`/notices/${notice.id}`}
+                  className={`block bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all ${
                     notice.important
                       ? 'border-2 border-[#f97316]'
                       : 'border border-gray-200'
@@ -167,7 +169,7 @@ export default function NoticesPage() {
                       </svg>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
