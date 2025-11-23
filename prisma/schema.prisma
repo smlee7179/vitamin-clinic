@@ -33,6 +33,7 @@ model Notice {
   content   String
   important Boolean  @default(false)
   category  String   @default("general")
+  status    String   @default("published")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

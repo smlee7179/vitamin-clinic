@@ -11,12 +11,18 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = searchParams.get('limit');
     const category = searchParams.get('category');
+    const status = searchParams.get('status');
 
     const where: any = {};
 
     // Filter by category if provided
     if (category && category !== 'all') {
       where.category = category;
+    }
+
+    // Filter by status if provided
+    if (status && status !== 'all') {
+      where.status = status;
     }
 
     const notices = await prisma.notice.findMany({
@@ -39,7 +45,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, content, important, category } = body;
+    const { title, content, important, category, status } = body;
 
     if (!title || !content) {
       return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
@@ -51,6 +57,7 @@ export async function POST(request: NextRequest) {
         content,
         important: important || false,
         category: category || 'general',
+        status: status || 'published',
       },
     });
 
@@ -68,7 +75,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, title, content, important, category } = body;
+    const { id, title, content, important, category, status } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Notice ID is required' }, { status: 400 });
@@ -81,6 +88,7 @@ export async function PUT(request: NextRequest) {
         content,
         important,
         category,
+        status,
       },
     });
 

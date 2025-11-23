@@ -12,6 +12,7 @@ export default function CreateNoticePage() {
     content: '',
     category: 'general',
     important: false,
+    status: 'published',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,6 +87,23 @@ export default function CreateNoticePage() {
               <option value="event">이벤트</option>
               <option value="notice">공지</option>
               <option value="holiday">휴진</option>
+            </select>
+          </div>
+
+          {/* Status */}
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+              상태
+            </label>
+            <select
+              id="status"
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#f49d25] focus:border-[#f49d25]"
+            >
+              <option value="published">게시됨</option>
+              <option value="draft">임시저장</option>
+              <option value="archived">내려감</option>
             </select>
           </div>
 

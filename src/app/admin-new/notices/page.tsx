@@ -9,7 +9,7 @@ interface Notice {
   title: string;
   author: string;
   date: string;
-  status: 'published' | 'draft' | 'archived';
+  status: string;
 }
 
 export default function NoticesPage() {
@@ -19,30 +19,35 @@ export default function NoticesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const response = await fetch('/api/notices');
-        if (response.ok) {
-          const data = await response.json();
-          // Map API data to component format
-          const mappedNotices = data.map((notice: any) => ({
-            id: notice.id,
-            title: notice.title,
-            author: '관리자', // Default author since we don't have this field in the DB yet
-            date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
-            status: 'published' as const, // Default to published
-          }));
-          setNotices(mappedNotices);
-        }
-      } catch (error) {
-        console.error('Failed to fetch notices:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchNotices();
-  }, []);
+  }, [filterStatus]);
+
+  const fetchNotices = async () => {
+    setLoading(true);
+    try {
+      const url = filterStatus === 'all'
+        ? '/api/notices'
+        : `/api/notices?status=${filterStatus}`;
+
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        // Map API data to component format
+        const mappedNotices = data.map((notice: any) => ({
+          id: notice.id,
+          title: notice.title,
+          author: '관리자', // Default author since we don't have this field in the DB yet
+          date: new Date(notice.createdAt).toLocaleDateString('ko-KR'),
+          status: notice.status || 'published',
+        }));
+        setNotices(mappedNotices);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notices:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const badges = {
