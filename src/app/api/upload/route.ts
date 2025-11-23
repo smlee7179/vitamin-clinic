@@ -6,6 +6,10 @@ import sharp from 'sharp';
 // ⚠️ CRITICAL: Node.js runtime으로 변경 (세션 유지를 위해 필수)
 export const runtime = 'nodejs';
 
+// Route segment config for Next.js 14 App Router
+export const maxDuration = 60; // Maximum execution time in seconds
+export const dynamic = 'force-dynamic';
+
 // 섹션별 권장 해상도 설정
 const IMAGE_PRESETS = {
   hero: { width: 800, height: 1000, quality: 85 }, // 4:5 비율
@@ -44,12 +48,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (10MB max before processing)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (4MB max - Vercel free tier limit)
+    const maxSize = 4 * 1024 * 1024; // 4MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 10MB.' },
-        { status: 400 }
+        { error: 'File too large. Maximum size is 4MB. Please compress the image before uploading.' },
+        { status: 413 }
       );
     }
 

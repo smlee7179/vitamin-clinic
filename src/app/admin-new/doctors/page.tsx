@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin-new/AdminLayout';
+import { compressImage, formatFileSize } from '@/lib/imageCompression';
 
 interface Doctor {
   id: string;
@@ -64,10 +65,20 @@ export default function DoctorsPage() {
     if (!file) return;
 
     setUploading(true);
-    const formDataUpload = new FormData();
-    formDataUpload.append('file', file);
 
     try {
+      // Compress image before upload
+      console.log('Original file size:', formatFileSize(file.size));
+      const compressedFile = await compressImage(file, {
+        maxSizeMB: 3.5,
+        maxWidthOrHeight: 1920,
+        quality: 0.85,
+      });
+      console.log('Compressed file size:', formatFileSize(compressedFile.size));
+
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', compressedFile);
+
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formDataUpload,
@@ -77,11 +88,12 @@ export default function DoctorsPage() {
         const data = await response.json();
         setFormData({ ...formData, photoUrl: data.url });
       } else {
-        alert('이미지 업로드 실패');
+        const errorData = await response.json().catch(() => ({}));
+        alert(errorData.error || '이미지 업로드 실패');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('이미지 업로드 중 오류 발생');
+      alert('이미지 업로드 중 오류 발생: ' + (error instanceof Error ? error.message : '알 수 없는 오류'));
     } finally {
       setUploading(false);
     }
