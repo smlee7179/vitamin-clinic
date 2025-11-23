@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3000",
-    "build": "prisma generate && (prisma migrate deploy || prisma db push) && next build",
+    "build": "prisma generate && prisma db push --accept-data-loss && next build",
     "build:analyze": "ANALYZE=true prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate"
