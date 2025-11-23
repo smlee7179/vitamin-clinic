@@ -1,9 +1,39 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
+interface Doctor {
+  id: string;
+  name: string;
+  title: string;
+  specialty: string;
+  photoUrl: string | null;
+  education: string;
+  career: string;
+  order: number;
+}
+
 export default function AboutPage() {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await fetch('/api/doctors');
+      if (response.ok) {
+        const data = await response.json();
+        setDoctors(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch doctors:', error);
+    }
+  };
+
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
@@ -78,6 +108,57 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        {/* Medical Staff Section */}
+        {doctors.length > 0 && (
+          <section className="max-w-6xl mx-auto px-4 py-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+              의료진 소개
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {doctors.map((doctor) => (
+                <div key={doctor.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                  {doctor.photoUrl && (
+                    <div className="mb-6 flex justify-center">
+                      <img
+                        src={doctor.photoUrl}
+                        alt={doctor.name}
+                        className="w-32 h-32 rounded-full object-cover border-4 border-[#f97316]/20"
+                      />
+                    </div>
+                  )}
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">
+                      {doctor.name}
+                    </h3>
+                    <p className="text-sm font-medium text-gray-600 mb-2">
+                      {doctor.title}
+                    </p>
+                    <p className="text-sm text-[#f97316] font-medium">
+                      {doctor.specialty}
+                    </p>
+                  </div>
+                  {doctor.education && (
+                    <div className="mb-3 text-left">
+                      <p className="text-xs font-bold text-gray-700 mb-2">학력</p>
+                      <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed">
+                        {doctor.education}
+                      </p>
+                    </div>
+                  )}
+                  {doctor.career && (
+                    <div className="text-left">
+                      <p className="text-xs font-bold text-gray-700 mb-2">경력</p>
+                      <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed">
+                        {doctor.career}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Vision Section */}
         <section className="bg-gray-50 py-16">

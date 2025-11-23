@@ -1,9 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
 export default function ContactPage() {
+  const [copiedText, setCopiedText] = useState('');
+
+  const handleCopy = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(type);
+      setTimeout(() => setCopiedText(''), 2000);
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
+  };
+
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
@@ -27,11 +40,31 @@ export default function ContactPage() {
                 <div className="w-12 h-12 bg-[#f97316] rounded-lg flex items-center justify-center flex-shrink-0">
                   <span className="text-2xl">📞</span>
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-bold text-gray-900 mb-2">전화번호</h3>
-                  <a href="tel:051-XXX-XXXX" className="text-[#f97316] text-lg font-semibold hover:underline">
+                  <p className="text-[#f97316] text-lg font-semibold mb-3">
                     051-XXX-XXXX
-                  </a>
+                  </p>
+                  <div className="flex gap-2">
+                    <a
+                      href="tel:051-XXX-XXXX"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#f97316] text-white rounded-lg text-sm font-medium hover:bg-[#f97316]/90 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      전화 걸기
+                    </a>
+                    <button
+                      onClick={() => handleCopy('051-XXX-XXXX', 'phone')}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      {copiedText === 'phone' ? '복사됨!' : '복사'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -62,13 +95,22 @@ export default function ContactPage() {
               <div className="w-12 h-12 bg-[#f97316] rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-2xl">📍</span>
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-gray-900 font-medium mb-2">
                   부산광역시 해운대구
                 </p>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 text-sm mb-3">
                   (상세 주소는 전화 문의 바랍니다)
                 </p>
+                <button
+                  onClick={() => handleCopy('부산광역시 해운대구', 'address')}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  {copiedText === 'address' ? '복사됨!' : '주소 복사'}
+                </button>
               </div>
             </div>
 

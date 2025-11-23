@@ -13,7 +13,9 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { id: 'home', label: '홈페이지 관리', icon: 'home', href: '/admin-new' },
+  { id: 'hero-slides', label: '메인 슬라이드 관리', icon: 'photo_library', href: '/admin-new/hero-slides' },
   { id: 'about', label: '병원 소개 관리', icon: 'info', href: '/admin-new/about' },
+  { id: 'doctors', label: '의료진 관리', icon: 'badge', href: '/admin-new/doctors' },
   { id: 'services', label: '진료 과목 안내', icon: 'medical_services', href: '/admin-new/services' },
   { id: 'treatments', label: '치료 소개 관리', icon: 'healing', href: '/admin-new/treatments' },
   { id: 'notices', label: '공지사항 관리', icon: 'campaign', href: '/admin-new/notices' },

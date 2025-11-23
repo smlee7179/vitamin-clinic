@@ -1,7 +1,7 @@
 'use client';
 
 import NewHeader from '@/components/new/NewHeader';
-import NewHero from '@/components/new/NewHero';
+import NewHeroCarousel from '@/components/new/NewHeroCarousel';
 import NewServices from '@/components/new/NewServices';
 import NewNotices from '@/components/new/NewNotices';
 import NewLocation from '@/components/new/NewLocation';
@@ -14,7 +14,7 @@ export default function Home() {
       <NewHeader />
 
       <main>
-        <NewHero />
+        <NewHeroCarousel />
         <NewServices />
         <NewNotices />
         <NewLocation />

@@ -9,12 +9,21 @@ interface Treatment {
   title: string;
   description: string;
   icon: string;
+  category: string | null;
   features: string[];
 }
 
 export default function TreatmentsPage() {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const categories = [
+    { value: 'all', label: '전체' },
+    { value: 'spine', label: '척추 질환' },
+    { value: 'joint', label: '관절 질환' },
+    { value: 'special', label: '특수 치료' },
+  ];
 
   useEffect(() => {
     const fetchTreatments = async () => {
@@ -34,6 +43,10 @@ export default function TreatmentsPage() {
     fetchTreatments();
   }, []);
 
+  const filteredTreatments = selectedCategory === 'all'
+    ? treatments
+    : treatments.filter(t => t.category === selectedCategory);
+
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
@@ -49,8 +62,27 @@ export default function TreatmentsPage() {
           </div>
         </section>
 
+        {/* Category Filter */}
+        <section className="max-w-6xl mx-auto px-4 pt-8">
+          <div className="flex flex-wrap gap-3 justify-center">
+            {categories.map((category) => (
+              <button
+                key={category.value}
+                onClick={() => setSelectedCategory(category.value)}
+                className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                  selectedCategory === category.value
+                    ? 'bg-[#f97316] text-white shadow-md'
+                    : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
         {/* Treatments Grid */}
-        <section className="max-w-6xl mx-auto px-4 py-16">
+        <section className="max-w-6xl mx-auto px-4 py-8">
           {loading ? (
             <div className="grid md:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map((i) => (
@@ -62,13 +94,13 @@ export default function TreatmentsPage() {
                 </div>
               ))}
             </div>
-          ) : treatments.length === 0 ? (
+          ) : filteredTreatments.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">등록된 치료가 없습니다.</p>
+              <p className="text-gray-500">해당 카테고리에 등록된 치료가 없습니다.</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8">
-              {treatments.map((treatment) => (
+              {filteredTreatments.map((treatment) => (
                 <div
                   key={treatment.id}
                   className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
