@@ -40,119 +40,84 @@ export default function AboutPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#f97316] to-[#fb923c] text-white py-20">
-          <div className="max-w-6xl mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">병원 소개</h1>
-            <p className="text-lg md:text-xl opacity-90">
-              환자 중심의 전문적인 마취통증의학과
-            </p>
+        <section
+          className="min-h-[480px] flex flex-col items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEvT0RCsOOUU4RQkVcUJOlQoCxEc7RFWZ7CRkAvr5eUigZKCdBugReAIFNL-1IVahADzOYLbxzkm7_sxcCFOVVrXUu64h0mweifH7xCsKS3MkjhsYqZnWdSOjOgpaHRgAc-kYzPoxCqU5Akjdr775rljufqNCSOeSgbLTnCXTO7_E4KlRHcU34T8bg1ePxkomRqqTve53qko_PoE96KX0sR6K4cJmUp74AlKq7StbBUV5R8ywM0oCH5tUcN5qtsHWP0m1WXZ0WCSnZ")'
+          }}
+        >
+          <div className="flex flex-col gap-2 text-center max-w-4xl">
+            <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
+              통증 없는 건강한 삶, 비타민이 함께합니다
+            </h1>
+            <h2 className="text-white/90 text-base md:text-lg font-normal leading-normal">
+              환자 중심의 따뜻하고 전문적인 통증 치료를 약속합니다.
+            </h2>
           </div>
         </section>
 
-        {/* About Section */}
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                비타민마취통증의학과
-              </h2>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                비타민마취통증의학과는 부산 해운대구에 위치한 전문 의료기관으로,
-                환자분들의 통증 완화와 건강 회복을 최우선으로 생각합니다.
-              </p>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                최신 의료 장비와 풍부한 임상 경험을 바탕으로
-                급성 및 만성 통증에 대한 전문적인 진단과 치료를 제공하고 있습니다.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                환자 한 분 한 분의 상태를 정확히 파악하고,
-                개인별 맞춤 치료 계획을 수립하여 최상의 치료 결과를 제공합니다.
-              </p>
+        {/* Greeting Section */}
+        <section className="max-w-[1140px] mx-auto px-4 md:px-10 py-16 md:py-20">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-[#F8F9FA] dark:bg-gray-800 p-8 md:p-12 rounded-xl border border-gray-200">
+            <div className="w-full md:w-1/3">
+              <img
+                alt="병원 내부 사진"
+                className="w-full h-auto object-cover rounded-lg aspect-square"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuACJ6rVG0bW9U7VfgrNWfNJw4pgjTorthRESmONfucJg_tNnp8u9LG2896HF3jDrnCSPDRoQWxHT0sV19CWzIjVca7q8PqvhadeoP4vOUfXaTcMTXzjA8dWM0MhigfqTnkb5Fkv9Ee3_forM-MTaPkeO9ZOIH0HDCpXgHD3882pwHIpfJkHh988d8SaBVdlnyy4FYBX4HF7ZhUQKM4kUZ9T8ch8J8SZ7aQnRELMXTRN5m3UlOM3_h_4XW84N4GKFZl2D6MVntjcUNto"
+              />
             </div>
-            <div className="bg-gradient-to-br from-[#f97316]/10 to-[#fb923c]/10 rounded-2xl p-8">
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#f97316] rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">⚕️</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">전문 의료진</h3>
-                    <p className="text-sm text-gray-600">
-                      풍부한 임상 경험을 보유한 마취통증의학과 전문의
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#f97316] rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">🏥</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">최신 시설</h3>
-                    <p className="text-sm text-gray-600">
-                      첨단 의료 장비와 쾌적한 진료 환경
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#f97316] rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">❤️</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2">환자 중심</h3>
-                    <p className="text-sm text-gray-600">
-                      맞춤형 치료와 세심한 케어 서비스
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col gap-4 w-full md:w-2/3">
+              <h2 className="text-gray-900 tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+                인사말
+              </h2>
+              <p className="text-gray-600 text-base font-normal leading-relaxed">
+                안녕하십니까? 비타민마취통증의학과에 오신 것을 진심으로 환영합니다.<br />
+                저희 병원은 환자 한 분 한 분의 목소리에 귀 기울이고, 최신 의료 지식과 기술을 바탕으로 정확한 진단과 효과적인 치료를 제공하기 위해 최선을 다하고 있습니다. 통증으로 고통받는 모든 분들이 건강한 일상을 되찾을 수 있도록 따뜻한 마음으로 함께하겠습니다. 감사합니다.
+              </p>
+              <p className="text-right font-bold text-lg text-gray-900 mt-4">
+                원장 홍길동
+              </p>
             </div>
           </div>
         </section>
 
         {/* Medical Staff Section */}
         {doctors.length > 0 && (
-          <section className="max-w-6xl mx-auto px-4 py-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+          <section className="px-4 md:px-10 py-16 md:py-20">
+            <h2 className="text-gray-900 text-[28px] font-bold leading-tight tracking-tight pb-3 pt-5 text-center">
               의료진 소개
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+              비타민마취통증의학과의 분야별 전문 의료진이 환자 여러분의 건강한 삶을 위해 최선을 다하고 있습니다.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[1140px] mx-auto">
               {doctors.map((doctor) => (
-                <div key={doctor.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div
+                  key={doctor.id}
+                  className="flex flex-col items-center text-center bg-white p-6 rounded-xl shadow-sm border border-gray-200"
+                >
                   {doctor.photoUrl && (
-                    <div className="mb-6 flex justify-center">
-                      <img
-                        src={doctor.photoUrl}
-                        alt={doctor.name}
-                        className="w-32 h-32 rounded-full object-cover border-4 border-[#f97316]/20"
-                      />
-                    </div>
+                    <img
+                      className="w-32 h-32 rounded-full object-cover mb-4"
+                      src={doctor.photoUrl}
+                      alt={doctor.name}
+                    />
                   )}
-                  <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">
-                      {doctor.name}
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600 mb-2">
-                      {doctor.title}
-                    </p>
-                    <p className="text-sm text-[#f97316] font-medium">
-                      {doctor.specialty}
-                    </p>
-                  </div>
-                  {doctor.education && (
-                    <div className="mb-3 text-left">
-                      <p className="text-xs font-bold text-gray-700 mb-2">학력</p>
-                      <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed">
-                        {doctor.education}
-                      </p>
-                    </div>
-                  )}
-                  {doctor.career && (
-                    <div className="text-left">
-                      <p className="text-xs font-bold text-gray-700 mb-2">경력</p>
-                      <p className="text-xs text-gray-600 whitespace-pre-line leading-relaxed">
-                        {doctor.career}
-                      </p>
-                    </div>
+                  <h3 className="font-bold text-lg text-gray-900">
+                    {doctor.name}
+                  </h3>
+                  <p className="text-[#f97316] font-medium text-sm">
+                    {doctor.specialty}
+                  </p>
+                  {(doctor.education || doctor.career) && (
+                    <ul className="text-gray-500 text-sm mt-3 text-left list-disc list-inside space-y-1">
+                      {doctor.education && doctor.education.split('\n').map((line, idx) => (
+                        line.trim() && <li key={`edu-${idx}`}>{line.trim()}</li>
+                      ))}
+                      {doctor.career && doctor.career.split('\n').map((line, idx) => (
+                        line.trim() && <li key={`career-${idx}`}>{line.trim()}</li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               ))}
@@ -160,57 +125,59 @@ export default function AboutPage() {
           </section>
         )}
 
-        {/* Vision Section */}
-        <section className="bg-gray-50 py-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-              우리의 약속
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="text-4xl mb-4">🎯</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  정확한 진단
-                </h3>
-                <p className="text-gray-600">
-                  체계적인 검사와 정밀한 분석을 통한 정확한 통증 원인 파악
-                </p>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="text-4xl mb-4">💪</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  효과적인 치료
-                </h3>
-                <p className="text-gray-600">
-                  최신 치료법과 풍부한 경험을 바탕으로 한 효과적인 통증 관리
-                </p>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="text-4xl mb-4">🤝</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  지속적인 관리
-                </h3>
-                <p className="text-gray-600">
-                  치료 후에도 지속적인 모니터링과 재발 방지를 위한 사후 관리
-                </p>
+        {/* Hospital Staff Section */}
+        <section className="bg-white px-4 md:px-10 py-16 md:py-20">
+          <h2 className="text-gray-900 text-[28px] font-bold leading-tight tracking-tight pb-3 pt-5 text-center">
+            병원을 만드는 사람들
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            의료진 외에도 각자의 자리에서 병원의 원활한 운영을 위해 힘쓰는 주요 직원들을 소개합니다.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+            <div className="flex items-center gap-4">
+              <img
+                className="w-20 h-20 rounded-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuANwTqgmRSLsfW9oCeice9cRX5IgX1Es_rFZTgmy4EoMS4HWdq_RYzVj3CGHTi6OIKWUjqLSjuSpcjeGWdkUOof39GeM6Wz_O-Iyv6VtJAhB6VLFgKrRbCpUZvFoKXAq9ntkc9JxFMXa9Hgp8f6DW1RzR8PxbRANglgGAfRtlgNqwDJ_5CO6OVv72lyXAt81bYax3Ay5CQWorAWkRapZ9mv1q6-TdpZysn6u7wIusb94tCFef6kSqcaS1wJI4LbI62SvCt_h7wYnAv_"
+                alt="간호부장 홍길동"
+              />
+              <div>
+                <h4 className="font-bold text-gray-900">홍길동</h4>
+                <p className="text-sm text-gray-500">간호부장</p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Contact CTA */}
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <div className="bg-gradient-to-r from-[#f97316] to-[#fb923c] rounded-2xl p-12 text-center text-white">
-            <h2 className="text-3xl font-bold mb-4">진료 예약 및 상담</h2>
-            <p className="text-lg mb-8 opacity-90">
-              통증으로 고민하고 계신가요? 전문의와 상담하세요.
-            </p>
-            <a
-              href="/contact"
-              className="inline-block bg-white text-[#f97316] px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
-            >
-              오시는 길 보기
-            </a>
+            <div className="flex items-center gap-4">
+              <img
+                className="w-20 h-20 rounded-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHlSzPnacAM_3Ngc6eDmTbuniFl193hk_0uN0arRT5an3KoowFz9br9uA6mqgV1NfkIWA5FvajRznGTpRRv4If9O1eJZxKVCpJhSUxcjPlhSSaFvix_fdFwxUw4MmUothvlVq30APl_O2dbeqDopl7ID7g3LJscm2eVJWhB0BTIjE0gab5M-lHNEb2s6a_QXkhvCY6tv-gkvdbKU0aO6Dpl0XraUkk3UmS4K3kQo-FC2tCYWsjOex2PZxd5wIx7YhjixIr0v0-f0Fy"
+                alt="행정부장 임꺽정"
+              />
+              <div>
+                <h4 className="font-bold text-gray-900">임꺽정</h4>
+                <p className="text-sm text-gray-500">행정부장</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <img
+                className="w-20 h-20 rounded-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4u4KA7HIS99u2-BzL2zyROAHFAZcPU42mKQaKwpzLXLBSR0O6ot4kqVXuMYaSBS8phEyxvNHSmZVUOt0lT1q84sYD9A7T7tPi3Rb_nFnQrLYumxnl0sZiU-pbG4sIGxRagH7Ei3AwXhJUN6VF3sq7CNk19Zu6LPpTisRQrCKWVEKI0YWNwsPAov4F50zBtfGjogM7nK1nGDCiVwkYxE_pFO4q6OQP2Mg49RG9XKjO7GbAaC4WJrS45raLfMqQhFO4R9DLPLYdfECU"
+                alt="약제부장 허준"
+              />
+              <div>
+                <h4 className="font-bold text-gray-900">허준</h4>
+                <p className="text-sm text-gray-500">약제부장</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <img
+                className="w-20 h-20 rounded-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJUt4-bE4qkFr74qEbEwPVdqO19sIvB1XGBn77YNHb_cNZkYqTxplZ5FUUt20EhhjnqEQ-bxvIbQtdRrnJYjrtcT-KD85zM7z3LmfTDc3B_cMj32AvbzScgpxMSJC2NUA-XG8QuFesHY-jBnwnv4P1B3X_dG-8EHg7kROok37yQqX7boFFpSCcrTHi3abrZ_YajEbatz8Czw_WpO867M7VqsEcHZSrn26IvaDa3jnqmjxnYdtwXO6O1ufpf59Z12SwSl-gQ4yphW1P"
+                alt="홍보팀장 장금이"
+              />
+              <div>
+                <h4 className="font-bold text-gray-900">장금이</h4>
+                <p className="text-sm text-gray-500">홍보팀장</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
