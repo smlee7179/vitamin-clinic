@@ -44,6 +44,13 @@ export default function DoctorsPage() {
       if (response.ok) {
         const data = await response.json();
         setDoctors(data);
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('API Error:', errorData);
+        // If it's a database error, show helpful message
+        if (response.status === 500) {
+          console.log('데이터베이스 테이블이 생성되지 않았을 수 있습니다. Vercel 배포 후 자동으로 마이그레이션됩니다.');
+        }
       }
     } catch (error) {
       console.error('Failed to fetch doctors:', error);

@@ -145,29 +145,96 @@ export default function AdminDashboard() {
         <h3 className="text-gray-900 dark:text-gray-100 text-xl font-bold mb-4">
           빠른 작업
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
-            href="/admin-new/notices"
+            href="/admin-new/hero-slides"
+            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[#f49d25]">photo_library</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">메인 슬라이드</span>
+          </Link>
+          <Link
+            href="/admin-new/doctors"
+            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[#f49d25]">badge</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">의료진 관리</span>
+          </Link>
+          <Link
+            href="/admin-new/popups"
+            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
+          >
+            <span className="material-symbols-outlined text-[#f49d25]">web_asset</span>
+            <span className="text-gray-900 dark:text-gray-100 font-medium">팝업 관리</span>
+          </Link>
+          <Link
+            href="/admin-new/notices/create"
             className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
           >
             <span className="material-symbols-outlined text-[#f49d25]">add_circle</span>
             <span className="text-gray-900 dark:text-gray-100 font-medium">새 공지사항</span>
           </Link>
-          <Link
-            href="/admin-new/treatments"
-            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
-          >
-            <span className="material-symbols-outlined text-[#f49d25]">edit</span>
-            <span className="text-gray-900 dark:text-gray-100 font-medium">치료 수정</span>
-          </Link>
-          <Link
-            href="/admin-new/settings"
-            className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-[#f8f7f5] dark:hover:bg-[#1a1a1a] transition-colors"
-          >
-            <span className="material-symbols-outlined text-[#f49d25]">settings</span>
-            <span className="text-gray-900 dark:text-gray-100 font-medium">설정</span>
-          </Link>
         </div>
+      </div>
+
+      {/* Content Management Grid */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link
+          href="/admin-new/about"
+          className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-all"
+        >
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#f49d25]/10">
+              <span className="material-symbols-outlined text-[#f49d25]" style={{ fontSize: '28px' }}>
+                info
+              </span>
+            </div>
+            <h3 className="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              병원 소개
+            </h3>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            병원 소개 콘텐츠 관리
+          </p>
+        </Link>
+
+        <Link
+          href="/admin-new/treatments"
+          className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-all"
+        >
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#f49d25]/10">
+              <span className="material-symbols-outlined text-[#f49d25]" style={{ fontSize: '28px' }}>
+                healing
+              </span>
+            </div>
+            <h3 className="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              치료 소개
+            </h3>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            치료 항목 및 설명 관리
+          </p>
+        </Link>
+
+        <Link
+          href="/admin-new/notices"
+          className="bg-white dark:bg-[#2c2c2c] rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm hover:shadow-md transition-all"
+        >
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#f49d25]/10">
+              <span className="material-symbols-outlined text-[#f49d25]" style={{ fontSize: '28px' }}>
+                campaign
+              </span>
+            </div>
+            <h3 className="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              공지사항
+            </h3>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            공지사항 작성 및 관리
+          </p>
+        </Link>
       </div>
 
       {/* Recent Notices */}

@@ -42,6 +42,8 @@ export default function HeroSlidesPage() {
       if (response.ok) {
         const data = await response.json();
         setSlides(data);
+      } else if (response.status === 500) {
+        console.log('데이터베이스 테이블이 생성되지 않았을 수 있습니다. Vercel 배포 후 자동으로 마이그레이션됩니다.');
       }
     } catch (error) {
       console.error('Failed to fetch hero slides:', error);
