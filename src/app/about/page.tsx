@@ -57,9 +57,9 @@ export default function AboutPage() {
         </section>
 
         {/* Greeting Section */}
-        <section className="bg-white px-4 md:px-10 py-16 md:py-20">
+        <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
           <div className="max-w-[1140px] mx-auto">
-            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-[#F8F9FA] dark:bg-gray-800 p-8 md:p-12 rounded-xl border border-[#E5E7EB]">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-white p-8 md:p-12 rounded-xl border border-[#E5E7EB] shadow-sm">
               <div className="w-full md:w-1/3">
                 <img
                   alt="병원 내부 사진"
