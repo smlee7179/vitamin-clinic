@@ -152,6 +152,9 @@ model HeroSlide {
   description String?
   buttonText  String?
   buttonLink  String?
+  imageWidth  Int?     // 원본 이미지 너비
+  imageHeight Int?     // 원본 이미지 높이
+  aspectRatio String?  // 계산된 비율 "16:9", "21:9" 등
   order       Int      @default(0)
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())

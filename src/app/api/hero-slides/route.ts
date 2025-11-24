@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { imageUrl, title, description, buttonText, buttonLink, order, active } = body;
+    const { imageUrl, title, description, buttonText, buttonLink, imageWidth, imageHeight, aspectRatio, order, active } = body;
 
     if (!imageUrl || !title) {
       return NextResponse.json({ error: 'Image URL and title are required' }, { status: 400 });
@@ -53,6 +53,9 @@ export async function POST(request: NextRequest) {
         description,
         buttonText,
         buttonLink,
+        imageWidth,
+        imageHeight,
+        aspectRatio,
         order: order ?? 0,
         active: active ?? true,
       },
@@ -72,7 +75,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, imageUrl, title, description, buttonText, buttonLink, order, active } = body;
+    const { id, imageUrl, title, description, buttonText, buttonLink, imageWidth, imageHeight, aspectRatio, order, active } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Slide ID is required' }, { status: 400 });
@@ -86,6 +89,9 @@ export async function PUT(request: NextRequest) {
         description,
         buttonText,
         buttonLink,
+        imageWidth,
+        imageHeight,
+        aspectRatio,
         order,
         active,
       },

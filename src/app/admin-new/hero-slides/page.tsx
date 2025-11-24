@@ -11,6 +11,9 @@ interface HeroSlide {
   description: string | null;
   buttonText: string | null;
   buttonLink: string | null;
+  imageWidth: number | null;
+  imageHeight: number | null;
+  aspectRatio: string | null;
   order: number;
   active: boolean;
   createdAt: string;
@@ -29,6 +32,9 @@ export default function HeroSlidesPage() {
     description: '',
     buttonText: '',
     buttonLink: '',
+    imageWidth: null as number | null,
+    imageHeight: null as number | null,
+    aspectRatio: null as string | null,
     order: 0,
     active: true,
   });
@@ -80,7 +86,34 @@ export default function HeroSlidesPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setFormData({ ...formData, imageUrl: data.url });
+
+        // Extract image metadata automatically
+        try {
+          const metadataResponse = await fetch('/api/image-metadata', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageUrl: data.url }),
+          });
+
+          if (metadataResponse.ok) {
+            const metadata = await metadataResponse.json();
+            setFormData({
+              ...formData,
+              imageUrl: data.url,
+              imageWidth: metadata.imageWidth,
+              imageHeight: metadata.imageHeight,
+              aspectRatio: metadata.aspectRatio,
+            });
+            console.log('Image metadata extracted:', metadata);
+          } else {
+            // If metadata extraction fails, just set the URL
+            setFormData({ ...formData, imageUrl: data.url });
+          }
+        } catch (metadataError) {
+          console.error('Metadata extraction error:', metadataError);
+          // If metadata extraction fails, just set the URL
+          setFormData({ ...formData, imageUrl: data.url });
+        }
       } else {
         const errorData = await response.json().catch(() => ({}));
         alert(errorData.error || '이미지 업로드 실패');
@@ -124,6 +157,9 @@ export default function HeroSlidesPage() {
           description: '',
           buttonText: '',
           buttonLink: '',
+          imageWidth: null,
+          imageHeight: null,
+          aspectRatio: null,
           order: 0,
           active: true,
         });
@@ -145,6 +181,9 @@ export default function HeroSlidesPage() {
       description: slide.description || '',
       buttonText: slide.buttonText || '',
       buttonLink: slide.buttonLink || '',
+      imageWidth: slide.imageWidth,
+      imageHeight: slide.imageHeight,
+      aspectRatio: slide.aspectRatio,
       order: slide.order,
       active: slide.active,
     });
@@ -212,6 +251,9 @@ export default function HeroSlidesPage() {
               description: '',
               buttonText: '',
               buttonLink: '',
+              imageWidth: null,
+              imageHeight: null,
+              aspectRatio: null,
               order: 0,
               active: true,
             });
