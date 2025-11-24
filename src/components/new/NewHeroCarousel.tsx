@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface HeroSlide {
   id: string;
@@ -63,13 +64,17 @@ export default function NewHeroCarousel() {
     // Default slide if no slides configured
     return (
       <section className="w-full relative">
-        <div className="w-full h-[550px] overflow-hidden">
-          <div
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop')`,
-            }}
+        <div className="w-full h-[550px] overflow-hidden relative">
+          <Image
+            src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop"
+            alt="병원 환경"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+            quality={85}
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" />
         </div>
         <div className="absolute inset-0 max-w-6xl mx-auto px-4 flex flex-col items-start justify-center text-left">
           <div className="max-w-2xl text-white">
@@ -93,19 +98,24 @@ export default function NewHeroCarousel() {
 
   return (
     <section className="w-full relative">
-      <div className="w-full h-[550px] overflow-hidden">
+      <div className="w-full h-[550px] overflow-hidden relative">
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {slides.map((slide) => (
-            <div
-              key={slide.id}
-              className="w-full h-full flex-shrink-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url('${slide.imageUrl}')`,
-              }}
-            />
+          {slides.map((slide, index) => (
+            <div key={slide.id} className="w-full h-full flex-shrink-0 relative">
+              <Image
+                src={slide.imageUrl}
+                alt={slide.title}
+                fill
+                priority={index === 0}
+                className="object-cover"
+                sizes="100vw"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" />
+            </div>
           ))}
         </div>
       </div>

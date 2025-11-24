@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function NewLocation() {
   return (
     <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
@@ -8,12 +10,14 @@ export default function NewLocation() {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-xl shadow-sm">
         {/* Map */}
-        <div className="w-full h-96 rounded-lg overflow-hidden">
-          <div
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&h=600&fit=crop')`,
-            }}
+        <div className="w-full h-96 rounded-lg overflow-hidden relative">
+          <Image
+            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&h=600&fit=crop"
+            alt="병원 위치 지도"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            quality={80}
           />
         </div>
 
