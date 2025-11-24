@@ -57,34 +57,36 @@ export default function AboutPage() {
         </section>
 
         {/* Greeting Section */}
-        <section className="max-w-[1140px] mx-auto px-4 md:px-10 py-16 md:py-20">
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-[#F8F9FA] dark:bg-gray-800 p-8 md:p-12 rounded-xl border border-gray-200">
-            <div className="w-full md:w-1/3">
-              <img
-                alt="병원 내부 사진"
-                className="w-full h-auto object-cover rounded-lg aspect-square"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuACJ6rVG0bW9U7VfgrNWfNJw4pgjTorthRESmONfucJg_tNnp8u9LG2896HF3jDrnCSPDRoQWxHT0sV19CWzIjVca7q8PqvhadeoP4vOUfXaTcMTXzjA8dWM0MhigfqTnkb5Fkv9Ee3_forM-MTaPkeO9ZOIH0HDCpXgHD3882pwHIpfJkHh988d8SaBVdlnyy4FYBX4HF7ZhUQKM4kUZ9T8ch8J8SZ7aQnRELMXTRN5m3UlOM3_h_4XW84N4GKFZl2D6MVntjcUNto"
-              />
-            </div>
-            <div className="flex flex-col gap-4 w-full md:w-2/3">
-              <h2 className="text-gray-900 tracking-tight text-2xl md:text-3xl font-bold leading-tight">
-                인사말
-              </h2>
-              <p className="text-gray-600 text-base font-normal leading-relaxed">
-                안녕하십니까? 비타민마취통증의학과에 오신 것을 진심으로 환영합니다.<br />
-                저희 병원은 환자 한 분 한 분의 목소리에 귀 기울이고, 최신 의료 지식과 기술을 바탕으로 정확한 진단과 효과적인 치료를 제공하기 위해 최선을 다하고 있습니다. 통증으로 고통받는 모든 분들이 건강한 일상을 되찾을 수 있도록 따뜻한 마음으로 함께하겠습니다. 감사합니다.
-              </p>
-              <p className="text-right font-bold text-lg text-gray-900 mt-4">
-                원장 홍길동
-              </p>
+        <section className="bg-white px-4 md:px-10 py-16 md:py-20">
+          <div className="max-w-[1140px] mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 bg-[#F8F9FA] dark:bg-gray-800 p-8 md:p-12 rounded-xl border border-[#E5E7EB]">
+              <div className="w-full md:w-1/3">
+                <img
+                  alt="병원 내부 사진"
+                  className="w-full h-auto object-cover rounded-lg aspect-square"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuACJ6rVG0bW9U7VfgrNWfNJw4pgjTorthRESmONfucJg_tNnp8u9LG2896HF3jDrnCSPDRoQWxHT0sV19CWzIjVca7q8PqvhadeoP4vOUfXaTcMTXzjA8dWM0MhigfqTnkb5Fkv9Ee3_forM-MTaPkeO9ZOIH0HDCpXgHD3882pwHIpfJkHh988d8SaBVdlnyy4FYBX4HF7ZhUQKM4kUZ9T8ch8J8SZ7aQnRELMXTRN5m3UlOM3_h_4XW84N4GKFZl2D6MVntjcUNto"
+                />
+              </div>
+              <div className="flex flex-col gap-4 w-full md:w-2/3">
+                <h2 className="text-[#343A40] tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+                  인사말
+                </h2>
+                <p className="text-gray-600 text-base font-normal leading-relaxed">
+                  안녕하십니까? 비타민마취통증의학과에 오신 것을 진심으로 환영합니다.<br />
+                  저희 병원은 환자 한 분 한 분의 목소리에 귀 기울이고, 최신 의료 지식과 기술을 바탕으로 정확한 진단과 효과적인 치료를 제공하기 위해 최선을 다하고 있습니다. 통증으로 고통받는 모든 분들이 건강한 일상을 되찾을 수 있도록 따뜻한 마음으로 함께하겠습니다. 감사합니다.
+                </p>
+                <p className="text-right font-bold text-lg text-[#343A40] mt-4">
+                  원장 홍길동
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Medical Staff Section */}
         {doctors.length > 0 && (
-          <section className="px-4 md:px-10 py-16 md:py-20">
-            <h2 className="text-gray-900 text-[28px] font-bold leading-tight tracking-tight pb-3 pt-5 text-center">
+          <section className="px-4 md:px-10 py-16 md:py-20 bg-[#f8f7f5]">
+            <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               의료진 소개
             </h2>
             <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
@@ -94,7 +96,7 @@ export default function AboutPage() {
               {doctors.map((doctor) => (
                 <div
                   key={doctor.id}
-                  className="flex flex-col items-center text-center bg-white p-6 rounded-xl shadow-sm border border-gray-200"
+                  className="flex flex-col items-center text-center bg-white p-6 rounded-xl shadow-sm border border-[#E5E7EB]"
                 >
                   {doctor.photoUrl && (
                     <img
@@ -103,10 +105,10 @@ export default function AboutPage() {
                       alt={doctor.name}
                     />
                   )}
-                  <h3 className="font-bold text-lg text-gray-900">
+                  <h3 className="font-bold text-lg text-[#343A40]">
                     {doctor.name}
                   </h3>
-                  <p className="text-[#f97316] font-medium text-sm">
+                  <p className="text-[#F97316] font-medium text-sm">
                     {doctor.specialty}
                   </p>
                   {(doctor.education || doctor.career) && (
@@ -127,7 +129,7 @@ export default function AboutPage() {
 
         {/* Hospital Staff Section */}
         <section className="bg-white px-4 md:px-10 py-16 md:py-20">
-          <h2 className="text-gray-900 text-[28px] font-bold leading-tight tracking-tight pb-3 pt-5 text-center">
+          <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
             병원을 만드는 사람들
           </h2>
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
@@ -141,7 +143,7 @@ export default function AboutPage() {
                 alt="간호부장 홍길동"
               />
               <div>
-                <h4 className="font-bold text-gray-900">홍길동</h4>
+                <h4 className="font-bold text-[#343A40]">홍길동</h4>
                 <p className="text-sm text-gray-500">간호부장</p>
               </div>
             </div>
@@ -152,7 +154,7 @@ export default function AboutPage() {
                 alt="행정부장 임꺽정"
               />
               <div>
-                <h4 className="font-bold text-gray-900">임꺽정</h4>
+                <h4 className="font-bold text-[#343A40]">임꺽정</h4>
                 <p className="text-sm text-gray-500">행정부장</p>
               </div>
             </div>
@@ -163,7 +165,7 @@ export default function AboutPage() {
                 alt="약제부장 허준"
               />
               <div>
-                <h4 className="font-bold text-gray-900">허준</h4>
+                <h4 className="font-bold text-[#343A40]">허준</h4>
                 <p className="text-sm text-gray-500">약제부장</p>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function AboutPage() {
                 alt="홍보팀장 장금이"
               />
               <div>
-                <h4 className="font-bold text-gray-900">장금이</h4>
+                <h4 className="font-bold text-[#343A40]">장금이</h4>
                 <p className="text-sm text-gray-500">홍보팀장</p>
               </div>
             </div>
