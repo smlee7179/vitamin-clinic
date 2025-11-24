@@ -195,13 +195,13 @@ export default function TreatmentsPage() {
                       <p className="text-gray-600 text-sm font-normal leading-normal mt-1 mb-3 flex-grow">
                         {treatment.description}
                       </p>
-                      <a
-                        href={`/treatments/${treatment.id}`}
-                        className="inline-flex items-center gap-1 text-sm font-bold text-[#f97316] hover:underline"
+                      <button
+                        onClick={() => alert('치료 상세 페이지는 준비 중입니다.')}
+                        className="inline-flex items-center gap-1 text-sm font-bold text-[#f97316] hover:underline cursor-pointer"
                       >
                         자세히 보기
-                        <span className="material-symbols-outlined text-base">arrow_forward</span>
-                      </a>
+                        <span className="text-base">→</span>
+                      </button>
                     </div>
                   </div>
                 ))}
