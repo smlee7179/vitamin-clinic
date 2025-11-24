@@ -2,7 +2,6 @@
 
 import NewHeader from '@/components/new/NewHeader';
 import NewHeroCarousel from '@/components/new/NewHeroCarousel';
-import NewServices from '@/components/new/NewServices';
 import NewNotices from '@/components/new/NewNotices';
 import NewLocation from '@/components/new/NewLocation';
 import NewFooter from '@/components/new/NewFooter';
@@ -15,7 +14,6 @@ export default function Home() {
 
       <main>
         <NewHeroCarousel />
-        <NewServices />
         <NewNotices />
         <NewLocation />
       </main>
