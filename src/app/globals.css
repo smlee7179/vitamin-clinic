@@ -189,6 +189,28 @@
 }
 
 @layer utilities {
+  /* 자동 스크롤 애니메이션 */
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll-left {
+    animation: scroll-left 30s linear infinite;
+  }
+
+  .animate-scroll-left-slow {
+    animation: scroll-left 40s linear infinite;
+  }
+
+  .hover\:pause-animation:hover {
+    animation-play-state: paused;
+  }
+
   /* 터치 영역 최소 크기 보장 */
   .touch-target {
     min-width: 44px;

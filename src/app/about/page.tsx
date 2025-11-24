@@ -15,6 +15,52 @@ interface Doctor {
   order: number;
 }
 
+const equipmentItems = [
+  {
+    name: 'C-arm (투시촬영장치)',
+    description: '실시간 영상을 통해 정확한 시술 부위를 확인하며 안전하고 효과적인 통증 치료를 제공합니다.',
+    image: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800&q=80'
+  },
+  {
+    name: '초음파 진단기',
+    description: '근골격계 질환의 정확한 진단과 실시간 유도 하에 안전한 주사 치료가 가능합니다.',
+    image: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?w=800&q=80'
+  },
+  {
+    name: '체외충격파 치료기',
+    description: '비수술적 치료로 만성 통증과 근골격계 질환을 효과적으로 개선합니다.',
+    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80'
+  },
+  {
+    name: '고주파 열 치료기',
+    description: '신경 차단술을 통해 만성 통증을 장기적으로 완화시키는 최신 치료 장비입니다.',
+    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80'
+  }
+];
+
+const tourImages = [
+  {
+    title: '쾌적한 대기실',
+    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80'
+  },
+  {
+    title: '최신 시설의 진료실',
+    image: 'https://images.unsplash.com/photo-1519494140681-8b17d830a3e9?w=800&q=80'
+  },
+  {
+    title: '첨단 치료실',
+    image: 'https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=800&q=80'
+  },
+  {
+    title: '편안한 회복실',
+    image: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&q=80'
+  },
+  {
+    title: '깨끗한 복도',
+    image: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=800&q=80'
+  }
+];
+
 export default function AboutPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
@@ -127,58 +173,79 @@ export default function AboutPage() {
           </section>
         )}
 
-        {/* Hospital Staff Section */}
-        <section className="bg-white px-4 md:px-10 py-16 md:py-20">
+        {/* Hospital Equipment Section */}
+        <section className="bg-white px-4 md:px-10 py-16 md:py-20 overflow-hidden">
           <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
-            병원을 만드는 사람들
+            병원 장비 소개
           </h2>
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            의료진 외에도 각자의 자리에서 병원의 원활한 운영을 위해 힘쓰는 주요 직원들을 소개합니다.
+            최신 의료 장비로 정확한 진단과 효과적인 치료를 제공합니다.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            <div className="flex items-center gap-4">
-              <img
-                className="w-20 h-20 rounded-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuANwTqgmRSLsfW9oCeice9cRX5IgX1Es_rFZTgmy4EoMS4HWdq_RYzVj3CGHTi6OIKWUjqLSjuSpcjeGWdkUOof39GeM6Wz_O-Iyv6VtJAhB6VLFgKrRbCpUZvFoKXAq9ntkc9JxFMXa9Hgp8f6DW1RzR8PxbRANglgGAfRtlgNqwDJ_5CO6OVv72lyXAt81bYax3Ay5CQWorAWkRapZ9mv1q6-TdpZysn6u7wIusb94tCFef6kSqcaS1wJI4LbI62SvCt_h7wYnAv_"
-                alt="간호부장 홍길동"
-              />
-              <div>
-                <h4 className="font-bold text-[#343A40]">홍길동</h4>
-                <p className="text-sm text-gray-500">간호부장</p>
-              </div>
+          <div className="relative">
+            <div className="flex gap-6 animate-scroll-left hover:pause-animation">
+              {[...Array(2)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-6 flex-shrink-0">
+                  {equipmentItems.map((item, index) => (
+                    <div
+                      key={`${setIndex}-${index}`}
+                      className="flex-shrink-0 w-80 bg-[#f8f7f5] rounded-xl overflow-hidden shadow-sm"
+                    >
+                      <div className="aspect-video bg-gray-200 relative">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-bold text-lg text-[#343A40] mb-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
-            <div className="flex items-center gap-4">
-              <img
-                className="w-20 h-20 rounded-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHlSzPnacAM_3Ngc6eDmTbuniFl193hk_0uN0arRT5an3KoowFz9br9uA6mqgV1NfkIWA5FvajRznGTpRRv4If9O1eJZxKVCpJhSUxcjPlhSSaFvix_fdFwxUw4MmUothvlVq30APl_O2dbeqDopl7ID7g3LJscm2eVJWhB0BTIjE0gab5M-lHNEb2s6a_QXkhvCY6tv-gkvdbKU0aO6Dpl0XraUkk3UmS4K3kQo-FC2tCYWsjOex2PZxd5wIx7YhjixIr0v0-f0Fy"
-                alt="행정부장 임꺽정"
-              />
-              <div>
-                <h4 className="font-bold text-[#343A40]">임꺽정</h4>
-                <p className="text-sm text-gray-500">행정부장</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <img
-                className="w-20 h-20 rounded-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4u4KA7HIS99u2-BzL2zyROAHFAZcPU42mKQaKwpzLXLBSR0O6ot4kqVXuMYaSBS8phEyxvNHSmZVUOt0lT1q84sYD9A7T7tPi3Rb_nFnQrLYumxnl0sZiU-pbG4sIGxRagH7Ei3AwXhJUN6VF3sq7CNk19Zu6LPpTisRQrCKWVEKI0YWNwsPAov4F50zBtfGjogM7nK1nGDCiVwkYxE_pFO4q6OQP2Mg49RG9XKjO7GbAaC4WJrS45raLfMqQhFO4R9DLPLYdfECU"
-                alt="약제부장 허준"
-              />
-              <div>
-                <h4 className="font-bold text-[#343A40]">허준</h4>
-                <p className="text-sm text-gray-500">약제부장</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <img
-                className="w-20 h-20 rounded-full object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJUt4-bE4qkFr74qEbEwPVdqO19sIvB1XGBn77YNHb_cNZkYqTxplZ5FUUt20EhhjnqEQ-bxvIbQtdRrnJYjrtcT-KD85zM7z3LmfTDc3B_cMj32AvbzScgpxMSJC2NUA-XG8QuFesHY-jBnwnv4P1B3X_dG-8EHg7kROok37yQqX7boFFpSCcrTHi3abrZ_YajEbatz8Czw_WpO867M7VqsEcHZSrn26IvaDa3jnqmjxnYdtwXO6O1ufpf59Z12SwSl-gQ4yphW1P"
-                alt="홍보팀장 장금이"
-              />
-              <div>
-                <h4 className="font-bold text-[#343A40]">장금이</h4>
-                <p className="text-sm text-gray-500">홍보팀장</p>
-              </div>
+          </div>
+        </section>
+
+        {/* Hospital Tour Section */}
+        <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20 overflow-hidden">
+          <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
+            병원 둘러보기
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            쾌적하고 편안한 병원 시설을 소개합니다.
+          </p>
+          <div className="relative">
+            <div className="flex gap-6 animate-scroll-left-slow hover:pause-animation">
+              {[...Array(2)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-6 flex-shrink-0">
+                  {tourImages.map((item, index) => (
+                    <div
+                      key={`${setIndex}-${index}`}
+                      className="flex-shrink-0 w-96 bg-white rounded-xl overflow-hidden shadow-sm"
+                    >
+                      <div className="aspect-[4/3] bg-gray-200 relative">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-base text-[#343A40] text-center">
+                          {item.title}
+                        </h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </section>
