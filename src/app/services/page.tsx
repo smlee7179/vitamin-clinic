@@ -10,9 +10,9 @@ export default function ServicesPage() {
       <NewHeader />
 
       <main className="flex flex-1 justify-center py-5">
-        <div className="layout-content-container flex flex-col max-w-[960px] flex-1 px-4">
+        <div className="layout-content-container flex flex-col max-w-6xl flex-1 px-4">
           {/* Hero Section */}
-          <section className="relative mb-8">
+          <section className="w-full relative">
             <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
               <Image
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCctkdsx-2ft96oX0VlBgkrSjcuYwu5_OLLt9KpkVBeFer2E_5v2-bpdc7MpJnuR4jOJDdU6jGJqROuke_ce8c8HesvMzz8A44nredn2PuIaw94ZLY_KlhpxLYmpTxIRCAYL8EFsakCAXR5QEjdpdO-veF5vEXI6CwcjiGRMtrqjKqMg7nWHrVh2a4kfEB2yh_Z-1PUfPh4s6XZDwEhtE4PrNZJLWFdL7ev64oGVrIYOno1RxN1euAMkn2WBZ59WxhhPu-Z3subjZzE"
@@ -20,27 +20,19 @@ export default function ServicesPage() {
                 fill
                 priority
                 className="object-contain"
-                sizes="(max-width: 768px) 100vw, 960px"
+                sizes="(max-width: 768px) 100vw, 1200px"
                 quality={85}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
             </div>
-            <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-4">
-              <div className="flex flex-col gap-2 text-center">
-                <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
-                  비타민마취통증의학과
+            <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
+              <div className="flex flex-col gap-3 text-left max-w-3xl">
+                <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
+                  비타민마취통증의학과<br />진료 과목 안내
                 </h1>
-                <h2 className="text-white text-sm md:text-base font-normal leading-normal">
+                <h2 className="text-white text-base font-normal leading-normal md:text-lg">
                   최첨단 비수술 치료로 통증을 관리하고 건강한 일상을 되찾아 드립니다.
                 </h2>
-              </div>
-              <div className="flex-wrap gap-3 flex justify-center">
-                <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#f97316]/90 transition-colors">
-                  <span className="truncate">진료 예약</span>
-                </button>
-                <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-white/90 text-black text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-white transition-colors">
-                  <span className="truncate">문의하기</span>
-                </button>
               </div>
             </div>
           </section>

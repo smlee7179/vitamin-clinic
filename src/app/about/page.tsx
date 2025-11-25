@@ -85,32 +85,37 @@ export default function AboutPage() {
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
-      <main>
-        {/* Hero Section */}
-        <section className="relative">
-          <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden bg-gray-900">
-            <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEvT0RCsOOUU4RQkVcUJOlQoCxEc7RFWZ7CRkAvr5eUigZKCdBugReAIFNL-1IVahADzOYLbxzkm7_sxcCFOVVrXUu64h0mweifH7xCsKS3MkjhsYqZnWdSOjOgpaHRgAc-kYzPoxCqU5Akjdr775rljufqNCSOeSgbLTnCXTO7_E4KlRHcU34T8bg1ePxkomRqqTve53qko_PoE96KX0sR6K4cJmUp74AlKq7StbBUV5R8ywM0oCH5tUcN5qtsHWP0m1WXZ0WCSnZ"
-              alt="비타민마취통증의학과"
-              fill
-              priority
-              className="object-contain"
-              sizes="100vw"
-              quality={85}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 pointer-events-none" />
-          </div>
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-            <div className="flex flex-col gap-2 text-center max-w-4xl">
-              <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
-                통증 없는 건강한 삶, 비타민이 함께합니다
-              </h1>
-              <h2 className="text-white/90 text-base md:text-lg font-normal leading-normal">
-                환자 중심의 따뜻하고 전문적인 통증 치료를 약속합니다.
-              </h2>
+      <main className="flex flex-1 justify-center py-5">
+        <div className="layout-content-container flex flex-col max-w-6xl flex-1 px-4">
+          {/* Hero Section */}
+          <section className="w-full relative">
+            <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEvT0RCsOOUU4RQkVcUJOlQoCxEc7RFWZ7CRkAvr5eUigZKCdBugReAIFNL-1IVahADzOYLbxzkm7_sxcCFOVVrXUu64h0mweifH7xCsKS3MkjhsYqZnWdSOjOgpaHRgAc-kYzPoxCqU5Akjdr775rljufqNCSOeSgbLTnCXTO7_E4KlRHcU34T8bg1ePxkomRqqTve53qko_PoE96KX0sR6K4cJmUp74AlKq7StbBUV5R8ywM0oCH5tUcN5qtsHWP0m1WXZ0WCSnZ"
+                alt="비타민마취통증의학과"
+                fill
+                priority
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 1200px"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
             </div>
-          </div>
-        </section>
+            <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
+              <div className="flex flex-col gap-3 text-left max-w-3xl">
+                <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
+                  통증 없는 건강한 삶,<br />비타민이 함께합니다
+                </h1>
+                <h2 className="text-white text-base font-normal leading-normal md:text-lg">
+                  환자 중심의 따뜻하고 전문적인 통증 치료를 약속합니다.
+                </h2>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <main>
 
         {/* Greeting Section */}
         <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
