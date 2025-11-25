@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -68,17 +68,18 @@ model MarqueeNotice {
 }
 
 model Treatment {
-  id          String   @id @default(cuid())
+  id          String            @id @default(cuid())
   title       String
   icon        String
   description String
   features    String
   category    String?
   imageUrl    String?
-  order       Int      @default(0)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  order       Int               @default(0)
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  detail      TreatmentDetail?
 }
 
 model FAQ {
@@ -159,6 +160,176 @@ model HeroSlide {
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// 병원 기본 정보 (전역 설정)
+model HospitalInfo {
+  id            String   @id @default(cuid())
+  logoUrl       String?
+  logoAlt       String   @default("병원 로고")
+  hospitalName  String
+  address       String
+  phone         String
+  fax           String?
+  email         String?
+  mapImageUrl   String?
+  subwayInfo    String?
+  busInfo       String?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
+// 푸터 정보 (전역 설정)
+model FooterInfo {
+  id              String   @id @default(cuid())
+  hospitalName    String
+  address         String
+  representative  String?
+  businessNumber  String?
+  phone           String
+  fax             String?
+  email           String?
+  facebookUrl     String?
+  instagramUrl    String?
+  youtubeUrl      String?
+  copyrightText   String
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+}
+
+// 페이지별 히어로 이미지
+model PageHero {
+  id          String   @id @default(cuid())
+  page        String   @unique // "about", "services", "treatments", "notices"
+  imageUrl    String
+  title       String
+  subtitle    String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+// 인사말 섹션
+model GreetingSection {
+  id        String   @id @default(cuid())
+  imageUrl  String?
+  content   String
+  signature String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// 병원 장비
+model Equipment {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+// 병원 둘러보기
+model HospitalTour {
+  id        String   @id @default(cuid())
+  title     String
+  imageUrl  String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// 진료 과목
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String   @default("personal_injury")
+  details     String   // JSON array of detail items
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+// 치료법 상세 정보
+model TreatmentDetail {
+  id                    String   @id @default(cuid())
+  treatmentId           String   @unique
+  detailedDescription   String   // Rich text
+  targetConditions      String   // JSON array
+  methodology           String   // Rich text
+  benefits              String   // JSON array
+  procedureSteps        String   // JSON array
+  precautions           String   // Rich text
+  faqs                  String   // JSON array: [{question, answer}]
+  galleryImages         String   // JSON array: [{imageUrl, caption}]
+  updatedAt             DateTime @updatedAt
+  createdAt             DateTime @default(now())
+
+  treatment Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+}
+
+// 진료시간 정보
+model ClinicHours {
+  id            String   @id @default(cuid())
+  weekdayOpen   String   // "09:00"
+  weekdayClose  String   // "18:00"
+  saturdayOpen  String?  // "09:00"
+  saturdayClose String?  // "13:00"
+  lunchStart    String?  // "13:00"
+  lunchEnd      String?  // "14:00"
+  closedDays    String   // "일요일, 공휴일"
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
+// 원장 상세 시간표
+model DoctorSchedule {
+  id              String   @id @default(cuid())
+  doctorId        String
+  dayOfWeek       String   // "monday", "tuesday", etc.
+  morningStatus   String   // "available", "closed", "note"
+  afternoonStatus String   // "available", "closed", "note"
+  note            String?  // 특이사항
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@unique([doctorId, dayOfWeek])
+}
+
+// 페이지별 헤딩
+model PageHeading {
+  id        String   @id @default(cuid())
+  page      String   @unique // "hours", "contact"
+  title     String
+  subtitle  String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// 페이지별 안내 메시지
+model PageNotice {
+  id        String   @id @default(cuid())
+  page      String   @unique // "hours"
+  content   String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+// 정보 카드 (공지사항 페이지 등)
+model InfoCard {
+  id          String   @id @default(cuid())
+  page        String   // "notices"
+  emoji       String
+  title       String
+  description String
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
 }
 
 enum Role {

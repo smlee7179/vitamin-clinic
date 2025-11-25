@@ -1,20 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
-
-interface Doctor {
-  id: string;
-  name: string;
-  title: string;
-  specialty: string;
-  photoUrl: string | null;
-  education: string;
-  career: string;
-  order: number;
-}
 
 const equipmentItems = [
   {
@@ -63,24 +51,6 @@ const tourImages = [
 ];
 
 export default function AboutPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-
-  useEffect(() => {
-    fetchDoctors();
-  }, []);
-
-  const fetchDoctors = async () => {
-    try {
-      const response = await fetch('/api/doctors');
-      if (response.ok) {
-        const data = await response.json();
-        setDoctors(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch doctors:', error);
-    }
-  };
-
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
@@ -144,49 +114,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Medical Staff Section */}
-        {doctors.length > 0 && (
-          <section className="px-4 md:px-10 py-16 md:py-20 bg-[#f8f7f5]">
-            <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
-              의료진 소개
-            </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-              비타민마취통증의학과의 분야별 전문 의료진이 환자 여러분의 건강한 삶을 위해 최선을 다하고 있습니다.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[1140px] mx-auto">
-              {doctors.map((doctor) => (
-                <div
-                  key={doctor.id}
-                  className="flex flex-col items-center text-center bg-white p-6 rounded-xl shadow-sm border border-[#E5E7EB]"
-                >
-                  {doctor.photoUrl && (
-                    <img
-                      className="w-32 h-32 rounded-full object-cover mb-4"
-                      src={doctor.photoUrl}
-                      alt={doctor.name}
-                    />
-                  )}
-                  <h3 className="font-bold text-lg text-[#343A40]">
-                    {doctor.name}
-                  </h3>
-                  <p className="text-[#F97316] font-medium text-sm">
-                    {doctor.specialty}
-                  </p>
-                  {(doctor.education || doctor.career) && (
-                    <ul className="text-gray-500 text-sm mt-3 text-left list-disc list-inside space-y-1">
-                      {doctor.education && doctor.education.split('\n').map((line, idx) => (
-                        line.trim() && <li key={`edu-${idx}`}>{line.trim()}</li>
-                      ))}
-                      {doctor.career && doctor.career.split('\n').map((line, idx) => (
-                        line.trim() && <li key={`career-${idx}`}>{line.trim()}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Hospital Equipment Section */}
         <section className="bg-white px-4 md:px-10 py-16 md:py-20 overflow-hidden">
