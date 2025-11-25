@@ -59,7 +59,7 @@ export default function NewHeroCarousel() {
   if (loading) {
     return (
       <section className="w-full relative">
-        <div className="w-full h-[550px] bg-gray-200 animate-pulse" />
+        <div className="w-full h-[400px] md:h-[480px] bg-gray-200 animate-pulse rounded-xl" />
       </section>
     );
   }
@@ -68,29 +68,29 @@ export default function NewHeroCarousel() {
     // Default slide if no slides configured
     return (
       <section className="w-full relative">
-        <div className="w-full h-[550px] relative overflow-hidden bg-gray-900">
+        <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
           <Image
             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop"
             alt="병원 환경"
             fill
             priority
             className="object-contain"
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 1200px"
             quality={85}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
         </div>
-        <div className="absolute inset-0 max-w-6xl mx-auto px-4 flex flex-col items-start justify-center text-left">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-[-0.033em]">
+        <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
+          <div className="flex flex-col gap-3 text-left max-w-3xl">
+            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
               환자 중심의 전문적인 치료
             </h1>
-            <h2 className="text-white/90 text-sm sm:text-base font-normal leading-normal mt-3">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg">
               저희는 최신 시설과 따뜻한 마음으로 최상의 의료 서비스를 제공합니다.
             </h2>
             <Link
               href="/contact"
-              className="mt-6 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 sm:h-12 sm:px-5 bg-[#f97316] text-white text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
+              className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
             >
               <span className="truncate">온라인 예약하기</span>
             </Link>
@@ -102,7 +102,7 @@ export default function NewHeroCarousel() {
 
   return (
     <section className="w-full relative">
-      <div className="w-full h-[550px] relative overflow-hidden bg-gray-900">
+      <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -115,30 +115,30 @@ export default function NewHeroCarousel() {
                 fill
                 priority={index === 0}
                 className="object-contain"
-                sizes="100vw"
+                sizes="(max-width: 768px) 100vw, 1200px"
                 quality={85}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
             </div>
           ))}
         </div>
       </div>
 
       {/* Slide Content Overlay */}
-      <div className="absolute inset-0 max-w-6xl mx-auto px-4 flex flex-col items-start justify-center text-left">
-        <div className="max-w-2xl text-white">
-          <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-[-0.033em]">
+      <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
+        <div className="flex flex-col gap-3 text-left max-w-3xl">
+          <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
             {slides[currentSlide].title}
           </h1>
           {slides[currentSlide].description && (
-            <h2 className="text-white/90 text-sm sm:text-base font-normal leading-normal mt-3">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg">
               {slides[currentSlide].description}
             </h2>
           )}
           {slides[currentSlide].buttonText && slides[currentSlide].buttonLink && (
             <Link
               href={slides[currentSlide].buttonLink || '/contact'}
-              className="mt-6 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 sm:h-12 sm:px-5 bg-[#f97316] text-white text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
+              className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
             >
               <span className="truncate">{slides[currentSlide].buttonText}</span>
             </Link>
