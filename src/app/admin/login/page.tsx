@@ -29,8 +29,8 @@ function LoginForm() {
         router.push(callbackUrl);
         router.refresh();
       } else {
-        const errorData = await response.json().catch(() => ({ message: '로그인 실패' }));
-        setError(errorData.message || '이메일 또는 비밀번호가 올바르지 않습니다.');
+        const errorData = await response.json().catch(() => ({ error: '로그인 실패' }));
+        setError(errorData.error || '이메일 또는 비밀번호가 올바르지 않습니다.');
       }
     } catch (error) {
       setError('로그인 중 오류가 발생했습니다.');

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface HospitalInfo {
   id: string;
@@ -77,39 +77,14 @@ export default function LogoManager() {
 
   return (
     <div className="space-y-6">
-      {/* Preview */}
-      {logoUrl && (
-        <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8">
-          <p className="text-sm font-semibold text-gray-700 mb-4">미리보기</p>
-          <div className="flex items-center justify-center bg-white p-6 rounded-lg">
-            <div className="relative w-48 h-24">
-              <Image
-                src={logoUrl}
-                alt={logoAlt}
-                fill
-                className="object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Logo URL */}
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          로고 이미지 URL
-        </label>
-        <input
-          type="url"
-          value={logoUrl}
-          onChange={(e) => setLogoUrl(e.target.value)}
-          placeholder="https://example.com/logo.png"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-        />
-        <p className="mt-2 text-sm text-gray-500">
-          이미지 자료실에서 업로드한 이미지 URL을 사용하세요.
-        </p>
-      </div>
+      {/* Logo Upload */}
+      <ImageUpload
+        value={logoUrl}
+        onChange={setLogoUrl}
+        preset="default"
+        label="로고 이미지"
+        aspectRatio="2/1"
+      />
 
       {/* Logo Alt Text */}
       <div>

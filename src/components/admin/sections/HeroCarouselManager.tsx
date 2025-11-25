@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface HeroSlide {
   id: string;
@@ -10,6 +11,9 @@ interface HeroSlide {
   description: string | null;
   buttonText: string | null;
   buttonLink: string | null;
+  imageWidth?: number | null;
+  imageHeight?: number | null;
+  aspectRatio?: string | null;
   order: number;
   active: boolean;
 }
@@ -173,18 +177,14 @@ export default function HeroCarouselManager() {
         )}
 
         <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              이미지 URL <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="url"
-              value={editingSlide.imageUrl}
-              onChange={(e) => setEditingSlide({ ...editingSlide, imageUrl: e.target.value })}
-              placeholder="https://example.com/hero-image.jpg"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-            />
-          </div>
+          <ImageUpload
+            value={editingSlide.imageUrl}
+            onChange={(url) => setEditingSlide({ ...editingSlide, imageUrl: url })}
+            preset="hero"
+            label="이미지"
+            required
+            aspectRatio={editingSlide.aspectRatio || undefined}
+          />
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">

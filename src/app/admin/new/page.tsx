@@ -8,6 +8,17 @@ import FooterManager from '@/components/admin/sections/FooterManager';
 import HeroCarouselManager from '@/components/admin/sections/HeroCarouselManager';
 import NoticesManager from '@/components/admin/sections/NoticesManager';
 import TreatmentsManager from '@/components/admin/sections/TreatmentsManager';
+import PageHeroManager from '@/components/admin/sections/PageHeroManager';
+import GreetingManager from '@/components/admin/sections/GreetingManager';
+import EquipmentManager from '@/components/admin/sections/EquipmentManager';
+import HospitalTourManager from '@/components/admin/sections/HospitalTourManager';
+import ServicesManager from '@/components/admin/sections/ServicesManager';
+import ClinicHoursManager from '@/components/admin/sections/ClinicHoursManager';
+import ContactInfoManager from '@/components/admin/sections/ContactInfoManager';
+import PageHeadingManager from '@/components/admin/sections/PageHeadingManager';
+import DoctorScheduleManager from '@/components/admin/sections/DoctorScheduleManager';
+import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
+import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -169,13 +180,57 @@ export default function NewAdminPage() {
       case 'main-hero-carousel':
         return <HeroCarouselManager />;
 
+      // 병원소개
+      case 'about-hero-image':
+        return <PageHeroManager page="about" pageName="병원소개" />;
+      case 'about-greeting':
+        return <GreetingManager />;
+      case 'about-equipment':
+        return <EquipmentManager />;
+      case 'about-tour':
+        return <HospitalTourManager />;
+
+      // 진료안내
+      case 'services-hero-image':
+        return <PageHeroManager page="services" pageName="진료안내" />;
+      case 'services-services':
+        return <ServicesManager />;
+
       // 치료소개
+      case 'treatments-hero-image':
+        return <PageHeroManager page="treatments" pageName="치료소개" />;
       case 'treatments-treatments':
         return <TreatmentsManager />;
+      case 'treatments-treatment-detail':
+        return <TreatmentsManager />; // Same as treatments - links to detail pages
+
+      // 진료시간
+      case 'hours-page-heading':
+        return <PageHeadingManager page="hours" pageName="진료시간" />;
+      case 'hours-clinic-hours':
+        return <ClinicHoursManager />;
+      case 'hours-doctor-schedule':
+        return <DoctorScheduleManager />;
+      case 'hours-notice':
+        return <PageNoticeManager page="hours" pageName="진료시간" />;
 
       // 공지사항
+      case 'notices-hero-banner':
+        return <PageHeroManager page="notices" pageName="공지사항" />;
       case 'notices-notices':
         return <NoticesManager />;
+      case 'notices-info-cards':
+        return <InfoCardManager />;
+
+      // 오시는길
+      case 'contact-page-heading':
+        return <PageHeadingManager page="contact" pageName="오시는길" />;
+      case 'contact-map':
+        return <ContactInfoManager />; // Map URLs included in contact info
+      case 'contact-contact-info':
+        return <ContactInfoManager />;
+      case 'contact-transportation':
+        return <ContactInfoManager />; // Transportation info included in contact info
 
       default:
         return (
