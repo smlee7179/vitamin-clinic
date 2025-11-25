@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import LogoManager from '@/components/admin/sections/LogoManager';
+import FooterManager from '@/components/admin/sections/FooterManager';
+import HeroCarouselManager from '@/components/admin/sections/HeroCarouselManager';
+import NoticesManager from '@/components/admin/sections/NoticesManager';
+import TreatmentsManager from '@/components/admin/sections/TreatmentsManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -150,6 +155,38 @@ export default function NewAdminPage() {
 
   const currentMenu = menuStructure.find(m => m.id === activeMenu);
 
+  const renderSectionContent = () => {
+    const key = `${activeMenu}-${activeSection}`;
+
+    switch (key) {
+      // 전역 설정
+      case 'global-logo':
+        return <LogoManager />;
+      case 'global-footer':
+        return <FooterManager />;
+
+      // 메인 페이지
+      case 'main-hero-carousel':
+        return <HeroCarouselManager />;
+
+      // 치료소개
+      case 'treatments-treatments':
+        return <TreatmentsManager />;
+
+      // 공지사항
+      case 'notices-notices':
+        return <NoticesManager />;
+
+      default:
+        return (
+          <div className="text-center py-12 text-gray-500">
+            <p className="text-lg mb-2">🚧 준비 중입니다</p>
+            <p className="text-sm">이 섹션의 관리 UI는 곧 추가될 예정입니다.</p>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
@@ -262,14 +299,10 @@ export default function NewAdminPage() {
           ) : (
             // Section Content
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">
                 {currentMenu?.sections.find(s => s.id === activeSection)?.name}
               </h2>
-              <div className="text-gray-600">
-                <p>섹션 관리 UI가 여기에 표시됩니다.</p>
-                <p className="mt-2 text-sm">현재 메뉴: {activeMenu}</p>
-                <p className="text-sm">현재 섹션: {activeSection}</p>
-              </div>
+              {renderSectionContent()}
             </div>
           )}
         </main>
