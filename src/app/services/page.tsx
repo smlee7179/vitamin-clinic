@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -11,33 +12,38 @@ export default function ServicesPage() {
       <main className="flex flex-1 justify-center py-5">
         <div className="layout-content-container flex flex-col max-w-[960px] flex-1 px-4">
           {/* Hero Section */}
-          <div className="@container">
-            <div className="p-0 @[480px]:p-4">
-              <div
-                className="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
-                style={{
-                  backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCctkdsx-2ft96oX0VlBgkrSjcuYwu5_OLLt9KpkVBeFer2E_5v2-bpdc7MpJnuR4jOJDdU6jGJqROuke_ce8c8HesvMzz8A44nredn2PuIaw94ZLY_KlhpxLYmpTxIRCAYL8EFsakCAXR5QEjdpdO-veF5vEXI6CwcjiGRMtrqjKqMg7nWHrVh2a4kfEB2yh_Z-1PUfPh4s6XZDwEhtE4PrNZJLWFdL7ev64oGVrIYOno1RxN1euAMkn2WBZ59WxhhPu-Z3subjZzE")'
-                }}
-              >
-                <div className="flex flex-col gap-2 text-center">
-                  <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
-                    비타민마취통증의학과
-                  </h1>
-                  <h2 className="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
-                    최첨단 비수술 치료로 통증을 관리하고 건강한 일상을 되찾아 드립니다.
-                  </h2>
-                </div>
-                <div className="flex-wrap gap-3 flex justify-center">
-                  <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#f97316] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
-                    <span className="truncate">진료 예약</span>
-                  </button>
-                  <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-white/90 text-black text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
-                    <span className="truncate">문의하기</span>
-                  </button>
-                </div>
+          <section className="relative mb-8">
+            <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCctkdsx-2ft96oX0VlBgkrSjcuYwu5_OLLt9KpkVBeFer2E_5v2-bpdc7MpJnuR4jOJDdU6jGJqROuke_ce8c8HesvMzz8A44nredn2PuIaw94ZLY_KlhpxLYmpTxIRCAYL8EFsakCAXR5QEjdpdO-veF5vEXI6CwcjiGRMtrqjKqMg7nWHrVh2a4kfEB2yh_Z-1PUfPh4s6XZDwEhtE4PrNZJLWFdL7ev64oGVrIYOno1RxN1euAMkn2WBZ59WxhhPu-Z3subjZzE"
+                alt="비타민마취통증의학과 진료안내"
+                fill
+                priority
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 960px"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 pointer-events-none" />
+            </div>
+            <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-4">
+              <div className="flex flex-col gap-2 text-center">
+                <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
+                  비타민마취통증의학과
+                </h1>
+                <h2 className="text-white text-sm md:text-base font-normal leading-normal">
+                  최첨단 비수술 치료로 통증을 관리하고 건강한 일상을 되찾아 드립니다.
+                </h2>
+              </div>
+              <div className="flex-wrap gap-3 flex justify-center">
+                <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#f97316]/90 transition-colors">
+                  <span className="truncate">진료 예약</span>
+                </button>
+                <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-white/90 text-black text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-white transition-colors">
+                  <span className="truncate">문의하기</span>
+                </button>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Services Section */}
           <section className="py-10 text-center">

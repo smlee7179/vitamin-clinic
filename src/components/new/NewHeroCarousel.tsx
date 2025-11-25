@@ -55,19 +55,6 @@ export default function NewHeroCarousel() {
     setCurrentSlide(index);
   };
 
-  // Calculate current slide's aspect ratio
-  const currentAspectRatio = useMemo(() => {
-    if (slides.length === 0) return '16 / 9';
-    const slide = slides[currentSlide];
-    if (slide.aspectRatio) {
-      // Convert "16:9" to "16 / 9" for CSS
-      return slide.aspectRatio.replace(':', ' / ');
-    }
-    if (slide.imageWidth && slide.imageHeight) {
-      return `${slide.imageWidth} / ${slide.imageHeight}`;
-    }
-    return '16 / 9'; // Default fallback
-  }, [slides, currentSlide]);
 
   if (loading) {
     return (
@@ -81,24 +68,17 @@ export default function NewHeroCarousel() {
     // Default slide if no slides configured
     return (
       <section className="w-full relative">
-        <div
-          className="w-full relative transition-all duration-700 ease-in-out overflow-hidden"
-          style={{
-            aspectRatio: '16 / 9',
-            minHeight: 'clamp(300px, 50vh, 600px)',
-            maxHeight: 'min(800px, 90vh)'
-          }}
-        >
+        <div className="w-full h-[550px] relative overflow-hidden bg-gray-900">
           <Image
             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop"
             alt="병원 환경"
             fill
             priority
-            className="object-cover"
+            className="object-contain"
             sizes="100vw"
             quality={85}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40 pointer-events-none" />
         </div>
         <div className="absolute inset-0 max-w-6xl mx-auto px-4 flex flex-col items-start justify-center text-left">
           <div className="max-w-2xl text-white">
@@ -122,14 +102,7 @@ export default function NewHeroCarousel() {
 
   return (
     <section className="w-full relative">
-      <div
-        className="w-full relative transition-all duration-700 ease-in-out overflow-hidden"
-        style={{
-          aspectRatio: currentAspectRatio,
-          minHeight: 'clamp(300px, 50vh, 600px)',
-          maxHeight: 'min(800px, 90vh)'
-        }}
-      >
+      <div className="w-full h-[550px] relative overflow-hidden bg-gray-900">
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -141,11 +114,11 @@ export default function NewHeroCarousel() {
                 alt={slide.title}
                 fill
                 priority={index === 0}
-                className="object-cover"
+                className="object-contain"
                 sizes="100vw"
                 quality={85}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40 pointer-events-none" />
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -86,19 +87,28 @@ export default function AboutPage() {
 
       <main>
         {/* Hero Section */}
-        <section
-          className="min-h-[480px] flex flex-col items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEvT0RCsOOUU4RQkVcUJOlQoCxEc7RFWZ7CRkAvr5eUigZKCdBugReAIFNL-1IVahADzOYLbxzkm7_sxcCFOVVrXUu64h0mweifH7xCsKS3MkjhsYqZnWdSOjOgpaHRgAc-kYzPoxCqU5Akjdr775rljufqNCSOeSgbLTnCXTO7_E4KlRHcU34T8bg1ePxkomRqqTve53qko_PoE96KX0sR6K4cJmUp74AlKq7StbBUV5R8ywM0oCH5tUcN5qtsHWP0m1WXZ0WCSnZ")'
-          }}
-        >
-          <div className="flex flex-col gap-2 text-center max-w-4xl">
-            <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
-              통증 없는 건강한 삶, 비타민이 함께합니다
-            </h1>
-            <h2 className="text-white/90 text-base md:text-lg font-normal leading-normal">
-              환자 중심의 따뜻하고 전문적인 통증 치료를 약속합니다.
-            </h2>
+        <section className="relative">
+          <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden bg-gray-900">
+            <Image
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEvT0RCsOOUU4RQkVcUJOlQoCxEc7RFWZ7CRkAvr5eUigZKCdBugReAIFNL-1IVahADzOYLbxzkm7_sxcCFOVVrXUu64h0mweifH7xCsKS3MkjhsYqZnWdSOjOgpaHRgAc-kYzPoxCqU5Akjdr775rljufqNCSOeSgbLTnCXTO7_E4KlRHcU34T8bg1ePxkomRqqTve53qko_PoE96KX0sR6K4cJmUp74AlKq7StbBUV5R8ywM0oCH5tUcN5qtsHWP0m1WXZ0WCSnZ"
+              alt="비타민마취통증의학과"
+              fill
+              priority
+              className="object-contain"
+              sizes="100vw"
+              quality={85}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 pointer-events-none" />
+          </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <div className="flex flex-col gap-2 text-center max-w-4xl">
+              <h1 className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight">
+                통증 없는 건강한 삶, 비타민이 함께합니다
+              </h1>
+              <h2 className="text-white/90 text-base md:text-lg font-normal leading-normal">
+                환자 중심의 따뜻하고 전문적인 통증 치료를 약속합니다.
+              </h2>
+            </div>
           </div>
         </section>
 

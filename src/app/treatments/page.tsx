@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -120,14 +121,21 @@ export default function TreatmentsPage() {
       <main className="flex flex-1 justify-center py-5">
         <div className="layout-content-container flex flex-col max-w-6xl flex-1 px-4">
           {/* Hero Section */}
-          <section className="w-full">
-            <div
-              className="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-start justify-end p-6 md:p-12"
-              style={{
-                backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&q=80")'
-              }}
-            >
-              <div className="flex flex-col gap-3 text-left">
+          <section className="w-full relative">
+            <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+              <Image
+                src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&q=80"
+                alt="비타민마취통증의학과 치료"
+                fill
+                priority
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 1200px"
+                quality={85}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
+            </div>
+            <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
+              <div className="flex flex-col gap-3 text-left max-w-3xl">
                 <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
                   비타민마취통증의학과의<br />전문적인 치료법
                 </h1>
