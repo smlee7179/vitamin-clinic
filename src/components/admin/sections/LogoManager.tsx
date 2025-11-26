@@ -46,6 +46,7 @@ export default function LogoManager() {
         method: info ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ...info,  // 기존 데이터 유지
           logoUrl: logoUrl || null,
           logoAlt
         })

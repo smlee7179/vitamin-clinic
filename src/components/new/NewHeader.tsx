@@ -1,28 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function NewHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoAlt, setLogoAlt] = useState('병원 로고');
+
+  useEffect(() => {
+    // 병원 정보에서 로고 가져오기
+    fetch('/api/hospital-info')
+      .then(res => res.json())
+      .then(data => {
+        if (data.logoUrl) {
+          setLogoUrl(data.logoUrl);
+          setLogoAlt(data.logoAlt || '병원 로고');
+        }
+      })
+      .catch(err => console.error('Failed to load logo:', err));
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-4 text-gray-900">
-            <svg className="w-8 h-8 text-[#f97316]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <g clipPath="url(#clip0_6_535)">
-                <path d="M24 0C10.7452 0 0 10.7452 0 24C0 37.2548 10.7452 48 24 48C37.2548 48 48 37.2548 48 24C48 10.7452 37.2548 0 24 0ZM34 26H26V34H22V26H14V22H22V14H26V22H34V26Z" fill="currentColor"></path>
-              </g>
-              <defs>
-                <clipPath id="clip0_6_535">
-                  <rect fill="white" height="48" width="48"></rect>
-                </clipPath>
-              </defs>
-            </svg>
-            <h2 className="text-xl font-bold tracking-[-0.015em]">비타민마취통증의학과</h2>
+          <Link href="/" className="flex items-center">
+            {logoUrl ? (
+              <Image
+                src={logoUrl}
+                alt={logoAlt}
+                width={200}
+                height={60}
+                className="h-12 w-auto object-contain"
+                priority
+              />
+            ) : (
+              <svg className="w-8 h-8 text-[#f97316]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_6_535)">
+                  <path d="M24 0C10.7452 0 0 10.7452 0 24C0 37.2548 10.7452 48 24 48C37.2548 48 48 37.2548 48 24C48 10.7452 37.2548 0 24 0ZM34 26H26V34H22V26H14V22H22V14H26V22H34V26Z" fill="currentColor"></path>
+                </g>
+                <defs>
+                  <clipPath id="clip0_6_535">
+                    <rect fill="white" height="48" width="48"></rect>
+                  </clipPath>
+                </defs>
+              </svg>
+            )}
           </Link>
 
           {/* Desktop Navigation */}
