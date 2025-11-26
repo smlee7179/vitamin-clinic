@@ -18,6 +18,7 @@ export default function ServicesManager() {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchServices();
@@ -57,6 +58,9 @@ export default function ServicesManager() {
   const handleSave = async () => {
     if (!editingService) return;
 
+    setSaving(true);
+    setMessage('');
+
     try {
       const url = '/api/services';
       const method = isCreating ? 'POST' : 'PUT';
@@ -73,10 +77,14 @@ export default function ServicesManager() {
         setIsCreating(false);
         setMessage('✓ 저장되었습니다.');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('✗ 저장 실패');
       }
     } catch (error) {
       console.error('Save error:', error);
-      setMessage('✗ 저장 실패');
+      setMessage('✗ 저장 중 오류 발생');
+    } finally {
+      setSaving(false);
     }
   };
 

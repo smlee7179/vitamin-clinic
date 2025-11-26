@@ -74,8 +74,23 @@ export async function PUT(request: NextRequest) {
     const existing = await prisma.footerInfo.findFirst();
 
     if (!existing) {
-      // 없으면 생성
-      return POST(request);
+      // 없으면 생성 (body 재사용)
+      const info = await prisma.footerInfo.create({
+        data: {
+          hospitalName: body.hospitalName,
+          address: body.address,
+          representative: body.representative || null,
+          businessNumber: body.businessNumber || null,
+          phone: body.phone,
+          fax: body.fax || null,
+          email: body.email || null,
+          facebookUrl: body.facebookUrl || null,
+          instagramUrl: body.instagramUrl || null,
+          youtubeUrl: body.youtubeUrl || null,
+          copyrightText: body.copyrightText
+        }
+      });
+      return NextResponse.json(info);
     }
 
     const info = await prisma.footerInfo.update({

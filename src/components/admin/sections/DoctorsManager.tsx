@@ -138,9 +138,14 @@ export default function DoctorsManager() {
 
       if (response.ok) {
         fetchDoctors();
+      } else {
+        setMessage('✗ 상태 변경 실패');
+        setTimeout(() => setMessage(''), 3000);
       }
     } catch (error) {
       console.error('Toggle error:', error);
+      setMessage('✗ 상태 변경 중 오류 발생');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 

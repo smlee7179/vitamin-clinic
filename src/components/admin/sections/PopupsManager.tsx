@@ -21,6 +21,8 @@ export default function PopupsManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingPopup, setEditingPopup] = useState<Popup | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -81,9 +83,12 @@ export default function PopupsManager() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setMessage('');
 
     if (!formData.title || !formData.content) {
-      alert('제목과 내용을 입력해주세요.');
+      setMessage('✗ 제목과 내용을 입력해주세요.');
+      setSaving(false);
       return;
     }
 
@@ -101,7 +106,8 @@ export default function PopupsManager() {
       });
 
       if (response.ok) {
-        alert(editingPopup ? '팝업이 수정되었습니다.' : '팝업이 생성되었습니다.');
+        setMessage('✓ 저장되었습니다.');
+        setTimeout(() => setMessage(''), 3000);
         setShowForm(false);
         setEditingPopup(null);
         setFormData({
@@ -116,11 +122,13 @@ export default function PopupsManager() {
         });
         fetchPopups();
       } else {
-        alert('저장 실패');
+        setMessage('✗ 저장 실패');
       }
     } catch (error) {
       console.error('Save error:', error);
-      alert('저장 중 오류 발생');
+      setMessage('✗ 저장 중 오류 발생');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -148,14 +156,17 @@ export default function PopupsManager() {
       });
 
       if (response.ok) {
-        alert('삭제되었습니다.');
+        setMessage('✓ 삭제되었습니다.');
+        setTimeout(() => setMessage(''), 3000);
         fetchPopups();
       } else {
-        alert('삭제 실패');
+        setMessage('✗ 삭제 실패');
+        setTimeout(() => setMessage(''), 3000);
       }
     } catch (error) {
       console.error('Delete error:', error);
-      alert('삭제 중 오류 발생');
+      setMessage('✗ 삭제 중 오류 발생');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
@@ -172,9 +183,14 @@ export default function PopupsManager() {
 
       if (response.ok) {
         fetchPopups();
+      } else {
+        setMessage('✗ 상태 변경 실패');
+        setTimeout(() => setMessage(''), 3000);
       }
     } catch (error) {
       console.error('Toggle error:', error);
+      setMessage('✗ 상태 변경 중 오류 발생');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 

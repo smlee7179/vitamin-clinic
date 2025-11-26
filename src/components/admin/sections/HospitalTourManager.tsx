@@ -18,6 +18,7 @@ export default function HospitalTourManager() {
   const [editingTour, setEditingTour] = useState<HospitalTour | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchTours();
@@ -56,6 +57,9 @@ export default function HospitalTourManager() {
   const handleSave = async () => {
     if (!editingTour) return;
 
+    setSaving(true);
+    setMessage('');
+
     try {
       const url = '/api/hospital-tour';
       const method = isCreating ? 'POST' : 'PUT';
@@ -72,10 +76,14 @@ export default function HospitalTourManager() {
         setIsCreating(false);
         setMessage('✓ 저장되었습니다.');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('✗ 저장 실패');
       }
     } catch (error) {
       console.error('Save error:', error);
-      setMessage('✗ 저장 실패');
+      setMessage('✗ 저장 중 오류 발생');
+    } finally {
+      setSaving(false);
     }
   };
 

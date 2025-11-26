@@ -19,6 +19,7 @@ export default function EquipmentManager() {
   const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchEquipments();
@@ -58,6 +59,9 @@ export default function EquipmentManager() {
   const handleSave = async () => {
     if (!editingEquipment) return;
 
+    setSaving(true);
+    setMessage('');
+
     try {
       const url = '/api/equipment';
       const method = isCreating ? 'POST' : 'PUT';
@@ -74,10 +78,14 @@ export default function EquipmentManager() {
         setIsCreating(false);
         setMessage('✓ 저장되었습니다.');
         setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('✗ 저장 실패');
       }
     } catch (error) {
       console.error('Save error:', error);
-      setMessage('✗ 저장 실패');
+      setMessage('✗ 저장 중 오류 발생');
+    } finally {
+      setSaving(false);
     }
   };
 
