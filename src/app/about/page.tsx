@@ -160,11 +160,13 @@ export default function AboutPage() {
                   className="flex flex-col items-center text-center p-6 rounded-xl"
                 >
                   {doctor.photoUrl && (
-                    <img
-                      className="w-48 h-48 rounded-full object-cover mb-6 shadow-lg"
-                      src={doctor.photoUrl}
-                      alt={doctor.name}
-                    />
+                    <div className="w-48 h-48 rounded-full bg-[#f8f7f5] mb-6 shadow-lg overflow-hidden">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={doctor.photoUrl}
+                        alt={doctor.name}
+                      />
+                    </div>
                   )}
                   <h3 className="font-bold text-xl text-[#343A40] mb-2">
                     {doctor.name}
