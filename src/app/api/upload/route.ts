@@ -83,7 +83,9 @@ export async function POST(request: NextRequest) {
       .resize(config.width, config.height, {
         fit: 'cover', // 크롭하여 정확한 비율 유지
         position: 'center',
+        background: { r: 248, g: 247, b: 245 } // #f8f7f5 페이지 배경색 (투명 배경 대체)
       })
+      .flatten({ background: { r: 248, g: 247, b: 245 } }) // 투명 배경을 페이지 배경색으로 채우기
       .jpeg({ quality: config.quality }) // JPEG로 변환하여 최적화
       .toBuffer();
 
