@@ -6,30 +6,42 @@ export const runtime = 'nodejs';
 // GET - 병원 정보 조회
 export async function GET() {
   try {
-    const info = await prisma.hospitalInfo.findFirst();
+    let info = await prisma.hospitalInfo.findFirst();
 
+    // 데이터가 없으면 기본값으로 생성
     if (!info) {
-      return NextResponse.json({
-        logoUrl: null,
-        logoAlt: '병원 로고',
-        hospitalName: '',
-        address: '',
-        phone: '',
-        fax: null,
-        email: null,
-        mapImageUrl: null,
-        subwayInfo: null,
-        busInfo: null
+      info = await prisma.hospitalInfo.create({
+        data: {
+          logoUrl: null,
+          logoAlt: '병원 로고',
+          hospitalName: '비타민마취통증의학과',
+          address: '서울특별시',
+          phone: '02-1234-5678',
+          fax: null,
+          email: null,
+          mapImageUrl: null,
+          subwayInfo: null,
+          busInfo: null,
+        }
       });
     }
 
     return NextResponse.json(info);
   } catch (error) {
     console.error('GET hospital-info error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch hospital info' },
-      { status: 500 }
-    );
+    // 에러 발생 시에도 기본값 반환
+    return NextResponse.json({
+      logoUrl: null,
+      logoAlt: '병원 로고',
+      hospitalName: '비타민마취통증의학과',
+      address: '서울특별시',
+      phone: '02-1234-5678',
+      fax: null,
+      email: null,
+      mapImageUrl: null,
+      subwayInfo: null,
+      busInfo: null
+    });
   }
 }
 
