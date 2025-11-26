@@ -20,6 +20,7 @@ import DoctorScheduleManager from '@/components/admin/sections/DoctorScheduleMan
 import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
+import DoctorsManager from '@/components/admin/sections/DoctorsManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -109,6 +110,7 @@ export default function NewAdminPage() {
       sections: [
         { id: 'hero-image', name: '히어로 이미지' },
         { id: 'greeting', name: '인사말 관리' },
+        { id: 'doctors', name: '의료진 관리' },
         { id: 'equipment', name: '병원 장비 관리' },
         { id: 'tour', name: '병원 둘러보기 관리' }
       ]
@@ -189,6 +191,8 @@ export default function NewAdminPage() {
         return <PageHeroManager page="about" pageName="병원소개" />;
       case 'about-greeting':
         return <GreetingManager />;
+      case 'about-doctors':
+        return <DoctorsManager />;
       case 'about-equipment':
         return <EquipmentManager />;
       case 'about-tour':
