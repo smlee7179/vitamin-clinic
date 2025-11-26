@@ -1,8 +1,42 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+interface FooterInfo {
+  id: string;
+  hospitalName: string;
+  address: string;
+  representative: string | null;
+  businessNumber: string | null;
+  phone: string;
+  fax: string | null;
+  email: string | null;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  youtubeUrl: string | null;
+  copyrightText: string;
+}
+
 export default function NewFooter() {
+  const [footerInfo, setFooterInfo] = useState<FooterInfo | null>(null);
+
+  useEffect(() => {
+    fetchFooterInfo();
+  }, []);
+
+  const fetchFooterInfo = async () => {
+    try {
+      const response = await fetch('/api/footer-info');
+      if (response.ok) {
+        const data = await response.json();
+        setFooterInfo(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch footer info:', error);
+    }
+  };
+
   return (
     <footer className="bg-gray-100 mt-24 border-t border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-12">
@@ -28,10 +62,10 @@ export default function NewFooter() {
                   </clipPath>
                 </defs>
               </svg>
-              <h2 className="text-lg font-bold">비타민마취통증의학과</h2>
+              <h2 className="text-lg font-bold">{footerInfo?.hospitalName || '비타민마취통증의학과'}</h2>
             </div>
             <p className="text-xs text-gray-500">
-              © 2024 비타민마취통증의학과. All Rights Reserved.
+              {footerInfo?.copyrightText || '© 2024 비타민마취통증의학과. All Rights Reserved.'}
             </p>
           </div>
 
@@ -100,8 +134,10 @@ export default function NewFooter() {
           {/* Contact */}
           <div className="text-sm">
             <h3 className="font-bold text-gray-800 mb-3">문의</h3>
-            <p className="text-gray-600">부산광역시 동구 중앙대로 375</p>
-            <p className="text-gray-600">전화: 051-469-7581</p>
+            <p className="text-gray-600">{footerInfo?.address || '부산광역시 동구 중앙대로 375'}</p>
+            <p className="text-gray-600">전화: {footerInfo?.phone || '051-469-7581'}</p>
+            {footerInfo?.fax && <p className="text-gray-600">팩스: {footerInfo.fax}</p>}
+            {footerInfo?.email && <p className="text-gray-600">이메일: {footerInfo.email}</p>}
           </div>
         </div>
       </div>
