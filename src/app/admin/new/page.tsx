@@ -19,6 +19,7 @@ import PageHeadingManager from '@/components/admin/sections/PageHeadingManager';
 import DoctorScheduleManager from '@/components/admin/sections/DoctorScheduleManager';
 import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
+import PopupsManager from '@/components/admin/sections/PopupsManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -89,7 +90,8 @@ export default function NewAdminPage() {
       icon: '⚙️',
       sections: [
         { id: 'logo', name: '병원 로고 관리' },
-        { id: 'footer', name: '푸터 정보 관리' }
+        { id: 'footer', name: '푸터 정보 관리' },
+        { id: 'popups', name: '팝업 관리' }
       ]
     },
     {
@@ -175,6 +177,8 @@ export default function NewAdminPage() {
         return <LogoManager />;
       case 'global-footer':
         return <FooterManager />;
+      case 'global-popups':
+        return <PopupsManager />;
 
       // 메인 페이지
       case 'main-hero-carousel':

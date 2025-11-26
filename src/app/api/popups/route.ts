@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       if (error) return error;
 
       const popups = await prisma.popup.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
       });
 
       return NextResponse.json(popups);
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { title, content, imageUrl, active, showDoNotShow, startDate, endDate } = body;
+    const { title, content, imageUrl, active, showDoNotShow, startDate, endDate, order } = body;
 
     if (!title || !content) {
       return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
         showDoNotShow: showDoNotShow ?? true,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
+        order: order ?? 0,
       },
     });
 
@@ -91,7 +92,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, title, content, imageUrl, active, showDoNotShow, startDate, endDate } = body;
+    const { id, title, content, imageUrl, active, showDoNotShow, startDate, endDate, order } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Popup ID is required' }, { status: 400 });
@@ -107,6 +108,7 @@ export async function PUT(request: NextRequest) {
         showDoNotShow,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
+        order,
       },
     });
 
