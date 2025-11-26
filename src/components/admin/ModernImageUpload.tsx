@@ -19,7 +19,7 @@ export default function ModernImageUpload({
   onDelete,
   label = '이미지',
   aspectRatio = 'auto',
-  maxSize = 5,
+  maxSize = 20,
   showUrlInput = false,
   preset = 'default',
 }: ModernImageUploadProps) {

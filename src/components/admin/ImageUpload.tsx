@@ -35,10 +35,10 @@ export default function ImageUpload({
       return;
     }
 
-    // Validate file size (4MB)
-    const maxSize = 4 * 1024 * 1024;
+    // Validate file size (20MB)
+    const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
-      setError('파일 크기는 4MB 이하여야 합니다');
+      setError('파일 크기는 20MB 이하여야 합니다');
       return;
     }
 
@@ -206,7 +206,7 @@ export default function ImageUpload({
                   파일 선택
                 </button>
                 <p className="text-xs text-gray-500">
-                  JPG, PNG, WEBP, GIF · 최대 4MB
+                  JPG, PNG, WEBP, GIF · 최대 20MB
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   권장 비율: {info.ratio} ({info.size})

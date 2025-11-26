@@ -48,11 +48,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (4MB max - Vercel free tier limit)
-    const maxSize = 4 * 1024 * 1024; // 4MB
+    // Validate file size (20MB max - allows high-quality images)
+    const maxSize = 20 * 1024 * 1024; // 20MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'File too large. Maximum size is 4MB. Please compress the image before uploading.' },
+        { error: 'File too large. Maximum size is 20MB. Please compress the image before uploading.' },
         { status: 413 }
       );
     }
