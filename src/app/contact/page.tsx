@@ -1,11 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
+interface HospitalInfo {
+  id: string;
+  hospitalName: string;
+  address: string;
+  phone: string;
+  fax: string | null;
+  email: string | null;
+  mapImageUrl: string | null;
+  kakaoMapUrl: string | null;
+  naverMapUrl: string | null;
+  googleMapUrl: string | null;
+  subwayInfo: string | null;
+  busInfo: string | null;
+  parkingInfo: string | null;
+}
+
 export default function ContactPage() {
   const [copiedText, setCopiedText] = useState('');
+  const [hospitalInfo, setHospitalInfo] = useState<HospitalInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchHospitalInfo();
+  }, []);
+
+  const fetchHospitalInfo = async () => {
+    try {
+      const response = await fetch('/api/contact-info');
+      if (response.ok) {
+        const data = await response.json();
+        setHospitalInfo(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch hospital info:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCopy = async (text: string, type: string) => {
     try {
@@ -38,12 +74,40 @@ export default function ContactPage() {
 
             {/* Map */}
             <div className="flex px-4 py-3">
-              <div
-                className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4]"
-                style={{
-                  backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBecyHsV_8xCcumqkiufXw6WklDnH49z_T044O5T5ZiGxp_n9kWeGr3vBQwdDZWEbi5xaXVekk7Qnmud8dRg7zzAtBga05T4A1aKRzvnMQUdvnTq8ynD5nizGzDvZEiZ0Cbhlh5vCK2Unl4Ms4FO1ekMMVpPZcqrXFHd3A1n9SLVJzTEXVju7ucX78UzwnQgvrY-GAAYudiCWdKX5YmDX-4XOIMUVyXh1cJJxkFGrV-HjgrSiIY1FKfosoRDP_BLA64tz0FFS16mryi")'
-                }}
-              ></div>
+              {hospitalInfo?.naverMapUrl ? (
+                <a
+                  href={hospitalInfo.naverMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full block group relative"
+                >
+                  <div
+                    className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4] transition-opacity group-hover:opacity-90"
+                    style={{
+                      backgroundImage: hospitalInfo.mapImageUrl
+                        ? `url("${hospitalInfo.mapImageUrl}")`
+                        : 'url("https://via.placeholder.com/960x480?text=Map+Image")'
+                    }}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-xl">
+                      <span className="text-white opacity-0 group-hover:opacity-100 font-semibold text-lg">
+                        네이버 지도에서 보기
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              ) : hospitalInfo?.mapImageUrl ? (
+                <div
+                  className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4]"
+                  style={{
+                    backgroundImage: `url("${hospitalInfo.mapImageUrl}")`
+                  }}
+                ></div>
+              ) : (
+                <div className="w-full bg-gray-200 aspect-[2/1] rounded-xl border border-[#EAE8E4] flex items-center justify-center text-gray-500">
+                  지도 이미지를 관리자 페이지에서 업로드해주세요
+                </div>
+              )}
             </div>
 
             {/* Contact Details */}
@@ -64,14 +128,15 @@ export default function ContactPage() {
                           주소
                         </p>
                         <p className="text-[#8a7960] text-sm font-normal leading-normal line-clamp-2">
-                          서울특별시 강남구 테헤란로 123 비타민타워 4층
+                          {hospitalInfo?.address || '주소를 관리자 페이지에서 입력해주세요'}
                         </p>
                       </div>
                     </div>
                     <div className="shrink-0">
                       <button
-                        onClick={() => handleCopy('서울특별시 강남구 테헤란로 123 비타민타워 4층', 'address')}
-                        className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#EAE8E4] text-[#181511] text-sm font-medium leading-normal w-fit"
+                        onClick={() => handleCopy(hospitalInfo?.address || '', 'address')}
+                        disabled={!hospitalInfo?.address}
+                        className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#EAE8E4] text-[#181511] text-sm font-medium leading-normal w-fit disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <span className="truncate">{copiedText === 'address' ? '복사됨!' : '주소 복사'}</span>
                       </button>
@@ -89,14 +154,14 @@ export default function ContactPage() {
                           연락처
                         </p>
                         <p className="text-[#8a7960] text-sm font-normal leading-normal line-clamp-2">
-                          02-1234-5678
+                          {hospitalInfo?.phone || '전화번호를 관리자 페이지에서 입력해주세요'}
                         </p>
                       </div>
                     </div>
                     <div className="shrink-0">
                       <a
-                        href="tel:02-1234-5678"
-                        className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#f2930d] text-white text-sm font-medium leading-normal w-fit"
+                        href={`tel:${hospitalInfo?.phone || ''}`}
+                        className={`flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-[#f2930d] text-white text-sm font-medium leading-normal w-fit ${!hospitalInfo?.phone ? 'opacity-50 pointer-events-none' : ''}`}
                       >
                         <span className="truncate">전화 걸기</span>
                       </a>
@@ -104,21 +169,23 @@ export default function ContactPage() {
                   </div>
 
                   {/* Fax */}
-                  <div className="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="text-[#181511] flex items-center justify-center rounded-lg bg-[#EAE8E4] shrink-0 size-12">
-                        <span className="material-symbols-outlined">print</span>
-                      </div>
-                      <div className="flex flex-col justify-center">
-                        <p className="text-[#181511] text-base font-medium leading-normal line-clamp-1">
-                          팩스
-                        </p>
-                        <p className="text-[#8a7960] text-sm font-normal leading-normal line-clamp-2">
-                          02-1234-5679
-                        </p>
+                  {hospitalInfo?.fax && (
+                    <div className="flex items-center gap-4 bg-transparent px-4 min-h-[72px] py-2 justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="text-[#181511] flex items-center justify-center rounded-lg bg-[#EAE8E4] shrink-0 size-12">
+                          <span className="material-symbols-outlined">print</span>
+                        </div>
+                        <div className="flex flex-col justify-center">
+                          <p className="text-[#181511] text-base font-medium leading-normal line-clamp-1">
+                            팩스
+                          </p>
+                          <p className="text-[#8a7960] text-sm font-normal leading-normal line-clamp-2">
+                            {hospitalInfo.fax}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -132,16 +199,27 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-[#181511] text-lg font-bold">대중교통 안내</h3>
                   </div>
-                  <div className="flex flex-col gap-2 text-sm">
-                    <p className="font-semibold text-[#181511]">지하철</p>
-                    <p className="text-[#8a7960]">2호선 강남역 11번 출구에서 도보 5분</p>
-                  </div>
-                  <div className="flex flex-col gap-2 text-sm">
-                    <p className="font-semibold text-[#181511]">버스</p>
-                    <p className="text-[#8a7960]">
-                      간선버스 140, 402, 420번 / 지선버스 3412, 4412번 '강남역' 정류장 하차
-                    </p>
-                  </div>
+                  {hospitalInfo?.subwayInfo && (
+                    <div className="flex flex-col gap-2 text-sm">
+                      <p className="font-semibold text-[#181511]">지하철</p>
+                      <p className="text-[#8a7960] whitespace-pre-wrap">{hospitalInfo.subwayInfo}</p>
+                    </div>
+                  )}
+                  {hospitalInfo?.busInfo && (
+                    <div className="flex flex-col gap-2 text-sm">
+                      <p className="font-semibold text-[#181511]">버스</p>
+                      <p className="text-[#8a7960] whitespace-pre-wrap">{hospitalInfo.busInfo}</p>
+                    </div>
+                  )}
+                  {hospitalInfo?.parkingInfo && (
+                    <div className="flex flex-col gap-2 text-sm">
+                      <p className="font-semibold text-[#181511]">주차</p>
+                      <p className="text-[#8a7960] whitespace-pre-wrap">{hospitalInfo.parkingInfo}</p>
+                    </div>
+                  )}
+                  {!hospitalInfo?.subwayInfo && !hospitalInfo?.busInfo && !hospitalInfo?.parkingInfo && (
+                    <p className="text-sm text-[#8a7960]">대중교통 정보를 관리자 페이지에서 입력해주세요</p>
+                  )}
                 </div>
 
                 {/* Hours */}
