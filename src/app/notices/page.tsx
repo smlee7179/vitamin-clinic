@@ -14,10 +14,30 @@ interface Notice {
   createdAt: string;
 }
 
+interface InfoCard {
+  id: string;
+  page: string;
+  title: string;
+  description: string;
+  emoji: string;
+  order: number;
+  active: boolean;
+}
+
+interface PageNotice {
+  id: string;
+  page: string;
+  content: string;
+  type: string;
+  active: boolean;
+}
+
 export default function NoticesPage() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
+  const [pageNotice, setPageNotice] = useState<PageNotice | null>(null);
 
   const categories = [
     { value: 'all', label: '전체' },
@@ -28,6 +48,8 @@ export default function NoticesPage() {
 
   useEffect(() => {
     fetchNotices();
+    fetchInfoCards();
+    fetchPageNotice();
   }, [selectedCategory]);
 
   const fetchNotices = async () => {
@@ -45,6 +67,55 @@ export default function NoticesPage() {
       console.error('Failed to fetch notices:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchInfoCards = async () => {
+    try {
+      const response = await fetch('/api/info-cards');
+      if (response.ok) {
+        const data = await response.json();
+        const activeCards = data.filter((card: InfoCard) => card.page === 'notices' && card.active);
+        setInfoCards(activeCards.sort((a: InfoCard, b: InfoCard) => a.order - b.order));
+      }
+    } catch (error) {
+      console.error('Failed to fetch info cards:', error);
+    }
+  };
+
+  const fetchPageNotice = async () => {
+    try {
+      const response = await fetch('/api/page-notice?page=notices');
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.active) {
+          setPageNotice(data);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch page notice:', error);
+    }
+  };
+
+  const getNoticeStyle = (type: string) => {
+    switch (type) {
+      case 'warning':
+        return 'bg-yellow-50 border-yellow-300 text-yellow-900';
+      case 'alert':
+        return 'bg-red-50 border-red-300 text-red-900';
+      default:
+        return 'bg-blue-50 border-blue-300 text-blue-900';
+    }
+  };
+
+  const getNoticeIcon = (type: string) => {
+    switch (type) {
+      case 'warning':
+        return '⚠️';
+      case 'alert':
+        return '🚨';
+      default:
+        return 'ℹ️';
     }
   };
 
@@ -81,6 +152,18 @@ export default function NoticesPage() {
             ))}
           </div>
         </section>
+
+        {/* Page Notice */}
+        {pageNotice && (
+          <section className="max-w-6xl mx-auto px-4 pb-6">
+            <div className={`rounded-xl p-4 border-2 ${getNoticeStyle(pageNotice.type)}`}>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">{getNoticeIcon(pageNotice.type)}</span>
+                <p className="flex-1 whitespace-pre-wrap">{pageNotice.content}</p>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Notices List */}
         <section className="max-w-6xl mx-auto px-4 pb-16">
@@ -179,27 +262,41 @@ export default function NoticesPage() {
         <section className="bg-gray-50 py-16">
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-4xl mb-4">📅</div>
-                <h3 className="font-bold text-gray-900 mb-2">정기 업데이트</h3>
-                <p className="text-sm text-gray-600">
-                  주요 소식은 정기적으로 업데이트됩니다
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl mb-4">🔔</div>
-                <h3 className="font-bold text-gray-900 mb-2">중요 공지</h3>
-                <p className="text-sm text-gray-600">
-                  중요한 안내사항을 놓치지 마세요
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl mb-4">📞</div>
-                <h3 className="font-bold text-gray-900 mb-2">문의하기</h3>
-                <p className="text-sm text-gray-600">
-                  궁금한 사항은 전화로 문의해주세요
-                </p>
-              </div>
+              {infoCards.length > 0 ? (
+                infoCards.map((card) => (
+                  <div key={card.id} className="text-center">
+                    <div className="text-4xl mb-4">{card.emoji}</div>
+                    <h3 className="font-bold text-gray-900 mb-2">{card.title}</h3>
+                    <p className="text-sm text-gray-600">
+                      {card.description}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">📅</div>
+                    <h3 className="font-bold text-gray-900 mb-2">정기 업데이트</h3>
+                    <p className="text-sm text-gray-600">
+                      주요 소식은 정기적으로 업데이트됩니다
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">🔔</div>
+                    <h3 className="font-bold text-gray-900 mb-2">중요 공지</h3>
+                    <p className="text-sm text-gray-600">
+                      중요한 안내사항을 놓치지 마세요
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">📞</div>
+                    <h3 className="font-bold text-gray-900 mb-2">문의하기</h3>
+                    <p className="text-sm text-gray-600">
+                      궁금한 사항은 전화로 문의해주세요
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>
