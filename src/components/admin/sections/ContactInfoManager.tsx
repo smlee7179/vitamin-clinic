@@ -26,6 +26,7 @@ export default function ContactInfoManager() {
     phone: '',
     fax: '',
     email: '',
+    mapImageUrl: '',
     kakaoMapUrl: '',
     naverMapUrl: '',
     googleMapUrl: '',
@@ -50,6 +51,7 @@ export default function ContactInfoManager() {
             phone: data.phone || '',
             fax: data.fax || '',
             email: data.email || '',
+            mapImageUrl: data.mapImageUrl || '',
             kakaoMapUrl: data.kakaoMapUrl || '',
             naverMapUrl: data.naverMapUrl || '',
             googleMapUrl: data.googleMapUrl || '',
@@ -171,19 +173,22 @@ export default function ContactInfoManager() {
 
       {/* Map URLs Section */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-gray-900">지도 URL</h3>
+        <h3 className="text-lg font-bold text-gray-900">지도 정보</h3>
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            카카오맵 URL
+            지도 이미지 URL
           </label>
           <input
             type="url"
-            value={formData.kakaoMapUrl}
-            onChange={(e) => handleChange('kakaoMapUrl', e.target.value)}
-            placeholder="https://map.kakao.com/..."
+            value={formData.mapImageUrl}
+            onChange={(e) => handleChange('mapImageUrl', e.target.value)}
+            placeholder="https://example.com/map-image.jpg"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           />
+          <p className="mt-2 text-sm text-gray-500">
+            지도 스크린샷 이미지 URL을 입력하세요 (오시는 길 페이지에 표시됩니다)
+          </p>
         </div>
 
         <div>
@@ -195,6 +200,22 @@ export default function ContactInfoManager() {
             value={formData.naverMapUrl}
             onChange={(e) => handleChange('naverMapUrl', e.target.value)}
             placeholder="https://map.naver.com/..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          />
+          <p className="mt-2 text-sm text-gray-500">
+            네이버 지도에서 공유 버튼을 눌러 URL을 복사하세요
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            카카오맵 URL
+          </label>
+          <input
+            type="url"
+            value={formData.kakaoMapUrl}
+            onChange={(e) => handleChange('kakaoMapUrl', e.target.value)}
+            placeholder="https://map.kakao.com/..."
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           />
         </div>
@@ -288,7 +309,8 @@ export default function ContactInfoManager() {
             <p className="text-sm font-semibold text-blue-900 mb-1">팁</p>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• 주소와 전화번호는 필수 항목입니다</li>
-              <li>• 지도 URL은 각 지도 서비스에서 공유 링크를 복사하여 입력하세요</li>
+              <li>• 지도 이미지 URL: 지도 스크린샷을 업로드하고 URL을 입력하세요</li>
+              <li>• 네이버맵 URL: 지도에서 공유 버튼을 눌러 링크를 복사하세요</li>
               <li>• 대중교통 안내는 줄바꿈을 사용하여 보기 좋게 작성하세요</li>
             </ul>
           </div>
