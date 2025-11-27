@@ -74,20 +74,39 @@ export default function ContactPage() {
 
             {/* Map */}
             <div className="flex px-4 py-3">
-              {hospitalInfo?.naverMapUrl ? (
-                <div className="w-full space-y-4">
-                  {/* Interactive Map Preview */}
-                  <div className="w-full aspect-[2/1] rounded-xl border border-[#EAE8E4] overflow-hidden bg-white">
-                    <iframe
-                      src={hospitalInfo.naverMapUrl}
-                      className="w-full h-full"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
+              <div className="w-full space-y-4">
+                {/* Map Preview - Clickable */}
+                {hospitalInfo?.mapImageUrl ? (
+                  <a
+                    href={hospitalInfo.naverMapUrl || '#'}
+                    target={hospitalInfo.naverMapUrl ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className={`block w-full group relative ${hospitalInfo.naverMapUrl ? 'cursor-pointer' : 'cursor-default'}`}
+                  >
+                    <div
+                      className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl border border-[#EAE8E4] transition-opacity group-hover:opacity-90"
+                      style={{
+                        backgroundImage: `url("${hospitalInfo.mapImageUrl}")`
+                      }}
+                    >
+                      {hospitalInfo.naverMapUrl && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-xl">
+                          <span className="text-white opacity-0 group-hover:opacity-100 font-semibold text-lg">
+                            클릭하여 네이버 지도에서 보기
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </a>
+                ) : (
+                  <div className="w-full bg-gray-200 aspect-[2/1] rounded-xl border border-[#EAE8E4] flex flex-col items-center justify-center gap-2 text-gray-500">
+                    <span className="material-symbols-outlined text-6xl">add_location</span>
+                    <p className="text-sm">지도 이미지를 관리자 페이지에서 업로드해주세요</p>
                   </div>
-                  {/* Open in Naver Map Button */}
+                )}
+
+                {/* Open in Naver Map Button */}
+                {hospitalInfo?.naverMapUrl && (
                   <div className="flex justify-center">
                     <a
                       href={hospitalInfo.naverMapUrl}
@@ -96,23 +115,11 @@ export default function ContactPage() {
                       className="inline-flex items-center gap-2 px-6 py-3 bg-[#03C75A] text-white font-semibold rounded-lg hover:bg-[#02b350] transition-colors shadow-sm"
                     >
                       <span className="material-symbols-outlined">map</span>
-                      <span>네이버 지도 앱에서 열기</span>
+                      <span>네이버 지도에서 열기</span>
                     </a>
                   </div>
-                </div>
-              ) : hospitalInfo?.mapImageUrl ? (
-                <div
-                  className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4]"
-                  style={{
-                    backgroundImage: `url("${hospitalInfo.mapImageUrl}")`
-                  }}
-                ></div>
-              ) : (
-                <div className="w-full bg-gray-200 aspect-[2/1] rounded-xl border border-[#EAE8E4] flex flex-col items-center justify-center gap-2 text-gray-500">
-                  <span className="material-symbols-outlined text-6xl">add_location</span>
-                  <p className="text-sm">지도 이미지를 관리자 페이지에서 업로드해주세요</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Contact Details */}
