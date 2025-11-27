@@ -15,66 +15,8 @@ interface Treatment {
   imageUrl?: string;
 }
 
-// 기본 치료 데이터 (템플릿 기반)
-const defaultTreatments: Treatment[] = [
-  {
-    id: '1',
-    title: '도수치료',
-    description: '전문의의 손을 이용해 척추와 관절의 불균형을 바로잡아 통증을 완화하고 기능을 회복시키는 치료법입니다.',
-    icon: '🤲',
-    category: 'spine',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80'
-  },
-  {
-    id: '2',
-    title: '신경차단술',
-    description: '통증을 유발하는 신경 주위에 약물을 주입하여 염증과 부종을 줄이고 통증을 효과적으로 완화시키는 시술입니다.',
-    icon: '💉',
-    category: 'spine',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80'
-  },
-  {
-    id: '3',
-    title: '프롤로테라피',
-    description: '손상된 인대와 힘줄에 증식제를 주사하여 조직의 재생을 유도하고 만성 통증을 근본적으로 완화하는 주사 요법입니다.',
-    icon: '💊',
-    category: 'joint',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80'
-  },
-  {
-    id: '4',
-    title: '체외충격파',
-    description: '강력한 충격파 에너지를 통증 부위에 전달하여 혈류를 개선하고 손상된 조직의 재생을 돕는 비수술적 치료입니다.',
-    icon: '⚡',
-    category: 'special',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80'
-  },
-  {
-    id: '5',
-    title: '물리치료',
-    description: '열, 전기, 광선 등 다양한 물리적 요소를 이용하여 통증을 완화하고 손상된 조직의 기능을 회복시키는 치료입니다.',
-    icon: '🔥',
-    category: 'special',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80'
-  },
-  {
-    id: '6',
-    title: '운동치료',
-    description: '개인의 상태에 맞는 맞춤형 운동 프로그램을 통해 근력을 강화하고 신체 균형을 개선하여 재발을 방지합니다.',
-    icon: '🏃',
-    category: 'special',
-    features: [],
-    imageUrl: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80'
-  }
-];
-
 export default function TreatmentsPage() {
-  const [treatments, setTreatments] = useState<Treatment[]>(defaultTreatments);
+  const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -91,14 +33,11 @@ export default function TreatmentsPage() {
         const response = await fetch('/api/treatments');
         if (response.ok) {
           const data = await response.json();
-          if (data && data.length > 0) {
-            // API 데이터가 있으면 이미지 URL 추가
-            const enrichedData = data.map((t: Treatment, index: number) => ({
-              ...t,
-              imageUrl: t.imageUrl || defaultTreatments[index]?.imageUrl
-            }));
-            setTreatments(enrichedData);
-          }
+          // Filter active treatments and sort by order
+          const activeTreatments = data
+            .filter((t: Treatment & { active: boolean }) => t.active)
+            .sort((a: Treatment & { order: number }, b: Treatment & { order: number }) => a.order - b.order);
+          setTreatments(activeTreatments);
         }
       } catch (error) {
         console.error('Failed to fetch treatments:', error);
@@ -180,8 +119,20 @@ export default function TreatmentsPage() {
                 ))}
               </div>
             ) : filteredTreatments.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500">해당 카테고리에 등록된 치료가 없습니다.</p>
+              <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="text-center max-w-md">
+                  <span className="material-symbols-outlined text-7xl text-gray-400 mb-4 block">healing</span>
+                  <p className="text-gray-500 text-lg font-medium mb-2">
+                    {selectedCategory === 'all'
+                      ? '등록된 치료가 없습니다.'
+                      : '해당 카테고리에 등록된 치료가 없습니다.'}
+                  </p>
+                  {selectedCategory === 'all' && (
+                    <p className="text-sm text-gray-400 mt-2">
+                      관리자 페이지에서 치료 정보를 추가해주세요.
+                    </p>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
