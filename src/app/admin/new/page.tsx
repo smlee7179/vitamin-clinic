@@ -21,6 +21,7 @@ import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
+import HealthInfoManager from '@/components/admin/sections/HealthInfoManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -165,6 +166,14 @@ export default function NewAdminPage() {
         { id: 'contact-info', name: '연락처 정보' },
         { id: 'transportation', name: '대중교통 안내' }
       ]
+    },
+    {
+      id: 'health-info',
+      name: '건강정보',
+      icon: '📚',
+      sections: [
+        { id: 'health-info', name: '건강정보 관리' }
+      ]
     }
   ];
 
@@ -239,6 +248,10 @@ export default function NewAdminPage() {
         return <ContactInfoManager />;
       case 'contact-transportation':
         return <ContactInfoManager />; // Transportation info included in contact info
+
+      // 건강정보
+      case 'health-info-health-info':
+        return <HealthInfoManager />;
 
       default:
         return (
