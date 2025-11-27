@@ -29,8 +29,12 @@ export async function POST(request: NextRequest) {
       fax,
       email,
       mapImageUrl,
+      kakaoMapUrl,
+      naverMapUrl,
+      googleMapUrl,
       busInfo,
-      subwayInfo
+      subwayInfo,
+      parkingInfo
     } = body;
 
     // Since HospitalInfo should be a singleton, check if one exists
@@ -50,8 +54,12 @@ export async function POST(request: NextRequest) {
         fax: fax || null,
         email: email || null,
         mapImageUrl: mapImageUrl || null,
+        kakaoMapUrl: kakaoMapUrl || null,
+        naverMapUrl: naverMapUrl || null,
+        googleMapUrl: googleMapUrl || null,
         busInfo: busInfo || null,
-        subwayInfo: subwayInfo || null
+        subwayInfo: subwayInfo || null,
+        parkingInfo: parkingInfo || null
       }
     });
 
@@ -77,8 +85,12 @@ export async function PUT(request: NextRequest) {
       fax,
       email,
       mapImageUrl,
+      kakaoMapUrl,
+      naverMapUrl,
+      googleMapUrl,
       busInfo,
-      subwayInfo
+      subwayInfo,
+      parkingInfo
     } = body;
 
     if (!id) {
@@ -97,8 +109,12 @@ export async function PUT(request: NextRequest) {
         fax: fax || null,
         email: email || null,
         mapImageUrl: mapImageUrl || null,
+        kakaoMapUrl: kakaoMapUrl || null,
+        naverMapUrl: naverMapUrl || null,
+        googleMapUrl: googleMapUrl || null,
         busInfo: busInfo || null,
-        subwayInfo: subwayInfo || null
+        subwayInfo: subwayInfo || null,
+        parkingInfo: parkingInfo || null
       }
     });
 

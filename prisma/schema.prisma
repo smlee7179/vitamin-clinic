@@ -173,8 +173,12 @@ model HospitalInfo {
   fax           String?
   email         String?
   mapImageUrl   String?
+  kakaoMapUrl   String?
+  naverMapUrl   String?
+  googleMapUrl  String?
   subwayInfo    String?
   busInfo       String?
+  parkingInfo   String?
   updatedAt     DateTime @updatedAt
   createdAt     DateTime @default(now())
 }

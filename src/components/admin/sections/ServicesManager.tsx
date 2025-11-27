@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
   description: string;
-  iconUrl: string | null;
+  icon: string;
+  details: string;
   order: number;
   active: boolean;
 }
@@ -41,9 +41,10 @@ export default function ServicesManager() {
   const handleCreate = () => {
     setEditingService({
       id: '',
-      title: '',
+      name: '',
       description: '',
-      iconUrl: null,
+      icon: 'personal_injury',
+      details: '[]',
       order: services.length,
       active: true
     });
@@ -137,18 +138,11 @@ export default function ServicesManager() {
         <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6">
           <p className="text-sm font-semibold text-gray-700 mb-4">미리보기</p>
           <div className="bg-white rounded-xl p-6 max-w-sm mx-auto shadow-sm">
-            {editingService.iconUrl && (
-              <div className="relative w-16 h-16 mx-auto mb-4">
-                <Image
-                  src={editingService.iconUrl}
-                  alt={editingService.title}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            )}
+            <div className="flex items-center justify-center mb-4">
+              <span className="material-icons text-4xl text-orange-500">{editingService.icon}</span>
+            </div>
             <h3 className="font-bold text-lg text-gray-900 text-center mb-2">
-              {editingService.title}
+              {editingService.name}
             </h3>
             <p className="text-sm text-gray-600 text-center">{editingService.description}</p>
           </div>
@@ -161,8 +155,8 @@ export default function ServicesManager() {
             </label>
             <input
               type="text"
-              value={editingService.title}
-              onChange={(e) => setEditingService({ ...editingService, title: e.target.value })}
+              value={editingService.name}
+              onChange={(e) => setEditingService({ ...editingService, name: e.target.value })}
               placeholder="척추 통증 치료"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
@@ -183,17 +177,17 @@ export default function ServicesManager() {
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              아이콘 URL
+              Material Icon 이름 <span className="text-red-500">*</span>
             </label>
             <input
-              type="url"
-              value={editingService.iconUrl || ''}
-              onChange={(e) => setEditingService({ ...editingService, iconUrl: e.target.value || null })}
-              placeholder="https://example.com/icon.svg"
+              type="text"
+              value={editingService.icon}
+              onChange={(e) => setEditingService({ ...editingService, icon: e.target.value })}
+              placeholder="personal_injury"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
             <p className="mt-2 text-sm text-gray-500">
-              정사각형 비율 권장 (예: 64x64px)
+              Material Icons 이름 (예: personal_injury, medication, healing)
             </p>
           </div>
 
@@ -230,10 +224,10 @@ export default function ServicesManager() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!editingService.title || !editingService.description}
+            disabled={!editingService.name || !editingService.description || saving}
             className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            저장
+            {saving ? '저장 중...' : '저장'}
           </button>
           <button
             onClick={() => {
@@ -284,19 +278,12 @@ export default function ServicesManager() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((service) => (
             <div key={service.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-              {service.iconUrl && (
-                <div className="relative w-12 h-12 mb-4">
-                  <Image
-                    src={service.iconUrl}
-                    alt={service.title}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              )}
+              <div className="flex items-center justify-center mb-4">
+                <span className="material-icons text-3xl text-orange-500">{service.icon}</span>
+              </div>
               <div className="mb-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-bold text-gray-900 flex-1">{service.title}</h4>
+                  <h4 className="font-bold text-gray-900 flex-1">{service.name}</h4>
                   <span className="text-xs font-semibold text-gray-500 ml-2">
                     #{service.order}
                   </span>
