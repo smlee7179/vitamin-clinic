@@ -81,20 +81,26 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="w-full block group relative"
                 >
-                  <div
-                    className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4] transition-opacity group-hover:opacity-90"
-                    style={{
-                      backgroundImage: hospitalInfo.mapImageUrl
-                        ? `url("${hospitalInfo.mapImageUrl}")`
-                        : 'url("https://via.placeholder.com/960x480?text=Map+Image")'
-                    }}
-                  >
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-xl">
-                      <span className="text-white opacity-0 group-hover:opacity-100 font-semibold text-lg">
-                        네이버 지도에서 보기
-                      </span>
+                  {hospitalInfo.mapImageUrl ? (
+                    <div
+                      className="w-full bg-center bg-no-repeat aspect-[2/1] bg-cover rounded-xl object-cover border border-[#EAE8E4] transition-opacity group-hover:opacity-90"
+                      style={{
+                        backgroundImage: `url("${hospitalInfo.mapImageUrl}")`
+                      }}
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-xl">
+                        <span className="text-white opacity-0 group-hover:opacity-100 font-semibold text-lg">
+                          네이버 지도에서 보기
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="w-full bg-[#EAE8E4] aspect-[2/1] rounded-xl border border-[#EAE8E4] flex flex-col items-center justify-center gap-3 group-hover:bg-[#ddd9d4] transition-colors">
+                      <span className="material-symbols-outlined text-6xl text-[#8a7960]">map</span>
+                      <p className="text-[#8a7960] font-medium">네이버 지도에서 보기</p>
+                      <p className="text-sm text-[#8a7960]">클릭하여 지도 열기</p>
+                    </div>
+                  )}
                 </a>
               ) : hospitalInfo?.mapImageUrl ? (
                 <div
@@ -104,8 +110,9 @@ export default function ContactPage() {
                   }}
                 ></div>
               ) : (
-                <div className="w-full bg-gray-200 aspect-[2/1] rounded-xl border border-[#EAE8E4] flex items-center justify-center text-gray-500">
-                  지도 이미지를 관리자 페이지에서 업로드해주세요
+                <div className="w-full bg-gray-200 aspect-[2/1] rounded-xl border border-[#EAE8E4] flex flex-col items-center justify-center gap-2 text-gray-500">
+                  <span className="material-symbols-outlined text-6xl">add_location</span>
+                  <p className="text-sm">지도 이미지를 관리자 페이지에서 업로드해주세요</p>
                 </div>
               )}
             </div>
