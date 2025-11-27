@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 
 interface InfoCard {
   id: string;
+  page: string;
   title: string;
-  content: string;
-  icon: string | null;
+  description: string;
+  emoji: string;
   order: number;
   active: boolean;
 }
@@ -40,9 +41,10 @@ export default function InfoCardManager() {
   const handleCreate = () => {
     setEditingCard({
       id: '',
+      page: 'notices',
       title: '',
-      content: '',
-      icon: null,
+      description: '',
+      emoji: '',
       order: cards.length,
       active: true
     });
@@ -136,14 +138,14 @@ export default function InfoCardManager() {
         <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6">
           <p className="text-sm font-semibold text-gray-700 mb-4">미리보기</p>
           <div className="bg-white rounded-xl p-6 max-w-sm mx-auto shadow-sm border border-gray-200">
-            {editingCard.icon && (
-              <div className="text-4xl mb-4 text-center">{editingCard.icon}</div>
+            {editingCard.emoji && (
+              <div className="text-4xl mb-4 text-center">{editingCard.emoji}</div>
             )}
             <h3 className="font-bold text-lg text-gray-900 text-center mb-3">
               {editingCard.title}
             </h3>
             <p className="text-sm text-gray-600 text-center whitespace-pre-wrap">
-              {editingCard.content}
+              {editingCard.description}
             </p>
           </div>
         </div>
@@ -167,8 +169,8 @@ export default function InfoCardManager() {
               내용 <span className="text-red-500">*</span>
             </label>
             <textarea
-              value={editingCard.content}
-              onChange={(e) => setEditingCard({ ...editingCard, content: e.target.value })}
+              value={editingCard.description}
+              onChange={(e) => setEditingCard({ ...editingCard, description: e.target.value })}
               placeholder="전화 또는 온라인으로 진료 예약이 가능합니다."
               rows={4}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -177,12 +179,12 @@ export default function InfoCardManager() {
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              아이콘 (이모지)
+              이모지 <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={editingCard.icon || ''}
-              onChange={(e) => setEditingCard({ ...editingCard, icon: e.target.value || null })}
+              value={editingCard.emoji}
+              onChange={(e) => setEditingCard({ ...editingCard, emoji: e.target.value })}
               placeholder="📅"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
@@ -224,10 +226,10 @@ export default function InfoCardManager() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!editingCard.title || !editingCard.content}
+            disabled={!editingCard.title || !editingCard.description || !editingCard.emoji || saving}
             className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            저장
+            {saving ? '저장 중...' : '저장'}
           </button>
           <button
             onClick={() => {
@@ -278,8 +280,8 @@ export default function InfoCardManager() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {cards.map((card) => (
             <div key={card.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-              {card.icon && (
-                <div className="text-3xl mb-3 text-center">{card.icon}</div>
+              {card.emoji && (
+                <div className="text-3xl mb-3 text-center">{card.emoji}</div>
               )}
               <div className="mb-4">
                 <div className="flex items-start justify-between mb-2">
@@ -288,7 +290,7 @@ export default function InfoCardManager() {
                     #{card.order}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 text-center line-clamp-3">{card.content}</p>
+                <p className="text-sm text-gray-600 text-center line-clamp-3">{card.description}</p>
                 {!card.active && (
                   <span className="inline-block mt-2 px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded">
                     비활성

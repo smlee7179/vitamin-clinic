@@ -319,6 +319,8 @@ model PageNotice {
   id        String   @id @default(cuid())
   page      String   @unique // "hours"
   content   String
+  type      String   @default("info") // "info", "warning", "alert"
+  active    Boolean  @default(true)
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }

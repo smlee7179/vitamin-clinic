@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { page, content } = body;
+    const { page, content, type, active } = body;
 
     if (!page) {
       return NextResponse.json(
@@ -47,7 +47,9 @@ export async function POST(request: NextRequest) {
     const notice = await prisma.pageNotice.create({
       data: {
         page,
-        content
+        content,
+        type: type || 'info',
+        active: active ?? true
       }
     });
 
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, content } = body;
+    const { id, content, type, active } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -77,7 +79,9 @@ export async function PUT(request: NextRequest) {
     const notice = await prisma.pageNotice.update({
       where: { id },
       data: {
-        content
+        content,
+        type: type || 'info',
+        active: active ?? true
       }
     });
 
