@@ -61,24 +61,18 @@ export default function NewHeader() {
               >
                 병원소개
               </Link>
-              <Link
-                href="/services"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
-              >
-                진료안내
-              </Link>
 
-              {/* Treatments Dropdown */}
+              {/* Services Dropdown */}
               <div
                 className="relative"
                 onMouseEnter={() => setTreatmentsMenuOpen(true)}
                 onMouseLeave={() => setTreatmentsMenuOpen(false)}
               >
                 <Link
-                  href="/treatments"
+                  href="/services"
                   className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors flex items-center gap-1"
                 >
-                  치료소개
+                  진료안내
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -87,34 +81,33 @@ export default function NewHeader() {
                 {treatmentsMenuOpen && (
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <Link
-                      href="/treatments/spine"
+                      href="/services/spine"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                     >
                       척추 클리닉
                     </Link>
                     <Link
-                      href="/treatments/joint"
+                      href="/services/joint"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                     >
                       관절 클리닉
                     </Link>
                     <Link
-                      href="/treatments/pain"
+                      href="/services/pain"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                     >
                       통증 클리닉
-                    </Link>
-                    <div className="border-t border-gray-200 my-2"></div>
-                    <Link
-                      href="/treatments"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors font-medium"
-                    >
-                      전체 치료 보기
                     </Link>
                   </div>
                 )}
               </div>
 
+              <Link
+                href="/treatments"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+              >
+                치료소개
+              </Link>
               <Link
                 href="/hours"
                 className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
@@ -170,21 +163,14 @@ export default function NewHeader() {
               >
                 병원소개
               </Link>
-              <Link
-                href="/services"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                진료안내
-              </Link>
 
-              {/* Treatments Mobile Dropdown */}
+              {/* Services Mobile Dropdown */}
               <div>
                 <button
                   onClick={() => setTreatmentsMenuOpen(!treatmentsMenuOpen)}
                   className="w-full text-left text-gray-800 hover:text-[#f97316] text-sm font-medium flex items-center justify-between"
                 >
-                  치료소개
+                  진료안내
                   <svg
                     className={`w-4 h-4 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -197,37 +183,37 @@ export default function NewHeader() {
                 {treatmentsMenuOpen && (
                   <div className="mt-2 ml-4 flex flex-col gap-2">
                     <Link
-                      href="/treatments/spine"
+                      href="/services/spine"
                       className="text-gray-600 hover:text-[#f97316] text-sm"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 척추 클리닉
                     </Link>
                     <Link
-                      href="/treatments/joint"
+                      href="/services/joint"
                       className="text-gray-600 hover:text-[#f97316] text-sm"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 관절 클리닉
                     </Link>
                     <Link
-                      href="/treatments/pain"
+                      href="/services/pain"
                       className="text-gray-600 hover:text-[#f97316] text-sm"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 통증 클리닉
                     </Link>
-                    <Link
-                      href="/treatments"
-                      className="text-gray-600 hover:text-[#f97316] text-sm font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      • 전체 치료 보기
-                    </Link>
                   </div>
                 )}
               </div>
 
+              <Link
+                href="/treatments"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                치료소개
+              </Link>
               <Link
                 href="/hours"
                 className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
