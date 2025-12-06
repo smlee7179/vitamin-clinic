@@ -27,7 +27,7 @@ export default function NewFooter() {
 
   const fetchFooterInfo = async () => {
     try {
-      const response = await fetch('/api/footer-info');
+      const response = await fetch('/api/hospital-info');
       if (response.ok) {
         const data = await response.json();
         setFooterInfo(data);

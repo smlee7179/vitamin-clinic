@@ -42,7 +42,7 @@ export default function FooterManager() {
 
   const fetchInfo = async () => {
     try {
-      const response = await fetch('/api/footer-info');
+      const response = await fetch('/api/hospital-info');
       if (response.ok) {
         const data = await response.json();
         setInfo(data);
@@ -76,10 +76,13 @@ export default function FooterManager() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/footer-info', {
+      const response = await fetch('/api/hospital-info', {
         method: info ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...info,  // 기존 데이터 유지 (로고, 지도 등)
+          ...formData  // 푸터 정보로 덮어쓰기
+        })
       });
 
       if (response.ok) {

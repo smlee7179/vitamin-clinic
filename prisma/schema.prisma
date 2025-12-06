@@ -162,41 +162,35 @@ model HeroSlide {
   updatedAt   DateTime @updatedAt
 }
 
-// 병원 기본 정보 (전역 설정)
+// 병원 기본 정보 (전역 설정 - Logo, Footer, Contact 통합)
 model HospitalInfo {
-  id            String   @id @default(cuid())
-  logoUrl       String?
-  logoAlt       String   @default("병원 로고")
-  hospitalName  String
-  address       String
-  phone         String
-  fax           String?
-  email         String?
-  mapImageUrl   String?
-  kakaoMapUrl   String?
-  naverMapUrl   String?
-  googleMapUrl  String?
-  subwayInfo    String?
-  busInfo       String?
-  parkingInfo   String?
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
-}
-
-// 푸터 정보 (전역 설정)
-model FooterInfo {
   id              String   @id @default(cuid())
+  // Logo
+  logoUrl         String?
+  logoAlt         String   @default("병원 로고")
+  // Basic Info
   hospitalName    String
   address         String
-  representative  String?
-  businessNumber  String?
   phone           String
   fax             String?
   email           String?
+  // Business Info
+  representative  String?
+  businessNumber  String?
+  // Map & Location
+  mapImageUrl     String?
+  kakaoMapUrl     String?
+  naverMapUrl     String?
+  googleMapUrl    String?
+  subwayInfo      String?
+  busInfo         String?
+  parkingInfo     String?
+  // Social Media
   facebookUrl     String?
   instagramUrl    String?
   youtubeUrl      String?
-  copyrightText   String
+  // Footer
+  copyrightText   String   @default("© 2024 병원. All rights reserved.")
   updatedAt       DateTime @updatedAt
   createdAt       DateTime @default(now())
 }
