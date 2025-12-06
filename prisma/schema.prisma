@@ -332,6 +332,20 @@ model InfoCard {
   createdAt   DateTime @default(now())
 }
 
+// 클리닉 페이지 관리 (척추/관절/통증)
+model ClinicPage {
+  id            String   @id @default(cuid())
+  clinicType    String   @unique // "spine", "joint", "pain"
+  heroImageUrl  String
+  heroTitle     String
+  heroSubtitle  String
+  introText1    String   // 첫 번째 문단
+  introText2    String   // 두 번째 문단
+  conditions    String   // JSON array: [{title, description, icon}]
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   STAFF

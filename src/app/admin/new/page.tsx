@@ -22,6 +22,7 @@ import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
 import HealthInfoManager from '@/components/admin/sections/HealthInfoManager';
+import ClinicPagesManager from '@/components/admin/sections/ClinicPagesManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -121,8 +122,9 @@ export default function NewAdminPage() {
       name: '진료안내',
       icon: '💊',
       sections: [
-        { id: 'hero-image', name: '히어로 이미지' },
-        { id: 'services', name: '진료 과목 관리' }
+        { id: 'spine-clinic', name: '척추 클리닉' },
+        { id: 'joint-clinic', name: '관절 클리닉' },
+        { id: 'pain-clinic', name: '통증 클리닉' }
       ]
     },
     {
@@ -208,10 +210,12 @@ export default function NewAdminPage() {
         return <HospitalTourManager />;
 
       // 진료안내
-      case 'services-hero-image':
-        return <PageHeroManager page="services" pageName="진료안내" />;
-      case 'services-services':
-        return <ServicesManager />;
+      case 'services-spine-clinic':
+        return <ClinicPagesManager clinicType="spine" />;
+      case 'services-joint-clinic':
+        return <ClinicPagesManager clinicType="joint" />;
+      case 'services-pain-clinic':
+        return <ClinicPagesManager clinicType="pain" />;
 
       // 치료소개
       case 'treatments-hero-image':
