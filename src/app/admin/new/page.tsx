@@ -401,14 +401,14 @@ export default function NewAdminPage() {
         </div>
       )}
 
-      {/* Gallery Link */}
-      <Link
+      {/* Gallery Link - Temporarily disabled */}
+      {/* <Link
         href="/admin/gallery"
         className="fixed bottom-8 right-8 bg-purple-500 text-white px-6 py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-purple-600 transition-all flex items-center font-bold z-40"
       >
         <span className="text-xl mr-2">🖼️</span>
         이미지 자료실
-      </Link>
+      </Link> */}
     </div>
   );
 }
