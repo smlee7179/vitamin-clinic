@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 export default function NewHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [treatmentsMenuOpen, setTreatmentsMenuOpen] = useState(false);
+  const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoAlt, setLogoAlt] = useState('병원 로고');
 
@@ -21,6 +21,17 @@ export default function NewHeader() {
         }
       })
       .catch(err => console.error('Failed to load logo:', err));
+
+    // 드롭다운 외부 클릭 시 닫기
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.services-dropdown')) {
+        setServicesMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
@@ -63,38 +74,42 @@ export default function NewHeader() {
               </Link>
 
               {/* Services Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setTreatmentsMenuOpen(true)}
-                onMouseLeave={() => setTreatmentsMenuOpen(false)}
-              >
-                <Link
-                  href="/services"
+              <div className="relative services-dropdown">
+                <button
+                  onClick={() => setServicesMenuOpen(!servicesMenuOpen)}
                   className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors flex items-center gap-1"
                 >
                   진료안내
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className={`w-4 h-4 transition-transform ${servicesMenuOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </Link>
+                </button>
 
-                {treatmentsMenuOpen && (
+                {servicesMenuOpen && (
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <Link
                       href="/services/spine"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
                     >
                       척추 클리닉
                     </Link>
                     <Link
                       href="/services/joint"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
                     >
                       관절 클리닉
                     </Link>
                     <Link
                       href="/services/pain"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
                     >
                       통증 클리닉
                     </Link>
@@ -167,12 +182,12 @@ export default function NewHeader() {
               {/* Services Mobile Dropdown */}
               <div>
                 <button
-                  onClick={() => setTreatmentsMenuOpen(!treatmentsMenuOpen)}
+                  onClick={() => setServicesMenuOpen(!servicesMenuOpen)}
                   className="w-full text-left text-gray-800 hover:text-[#f97316] text-sm font-medium flex items-center justify-between"
                 >
                   진료안내
                   <svg
-                    className={`w-4 h-4 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 transition-transform ${servicesMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -180,7 +195,7 @@ export default function NewHeader() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                {treatmentsMenuOpen && (
+                {servicesMenuOpen && (
                   <div className="mt-2 ml-4 flex flex-col gap-2">
                     <Link
                       href="/services/spine"
