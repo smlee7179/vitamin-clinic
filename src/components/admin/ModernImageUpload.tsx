@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { upload } from '@vercel/blob/client';
 
 interface ModernImageUploadProps {
   currentImage?: string;
@@ -75,8 +76,8 @@ export default function ModernImageUpload({
     setUploading(true);
 
     try {
-      // 원본 이미지 그대로 업로드 (압축 없음)
-      console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+      const fileSizeMB = file.size / 1024 / 1024;
+      console.log('Original file size:', fileSizeMB.toFixed(2), 'MB');
 
       // Create preview with original file
       const reader = new FileReader();
@@ -85,27 +86,47 @@ export default function ModernImageUpload({
       };
       reader.readAsDataURL(file);
 
-      // Upload original file to server
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('preset', preset);
+      let uploadUrl: string;
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      // Use client-side upload for files > 4MB to bypass serverless function limit
+      if (file.size > 4 * 1024 * 1024) {
+        console.log('📤 Using client-side upload (file > 4MB)');
 
-      if (!response.ok) {
-        const error = await response.json();
-        const errorMsg = error.details
-          ? `${error.error}\n상세: ${error.details}`
-          : error.message || error.error || '업로드 실패';
-        throw new Error(errorMsg);
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload-token',
+        });
+
+        uploadUrl = newBlob.url;
+        console.log('✅ Client-side upload successful:', uploadUrl);
+      } else {
+        console.log('📤 Using server-side upload (file ≤ 4MB)');
+
+        // Upload via API route for smaller files
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('preset', preset);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          const errorMsg = error.details
+            ? `${error.error}\n상세: ${error.details}`
+            : error.message || error.error || '업로드 실패';
+          throw new Error(errorMsg);
+        }
+
+        const data = await response.json();
+        uploadUrl = data.url;
+        console.log('✅ Server-side upload successful:', uploadUrl);
       }
 
-      const data = await response.json();
-      setPreview(data.url);
-      onUpload(data.url);
+      setPreview(uploadUrl);
+      onUpload(uploadUrl);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '업로드 중 오류가 발생했습니다';
       console.error('Upload error:', errorMessage);

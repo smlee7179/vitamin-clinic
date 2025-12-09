@@ -2,6 +2,7 @@
 
 import { useState, useRef, DragEvent, ChangeEvent } from 'react';
 import Image from 'next/image';
+import { upload } from '@vercel/blob/client';
 
 interface ImageUploadProps {
   value: string;
@@ -35,7 +36,7 @@ export default function ImageUpload({
       return;
     }
 
-    // Validate file size (20MB before compression)
+    // Validate file size (20MB)
     const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
       setError('파일 크기는 20MB 이하여야 합니다.');
@@ -46,33 +47,53 @@ export default function ImageUpload({
     setUploading(true);
 
     try {
-      // 원본 이미지 그대로 업로드 (압축 없음)
-      console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+      const fileSizeMB = file.size / 1024 / 1024;
+      console.log('Original file size:', fileSizeMB.toFixed(2), 'MB');
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('preset', preset);
+      let uploadUrl: string;
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
+      // Use client-side upload for files > 4MB to bypass serverless function limit
+      if (file.size > 4 * 1024 * 1024) {
+        console.log('📤 Using client-side upload (file > 4MB)');
 
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        throw new Error('서버 오류가 발생했습니다. 파일 크기를 줄여보세요.');
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload-token',
+        });
+
+        uploadUrl = newBlob.url;
+        console.log('✅ Client-side upload successful:', uploadUrl);
+      } else {
+        console.log('📤 Using server-side upload (file ≤ 4MB)');
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('preset', preset);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response:', text);
+          throw new Error('서버 오류가 발생했습니다.');
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.message || '업로드 실패');
+        }
+
+        uploadUrl = data.url;
+        console.log('✅ Server-side upload successful:', uploadUrl);
       }
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message || '업로드 실패');
-      }
-
-      onChange(data.url);
+      onChange(uploadUrl);
     } catch (err) {
       console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : '업로드 실패');

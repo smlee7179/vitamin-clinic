@@ -5,8 +5,7 @@
   "regions": ["icn1"],
   "functions": {
     "src/app/api/upload/route.ts": {
-      "maxDuration": 60,
-      "maxRequestBodySize": 20971520
+      "maxDuration": 60
     }
   }
 }
