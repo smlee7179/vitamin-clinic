@@ -21,8 +21,8 @@ import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
-import HealthInfoManager from '@/components/admin/sections/HealthInfoManager';
 import ClinicPagesManager from '@/components/admin/sections/ClinicPagesManager';
+import TreatmentPagesManager from '@/components/admin/sections/TreatmentPagesManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -102,7 +102,17 @@ export default function NewAdminPage() {
       name: '메인 페이지',
       icon: '🏠',
       sections: [
-        { id: 'hero-carousel', name: '히어로 캐러셀 관리' }
+        { id: 'hero-carousel', name: '상단 캐러셀 관리' }
+      ]
+    },
+    {
+      id: 'doctors',
+      name: '의료진 소개',
+      icon: '👨‍⚕️',
+      sections: [
+        { id: 'hero-image', name: '상단 이미지' },
+        { id: 'greeting', name: '인사말 관리' },
+        { id: 'doctors', name: '의료진 관리' }
       ]
     },
     {
@@ -110,9 +120,6 @@ export default function NewAdminPage() {
       name: '병원소개',
       icon: '🏥',
       sections: [
-        { id: 'hero-image', name: '히어로 이미지' },
-        { id: 'greeting', name: '인사말 관리' },
-        { id: 'doctors', name: '의료진 관리' },
         { id: 'equipment', name: '병원 장비 관리' },
         { id: 'tour', name: '병원 둘러보기 관리' }
       ]
@@ -132,9 +139,9 @@ export default function NewAdminPage() {
       name: '치료소개',
       icon: '💉',
       sections: [
-        { id: 'hero-image', name: '히어로 이미지' },
-        { id: 'treatments', name: '치료법 항목 관리' },
-        { id: 'treatment-detail', name: '치료 상세 정보 관리' }
+        { id: 'non-surgical', name: '비수술 치료' },
+        { id: 'manual-therapy', name: '도수 치료' },
+        { id: 'treatments', name: '치료법 항목 관리' }
       ]
     },
     {
@@ -153,7 +160,7 @@ export default function NewAdminPage() {
       name: '공지사항',
       icon: '📢',
       sections: [
-        { id: 'hero-banner', name: '히어로 배너' },
+        { id: 'hero-banner', name: '상단 배너' },
         { id: 'notices', name: '공지사항 목록 관리' },
         { id: 'info-cards', name: '안내 정보 카드' }
       ]
@@ -167,14 +174,6 @@ export default function NewAdminPage() {
         { id: 'map', name: '지도 관리' },
         { id: 'contact-info', name: '연락처 정보' },
         { id: 'transportation', name: '대중교통 안내' }
-      ]
-    },
-    {
-      id: 'health-info',
-      name: '건강정보',
-      icon: '📚',
-      sections: [
-        { id: 'health-info', name: '건강정보 관리' }
       ]
     }
   ];
@@ -197,13 +196,15 @@ export default function NewAdminPage() {
       case 'main-hero-carousel':
         return <HeroCarouselManager />;
 
-      // 병원소개
-      case 'about-hero-image':
-        return <PageHeroManager page="about" pageName="병원소개" />;
-      case 'about-greeting':
+      // 의료진 소개
+      case 'doctors-hero-image':
+        return <PageHeroManager page="doctors" pageName="의료진 소개" />;
+      case 'doctors-greeting':
         return <GreetingManager />;
-      case 'about-doctors':
+      case 'doctors-doctors':
         return <DoctorsManager />;
+
+      // 병원소개
       case 'about-equipment':
         return <EquipmentManager />;
       case 'about-tour':
@@ -218,12 +219,12 @@ export default function NewAdminPage() {
         return <ClinicPagesManager clinicType="pain" />;
 
       // 치료소개
-      case 'treatments-hero-image':
-        return <PageHeroManager page="treatments" pageName="치료소개" />;
+      case 'treatments-non-surgical':
+        return <TreatmentPagesManager treatmentType="non-surgical" />;
+      case 'treatments-manual-therapy':
+        return <TreatmentPagesManager treatmentType="manual-therapy" />;
       case 'treatments-treatments':
         return <TreatmentsManager />;
-      case 'treatments-treatment-detail':
-        return <TreatmentsManager />; // Same as treatments - links to detail pages
 
       // 진료시간
       case 'hours-page-heading':
@@ -252,10 +253,6 @@ export default function NewAdminPage() {
         return <ContactInfoManager />;
       case 'contact-transportation':
         return <ContactInfoManager />; // Transportation info included in contact info
-
-      // 건강정보
-      case 'health-info-health-info':
-        return <HealthInfoManager />;
 
       default:
         return (

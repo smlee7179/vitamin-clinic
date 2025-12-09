@@ -82,9 +82,8 @@ export default function LogoManager() {
       <ImageUpload
         value={logoUrl}
         onChange={setLogoUrl}
-        preset="default"
+        preset="logo"
         label="로고 이미지"
-        aspectRatio="2/1"
       />
 
       {/* Logo Alt Text */}
@@ -128,9 +127,9 @@ export default function LogoManager() {
           <div className="flex-1">
             <p className="text-sm font-semibold text-blue-900 mb-1">팁</p>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• 로고는 투명 배경(PNG)을 권장합니다</li>
-              <li>• 권장 크기: 가로 200-400px</li>
-              <li>• 이미지 자료실에서 업로드 후 URL을 복사하세요</li>
+              <li>• 투명 배경(PNG) 이미지를 업로드하면 투명도가 유지됩니다</li>
+              <li>• 원본 비율이 유지되며, 최대 너비 2000px로 자동 리사이즈됩니다</li>
+              <li>• 파일 크기는 4MB 이하로 압축해주세요</li>
             </ul>
           </div>
         </div>

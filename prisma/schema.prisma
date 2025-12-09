@@ -138,7 +138,6 @@ model Doctor {
   title       String
   specialty   String
   photoUrl    String?
-  education   String
   career      String
   order       Int      @default(0)
   active      Boolean  @default(true)
@@ -334,16 +333,32 @@ model InfoCard {
 
 // 클리닉 페이지 관리 (척추/관절/통증)
 model ClinicPage {
-  id            String   @id @default(cuid())
-  clinicType    String   @unique // "spine", "joint", "pain"
-  heroImageUrl  String
-  heroTitle     String
-  heroSubtitle  String
-  introText1    String   // 첫 번째 문단
-  introText2    String   // 두 번째 문단
-  conditions    String   // JSON array: [{title, description, icon}]
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
+  id               String   @id @default(cuid())
+  clinicType       String   @unique // "spine", "joint", "pain"
+  heroImageUrl     String
+  heroTitle        String
+  heroSubtitle     String
+  description      String   // 클리닉 설명
+  features         String?  // JSON array: [{title, description, icon}] - 특징 카드
+  targetPatients   String?  // JSON array: [{title, description}] - 주요 진료
+  symptoms         String?  // JSON array: [string] - 이런 증상이 있다면 방문하세요
+  treatmentMethods String?  // JSON array: [{title, description}] - 치료 방법
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+}
+
+// 치료소개 페이지 관리 (비수술치료/도수치료)
+model TreatmentPage {
+  id                String   @id @default(cuid())
+  treatmentType     String   @unique // "non-surgical", "manual-therapy"
+  heroImageUrl      String
+  heroTitle         String
+  heroSubtitle      String
+  description       String   // 소개글
+  treatmentPrograms String?  // JSON array: [{title, description, items: [{title, content}]}] - 주요 치료 프로그램
+  advantages        String?  // JSON array: [{title, description, icon}] - 비타민 치료의 장점
+  updatedAt         DateTime @updatedAt
+  createdAt         DateTime @default(now())
 }
 
 enum Role {

@@ -172,6 +172,9 @@ export default function FooterManager() {
       {/* Contact Info */}
       <div className="bg-white border border-gray-200 rounded-xl p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">연락처 정보</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          📞 전화번호는 헤더, 푸터, 플로팅 버튼에 자동으로 연동됩니다.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -181,9 +184,12 @@ export default function FooterManager() {
               type="tel"
               value={formData.phone}
               onChange={(e) => handleChange('phone', e.target.value)}
-              placeholder="02-1234-5678"
+              placeholder="02-1234-5678 또는 051-469-7581"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              💡 입력한 전화번호로 클릭 시 바로 전화 연결됩니다
+            </p>
           </div>
 
           <div>

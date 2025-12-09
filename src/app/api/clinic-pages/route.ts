@@ -39,9 +39,11 @@ export async function POST(request: NextRequest) {
         heroImageUrl: data.heroImageUrl,
         heroTitle: data.heroTitle,
         heroSubtitle: data.heroSubtitle,
-        introText1: data.introText1,
-        introText2: data.introText2,
-        conditions: data.conditions // JSON string
+        description: data.description,
+        features: data.features, // JSON string
+        targetPatients: data.targetPatients, // JSON string
+        symptoms: data.symptoms, // JSON string
+        treatmentMethods: data.treatmentMethods // JSON string
       }
     });
 
@@ -63,9 +65,11 @@ export async function PUT(request: NextRequest) {
         heroImageUrl: data.heroImageUrl,
         heroTitle: data.heroTitle,
         heroSubtitle: data.heroSubtitle,
-        introText1: data.introText1,
-        introText2: data.introText2,
-        conditions: data.conditions
+        description: data.description,
+        features: data.features,
+        targetPatients: data.targetPatients,
+        symptoms: data.symptoms,
+        treatmentMethods: data.treatmentMethods
       }
     });
 

@@ -75,14 +75,17 @@ export default function ModernImageUpload({
     setUploading(true);
 
     try {
-      // Create preview
+      // 원본 이미지 그대로 업로드 (압축 없음)
+      console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+
+      // Create preview with original file
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Upload to server
+      // Upload original file to server
       const formData = new FormData();
       formData.append('file', file);
       formData.append('preset', preset);

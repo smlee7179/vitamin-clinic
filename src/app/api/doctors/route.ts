@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, title, specialty, photoUrl, education, career, order, active } = body;
+    const { name, title, specialty, photoUrl, career, order, active } = body;
 
     if (!name || !title || !specialty) {
       return NextResponse.json({ error: 'Name, title, and specialty are required' }, { status: 400 });
@@ -52,7 +52,6 @@ export async function POST(request: NextRequest) {
         title,
         specialty,
         photoUrl,
-        education: education || '',
         career: career || '',
         order: order ?? 0,
         active: active ?? true,
@@ -73,7 +72,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, name, title, specialty, photoUrl, education, career, order, active } = body;
+    const { id, name, title, specialty, photoUrl, career, order, active } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Doctor ID is required' }, { status: 400 });
@@ -86,7 +85,6 @@ export async function PUT(request: NextRequest) {
         title,
         specialty,
         photoUrl,
-        education,
         career,
         order,
         active,

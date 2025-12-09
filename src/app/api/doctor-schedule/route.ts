@@ -4,11 +4,15 @@ import prisma from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-// GET: Fetch all doctor schedules
-export async function GET() {
+// GET: Fetch doctor schedules (optionally filter by doctorId)
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const doctorId = searchParams.get('doctorId');
+
     const schedules = await prisma.doctorSchedule.findMany({
-      orderBy: { doctorId: 'asc' }
+      where: doctorId ? { doctorId } : undefined,
+      orderBy: { dayOfWeek: 'asc' }
     });
     return NextResponse.json(schedules);
   } catch (error) {
@@ -46,35 +50,55 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT: Update existing doctor schedule
+// PUT: Bulk upsert doctor schedules (delete all existing + create new)
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, doctorId, dayOfWeek, morningStatus, afternoonStatus, note } = body;
+    const { doctorId, schedules } = body;
 
-    if (!id) {
+    if (!doctorId || !schedules || !Array.isArray(schedules)) {
       return NextResponse.json(
-        { error: 'Schedule ID is required' },
+        { error: 'doctorId and schedules array are required' },
         { status: 400 }
       );
     }
 
-    const schedule = await prisma.doctorSchedule.update({
-      where: { id },
-      data: {
-        doctorId,
-        dayOfWeek,
-        morningStatus,
-        afternoonStatus,
-        note: note || null
-      }
+    // Delete all existing schedules for this doctor
+    await prisma.doctorSchedule.deleteMany({
+      where: { doctorId }
     });
 
-    return NextResponse.json(schedule);
+    // Create new schedules using upsert with unique constraint
+    const upsertedSchedules = await Promise.all(
+      schedules.map((schedule) =>
+        prisma.doctorSchedule.upsert({
+          where: {
+            doctorId_dayOfWeek: {
+              doctorId,
+              dayOfWeek: schedule.dayOfWeek
+            }
+          },
+          update: {
+            morningStatus: schedule.morningStatus,
+            afternoonStatus: schedule.afternoonStatus,
+            note: schedule.note || null
+          },
+          create: {
+            doctorId,
+            dayOfWeek: schedule.dayOfWeek,
+            morningStatus: schedule.morningStatus,
+            afternoonStatus: schedule.afternoonStatus,
+            note: schedule.note || null
+          }
+        })
+      )
+    );
+
+    return NextResponse.json(upsertedSchedules);
   } catch (error) {
     console.error('PUT /api/doctor-schedule error:', error);
     return NextResponse.json(
-      { error: 'Failed to update doctor schedule' },
+      { error: 'Failed to update doctor schedules' },
       { status: 500 }
     );
   }

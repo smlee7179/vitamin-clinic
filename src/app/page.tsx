@@ -2,10 +2,11 @@
 
 import NewHeader from '@/components/new/NewHeader';
 import NewHeroCarousel from '@/components/new/NewHeroCarousel';
+import NewInfoCards from '@/components/new/NewInfoCards';
 import NewNotices from '@/components/new/NewNotices';
-import NewLocation from '@/components/new/NewLocation';
 import NewFooter from '@/components/new/NewFooter';
 import PopupModal from '@/components/PopupModal';
+import FloatingCallButton from '@/components/new/FloatingCallButton';
 
 export default function Home() {
   return (
@@ -18,13 +19,16 @@ export default function Home() {
         </div>
       </main>
 
+      <NewInfoCards />
       <NewNotices />
-      <NewLocation />
 
       <NewFooter />
 
       {/* Popup Modal */}
       <PopupModal />
+
+      {/* Floating Call Button */}
+      <FloatingCallButton />
     </div>
   );
 }

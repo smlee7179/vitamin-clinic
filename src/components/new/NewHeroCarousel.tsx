@@ -22,10 +22,26 @@ export default function NewHeroCarousel() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState<string>('051-469-7581');
 
   useEffect(() => {
     fetchSlides();
+    fetchPhoneNumber();
   }, []);
+
+  const fetchPhoneNumber = async () => {
+    try {
+      const response = await fetch('/api/hospital-info');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.phone) {
+          setPhoneNumber(data.phone);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch phone number:', error);
+    }
+  };
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -80,20 +96,23 @@ export default function NewHeroCarousel() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50 pointer-events-none" />
         </div>
-        <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
-          <div className="flex flex-col gap-3 text-left max-w-3xl">
-            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
+        <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-6 md:p-12">
+          <div className="flex flex-col gap-3 text-center max-w-3xl">
+            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
               환자 중심의 전문적인 치료
             </h1>
-            <h2 className="text-white text-base font-normal leading-normal md:text-lg">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
               저희는 최신 시설과 따뜻한 마음으로 최상의 의료 서비스를 제공합니다.
             </h2>
-            <Link
-              href="/contact"
-              className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
+            <a
+              href={`tel:${phoneNumber.replace(/[\s-]/g, '')}`}
+              className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#ea580c] transition-colors shadow-lg"
             >
-              <span className="truncate">온라인 예약하기</span>
-            </Link>
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
+              </svg>
+              <span className="truncate">전화 상담</span>
+            </a>
           </div>
         </div>
       </section>
@@ -125,23 +144,39 @@ export default function NewHeroCarousel() {
       </div>
 
       {/* Slide Content Overlay */}
-      <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
-        <div className="flex flex-col gap-3 text-left max-w-3xl">
-          <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
+      <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-6 md:p-12">
+        <div className="flex flex-col gap-3 text-center max-w-3xl">
+          <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
             {slides[currentSlide].title}
           </h1>
           {slides[currentSlide].description && (
-            <h2 className="text-white text-base font-normal leading-normal md:text-lg">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
               {slides[currentSlide].description}
             </h2>
           )}
-          {slides[currentSlide].buttonText && slides[currentSlide].buttonLink && (
-            <Link
-              href={slides[currentSlide].buttonLink || '/contact'}
-              className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
-            >
-              <span className="truncate">{slides[currentSlide].buttonText}</span>
-            </Link>
+          {slides[currentSlide].buttonText && (
+            <>
+              {slides[currentSlide].buttonLink ? (
+                // 링크 버튼
+                <Link
+                  href={slides[currentSlide].buttonLink}
+                  className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#ea580c] transition-colors shadow-lg"
+                >
+                  <span className="truncate">{slides[currentSlide].buttonText}</span>
+                </Link>
+              ) : (
+                // 전화 버튼
+                <a
+                  href={`tel:${phoneNumber.replace(/[\s-]/g, '')}`}
+                  className="mt-3 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#ea580c] transition-colors shadow-lg"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
+                  </svg>
+                  <span className="truncate">{slides[currentSlide].buttonText}</span>
+                </a>
+              )}
+            </>
           )}
         </div>
       </div>

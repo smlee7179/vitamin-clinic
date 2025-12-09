@@ -6,7 +6,7 @@ import Image from 'next/image';
 interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
-  preset?: 'hero' | 'service' | 'gallery' | 'default';
+  preset?: 'hero' | 'service' | 'gallery' | 'logo' | 'default';
   label?: string;
   required?: boolean;
   aspectRatio?: string; // e.g., "16/9", "4/5", "1/1"
@@ -35,10 +35,10 @@ export default function ImageUpload({
       return;
     }
 
-    // Validate file size (20MB)
+    // Validate file size (20MB before compression)
     const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
-      setError('파일 크기는 20MB 이하여야 합니다');
+      setError('파일 크기는 20MB 이하여야 합니다.');
       return;
     }
 
@@ -46,6 +46,9 @@ export default function ImageUpload({
     setUploading(true);
 
     try {
+      // 원본 이미지 그대로 업로드 (압축 없음)
+      console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('preset', preset);
@@ -55,12 +58,20 @@ export default function ImageUpload({
         body: formData
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Upload failed');
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        throw new Error('서버 오류가 발생했습니다. 파일 크기를 줄여보세요.');
       }
 
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || '업로드 실패');
+      }
+
       onChange(data.url);
     } catch (err) {
       console.error('Upload error:', err);
@@ -112,6 +123,7 @@ export default function ImageUpload({
     hero: { ratio: '4:5', size: '800x1000px' },
     service: { ratio: '16:9', size: '1280x720px' },
     gallery: { ratio: '1:1', size: '800x800px' },
+    logo: { ratio: '원본 비율', size: '최대 너비 2000px' },
     default: { ratio: '자유', size: '최대 1200x1200px' }
   };
 
@@ -126,18 +138,22 @@ export default function ImageUpload({
 
       {/* Preview */}
       {value && (
-        <div className="relative w-full bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-200">
+        <div className={`relative w-full rounded-xl overflow-hidden border-2 border-gray-200 ${preset === 'logo' ? 'bg-white' : 'bg-gray-100'}`}>
           <div
-            className="relative w-full"
+            className={`relative w-full ${preset === 'logo' ? 'min-h-[200px]' : ''}`}
             style={{
-              aspectRatio: aspectRatio || (preset === 'hero' ? '4/5' : preset === 'service' ? '16/9' : preset === 'gallery' ? '1/1' : '16/9')
+              aspectRatio: aspectRatio ||
+                (preset === 'hero' ? '4/5' :
+                 preset === 'service' ? '16/9' :
+                 preset === 'gallery' ? '1/1' :
+                 preset === 'logo' ? 'auto' : '16/9')
             }}
           >
             <Image
               src={value}
               alt="Preview"
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           <button

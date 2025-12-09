@@ -96,47 +96,52 @@ export default function PageHeroManager({ page, pageName }: PageHeroManagerProps
       {imageUrl && (
         <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6">
           <p className="text-sm font-semibold text-gray-700 mb-4">미리보기</p>
-          <div className="relative w-full h-80 bg-gray-900 rounded-lg overflow-hidden">
-            <Image
-              src={imageUrl}
-              alt={title}
-              fill
-              className="object-contain"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
-            <div className="absolute inset-0 flex flex-col gap-3 items-start justify-end p-6">
-              <h1 className="text-white text-3xl font-bold">{title}</h1>
-              {subtitle && (
-                <p className="text-white text-base">{subtitle}</p>
-              )}
+          <div className="relative w-full bg-gray-900 rounded-lg overflow-hidden">
+            <div className="relative w-full">
+              <Image
+                src={imageUrl}
+                alt={title}
+                width={1200}
+                height={800}
+                className="w-full h-auto object-contain"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
+              <div className="absolute inset-0 flex flex-col gap-3 items-start justify-end p-6">
+                <h1 className="text-white text-3xl font-bold whitespace-pre-wrap">{title}</h1>
+                {subtitle && (
+                  <p className="text-white text-base whitespace-pre-wrap">{subtitle}</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
 
       <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-gray-900">{pageName} 히어로 이미지 설정</h3>
+        <h3 className="text-lg font-bold text-gray-900">{pageName} 상단 이미지 설정</h3>
 
         <ImageUpload
           value={imageUrl}
           onChange={setImageUrl}
-          preset="service"
+          preset="logo"
           label="이미지"
           required
-          aspectRatio="16/9"
         />
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             제목 <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
+          <textarea
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="페이지 제목을 입력하세요"
+            placeholder="페이지 제목을 입력하세요 (들여쓰기 지원)"
+            rows={3}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           />
+          <p className="text-xs text-gray-500 mt-1">
+            💡 스페이스와 엔터키를 사용하여 들여쓰기와 줄바꿈이 가능합니다
+          </p>
         </div>
 
         <div>

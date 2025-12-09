@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ImageUpload from '@/components/admin/ImageUpload';
+import GreetingTextEditor from '@/components/admin/GreetingTextEditor';
 
 interface GreetingSection {
   id: string;
@@ -105,7 +106,10 @@ export default function GreetingManager() {
               )}
               <div className="flex-1 space-y-4">
                 <h2 className="text-2xl font-bold text-gray-900">인사말</h2>
-                <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">{content}</p>
+                <div
+                  className="text-gray-600 leading-relaxed whitespace-pre-wrap [&_p]:mb-[1em] [&_p]:min-h-[1.5em] [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: content }}
+                />
                 {signature && (
                   <p className="text-right font-bold text-lg text-gray-900 mt-6">
                     {signature}
@@ -132,16 +136,10 @@ export default function GreetingManager() {
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             인사말 내용 <span className="text-red-500">*</span>
           </label>
-          <textarea
+          <GreetingTextEditor
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="안녕하십니까? 비타민마취통증의학과에 오신 것을 진심으로 환영합니다.&#10;&#10;저희 병원은 환자 한 분 한 분의 목소리에 귀 기울이고..."
-            rows={8}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            onChange={setContent}
           />
-          <p className="mt-2 text-sm text-gray-500">
-            줄바꿈은 Enter 키를 사용하세요
-          </p>
         </div>
 
         <div>

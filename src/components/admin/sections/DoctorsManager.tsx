@@ -9,27 +9,50 @@ interface Doctor {
   title: string;
   specialty: string;
   photoUrl: string | null;
-  education: string;
   career: string;
   order: number;
   active: boolean;
 }
+
+interface DaySchedule {
+  dayOfWeek: string;
+  morningStatus: 'available' | 'closed';
+  afternoonStatus: 'available' | 'closed';
+  note: string;
+}
+
+const DAYS_OF_WEEK = [
+  { value: 'monday', label: '월요일' },
+  { value: 'tuesday', label: '화요일' },
+  { value: 'wednesday', label: '수요일' },
+  { value: 'thursday', label: '목요일' },
+  { value: 'friday', label: '금요일' },
+  { value: 'saturday', label: '토요일' }
+];
 
 export default function DoctorsManager() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+  const [activeTab, setActiveTab] = useState<'info' | 'schedule'>('info');
   const [formData, setFormData] = useState({
     name: '',
     title: '',
     specialty: '',
     photoUrl: '',
-    education: '',
     career: '',
     order: 0,
     active: true
   });
+  const [scheduleData, setScheduleData] = useState<DaySchedule[]>(
+    DAYS_OF_WEEK.map(day => ({
+      dayOfWeek: day.value,
+      morningStatus: 'available' as const,
+      afternoonStatus: 'available' as const,
+      note: ''
+    }))
+  );
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -58,26 +81,58 @@ export default function DoctorsManager() {
       title: '',
       specialty: '',
       photoUrl: '',
-      education: '',
       career: '',
       order: doctors.length,
       active: true
     });
+    setScheduleData(
+      DAYS_OF_WEEK.map(day => ({
+        dayOfWeek: day.value,
+        morningStatus: 'available' as const,
+        afternoonStatus: 'available' as const,
+        note: ''
+      }))
+    );
+    setActiveTab('info');
     setShowModal(true);
   };
 
-  const handleEdit = (doctor: Doctor) => {
+  const handleEdit = async (doctor: Doctor) => {
     setEditingDoctor(doctor);
     setFormData({
       name: doctor.name,
       title: doctor.title,
       specialty: doctor.specialty,
       photoUrl: doctor.photoUrl || '',
-      education: doctor.education,
       career: doctor.career,
       order: doctor.order,
       active: doctor.active
     });
+
+    // Load existing schedule
+    try {
+      const response = await fetch(`/api/doctor-schedule?doctorId=${doctor.id}`);
+      if (response.ok) {
+        const schedules = await response.json();
+        if (schedules && schedules.length > 0) {
+          setScheduleData(schedules);
+        } else {
+          // No schedule found, use default
+          setScheduleData(
+            DAYS_OF_WEEK.map(day => ({
+              dayOfWeek: day.value,
+              morningStatus: 'available' as const,
+              afternoonStatus: 'available' as const,
+              note: ''
+            }))
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load schedule:', error);
+    }
+
+    setActiveTab('info');
     setShowModal(true);
   };
 
@@ -87,6 +142,7 @@ export default function DoctorsManager() {
     setMessage('');
 
     try {
+      // Save doctor info
       const response = await fetch('/api/doctors', {
         method: editingDoctor ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,10 +150,27 @@ export default function DoctorsManager() {
       });
 
       if (response.ok) {
-        setMessage('✓ 저장되었습니다.');
-        setTimeout(() => setMessage(''), 3000);
-        setShowModal(false);
-        fetchDoctors();
+        const savedDoctor = await response.json();
+
+        // Save schedule data if doctor is saved successfully
+        const doctorId = savedDoctor.id;
+        const scheduleResponse = await fetch('/api/doctor-schedule', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            doctorId,
+            schedules: scheduleData
+          })
+        });
+
+        if (scheduleResponse.ok) {
+          setMessage('✓ 저장되었습니다.');
+          setTimeout(() => setMessage(''), 3000);
+          setShowModal(false);
+          fetchDoctors();
+        } else {
+          setMessage('✓ 의료진 정보는 저장되었으나 시간표 저장에 실패했습니다.');
+        }
       } else {
         setMessage('✗ 저장 실패');
       }
@@ -197,11 +270,13 @@ export default function DoctorsManager() {
           >
             <div className="flex items-start gap-4">
               {doctor.photoUrl && (
-                <img
-                  src={doctor.photoUrl}
-                  alt={doctor.name}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
+                <div className="w-24 h-32 rounded-lg bg-white overflow-hidden border border-gray-200 flex-shrink-0">
+                  <img
+                    src={doctor.photoUrl}
+                    alt={doctor.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
               <div className="flex-1">
                 <div className="flex items-start justify-between">
@@ -214,11 +289,10 @@ export default function DoctorsManager() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => toggleActive(doctor)}
-                      className={`px-3 py-1 text-xs font-medium rounded ${
-                        doctor.active
+                      className={`px-3 py-1 text-xs font-medium rounded ${doctor.active
                           ? 'bg-green-100 text-green-700'
                           : 'bg-gray-100 text-gray-700'
-                      }`}
+                        }`}
                     >
                       {doctor.active ? '활성' : '비활성'}
                     </button>
@@ -257,110 +331,209 @@ export default function DoctorsManager() {
               {editingDoctor ? '의료진 수정' : '의료진 추가'}
             </h2>
 
+            {/* Tabs */}
+            <div className="flex gap-2 border-b border-gray-200 mb-6">
+              <button
+                type="button"
+                onClick={() => setActiveTab('info')}
+                className={`px-4 py-2 font-semibold transition-colors ${
+                  activeTab === 'info'
+                    ? 'border-b-2 border-orange-500 text-orange-500'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                기본정보
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('schedule')}
+                className={`px-4 py-2 font-semibold transition-colors ${
+                  activeTab === 'schedule'
+                    ? 'border-b-2 border-orange-500 text-orange-500'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                진료시간표
+              </button>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Photo */}
-              <ModernImageUpload
-                currentImage={formData.photoUrl}
-                onUpload={(url) => setFormData({ ...formData, photoUrl: url })}
-                label="프로필 사진"
-                aspectRatio="square"
-                preset="default"
-              />
+              {/* Info Tab */}
+              {activeTab === 'info' && (
+                <>
+                  {/* Photo */}
+                  <ModernImageUpload
+                    currentImage={formData.photoUrl}
+                    onUpload={(url) => setFormData({ ...formData, photoUrl: url })}
+                    label="프로필 사진"
+                    aspectRatio="portrait"
+                    preset="default"
+                    maxSize={10}
+                  />
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs text-blue-800">
+                      💡 인물 사진은 얼굴이 중앙에 오도록 촬영하면 원형으로 표시될 때 잘 보입니다.
+                    </p>
+                  </div>
 
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  이름 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  required
-                />
-              </div>
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      이름 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      required
+                    />
+                  </div>
 
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  직책 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="예: 원장, 부원장"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  required
-                />
-              </div>
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      직책 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="예: 원장, 부원장"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      required
+                    />
+                  </div>
 
-              {/* Specialty */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  전문분야 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.specialty}
-                  onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                  placeholder="예: 마취통증의학과 전문의"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  required
-                />
-              </div>
+                  {/* Specialty */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      전문분야 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.specialty}
+                      onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                      placeholder="예: 마취통증의학과 전문의"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      required
+                    />
+                  </div>
 
-              {/* Education */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">학력</label>
-                <textarea
-                  value={formData.education}
-                  onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                  placeholder="줄바꿈으로 구분하여 입력&#10;예:&#10;○○대학교 의과대학 졸업&#10;○○병원 전문의 수료"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  rows={4}
-                />
-              </div>
+                  {/* Career */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">경력</label>
+                    <textarea
+                      value={formData.career}
+                      onChange={(e) => setFormData({ ...formData, career: e.target.value })}
+                      placeholder="줄바꿈으로 구분하여 입력&#10;예:&#10;○○대학교 의과대학 졸업&#10;○○병원 전문의 수료&#10;前 ○○병원 통증센터 임상강사&#10;대한마취통증의학회 정회원"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      rows={6}
+                    />
+                  </div>
 
-              {/* Career */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">경력</label>
-                <textarea
-                  value={formData.career}
-                  onChange={(e) => setFormData({ ...formData, career: e.target.value })}
-                  placeholder="줄바꿈으로 구분하여 입력&#10;예:&#10;前 ○○병원 통증센터 임상강사&#10;대한마취통증의학회 정회원"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  rows={4}
-                />
-              </div>
+                  {/* Order */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">표시 순서</label>
+                    <input
+                      type="number"
+                      value={formData.order}
+                      onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      min="0"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">숫자가 작을수록 먼저 표시됩니다</p>
+                  </div>
 
-              {/* Order */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">표시 순서</label>
-                <input
-                  type="number"
-                  value={formData.order}
-                  onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
-                  min="0"
-                />
-                <p className="text-sm text-gray-500 mt-1">숫자가 작을수록 먼저 표시됩니다</p>
-              </div>
+                  {/* Active */}
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      id="active"
+                      checked={formData.active}
+                      onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                      className="w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                    />
+                    <label htmlFor="active" className="text-sm font-semibold text-gray-700">
+                      활성화 (체크하면 홈페이지에 표시됩니다)
+                    </label>
+                  </div>
+                </>
+              )}
 
-              {/* Active */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="active"
-                  checked={formData.active}
-                  onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                  className="w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
-                />
-                <label htmlFor="active" className="text-sm font-semibold text-gray-700">
-                  활성화 (체크하면 홈페이지에 표시됩니다)
-                </label>
-              </div>
+              {/* Schedule Tab */}
+              {activeTab === 'schedule' && (
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-blue-800">
+                      의료진별 요일 진료 여부를 설정합니다. 오전/오후 각각 진료 또는 휴진을 선택하고, 필요시 특이사항을 입력하세요.
+                    </p>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="py-3 px-4 text-left font-semibold border border-gray-300">요일</th>
+                          <th className="py-3 px-4 text-center font-semibold border border-gray-300">오전</th>
+                          <th className="py-3 px-4 text-center font-semibold border border-gray-300">오후</th>
+                          <th className="py-3 px-4 text-left font-semibold border border-gray-300">특이사항</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scheduleData.map((schedule, index) => (
+                          <tr key={schedule.dayOfWeek} className="border-b border-gray-300">
+                            <td className="py-3 px-4 font-medium border border-gray-300">
+                              {DAYS_OF_WEEK[index].label}
+                            </td>
+                            <td className="py-3 px-4 text-center border border-gray-300">
+                              <select
+                                value={schedule.morningStatus}
+                                onChange={(e) => {
+                                  const newSchedule = [...scheduleData];
+                                  newSchedule[index].morningStatus = e.target.value as 'available' | 'closed';
+                                  setScheduleData(newSchedule);
+                                }}
+                                className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
+                              >
+                                <option value="available">진료</option>
+                                <option value="closed">휴진</option>
+                              </select>
+                            </td>
+                            <td className="py-3 px-4 text-center border border-gray-300">
+                              <select
+                                value={schedule.afternoonStatus}
+                                onChange={(e) => {
+                                  const newSchedule = [...scheduleData];
+                                  newSchedule[index].afternoonStatus = e.target.value as 'available' | 'closed';
+                                  setScheduleData(newSchedule);
+                                }}
+                                className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
+                              >
+                                <option value="available">진료</option>
+                                <option value="closed">휴진</option>
+                              </select>
+                            </td>
+                            <td className="py-3 px-4 border border-gray-300">
+                              <input
+                                type="text"
+                                value={schedule.note}
+                                onChange={(e) => {
+                                  const newSchedule = [...scheduleData];
+                                  newSchedule[index].note = e.target.value;
+                                  setScheduleData(newSchedule);
+                                }}
+                                placeholder="예: 예약 필수, 오후 2시부터"
+                                className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
               {/* Buttons */}
               <div className="flex gap-3 pt-4">

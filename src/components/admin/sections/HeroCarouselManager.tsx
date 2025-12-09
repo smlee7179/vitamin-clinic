@@ -166,13 +166,18 @@ export default function HeroCarouselManager() {
                 className="object-contain"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/50" />
-              <div className="absolute inset-0 flex flex-col gap-3 items-start justify-end p-6">
-                <h1 className="text-white text-2xl font-bold">{editingSlide.title}</h1>
+              <div className="absolute inset-0 flex flex-col gap-3 items-center justify-center p-6">
+                <h1 className="text-white text-2xl font-bold whitespace-pre-wrap text-center">{editingSlide.title}</h1>
                 {editingSlide.description && (
-                  <p className="text-white text-sm">{editingSlide.description}</p>
+                  <p className="text-white text-sm whitespace-pre-wrap text-center">{editingSlide.description}</p>
                 )}
                 {editingSlide.buttonText && (
-                  <button className="px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-lg">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-lg">
+                    {!editingSlide.buttonLink && (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
+                      </svg>
+                    )}
                     {editingSlide.buttonText}
                   </button>
                 )}
@@ -195,13 +200,16 @@ export default function HeroCarouselManager() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               제목 <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <textarea
               value={editingSlide.title}
               onChange={(e) => setEditingSlide({ ...editingSlide, title: e.target.value })}
-              placeholder="환자 중심의 전문적인 치료"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              placeholder="환자 중심의 전문적인 치료 (들여쓰기 지원)"
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              💡 스페이스와 엔터키를 사용하여 들여쓰기와 줄바꿈이 가능합니다
+            </p>
           </div>
 
           <div>
@@ -211,38 +219,89 @@ export default function HeroCarouselManager() {
             <textarea
               value={editingSlide.description || ''}
               onChange={(e) => setEditingSlide({ ...editingSlide, description: e.target.value })}
-              placeholder="저희는 최신 시설과 따뜻한 마음으로 최상의 의료 서비스를 제공합니다."
+              placeholder="저희는 최신 시설과 따뜻한 마음으로 최상의 의료 서비스를 제공합니다. (들여쓰기 지원)"
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              💡 스페이스와 엔터키를 사용하여 들여쓰기와 줄바꿈이 가능합니다
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                버튼 텍스트
+                버튼 타입
               </label>
-              <input
-                type="text"
-                value={editingSlide.buttonText || ''}
-                onChange={(e) => setEditingSlide({ ...editingSlide, buttonText: e.target.value })}
-                placeholder="온라인 예약하기"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="buttonType"
+                    checked={!editingSlide.buttonText}
+                    onChange={() => setEditingSlide({ ...editingSlide, buttonText: '', buttonLink: '' })}
+                    className="w-4 h-4 text-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">없음</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="buttonType"
+                    checked={editingSlide.buttonText !== '' && !editingSlide.buttonLink}
+                    onChange={() => setEditingSlide({ ...editingSlide, buttonText: '전화 상담', buttonLink: '' })}
+                    className="w-4 h-4 text-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">전화 버튼</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="buttonType"
+                    checked={editingSlide.buttonText !== '' && editingSlide.buttonLink !== ''}
+                    onChange={() => setEditingSlide({ ...editingSlide, buttonText: '자세히 보기', buttonLink: '/contact' })}
+                    className="w-4 h-4 text-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">링크 버튼</span>
+                </label>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                💡 전화 버튼은 병원 전화번호로 자동 연결되며, 링크 버튼은 원하는 페이지로 이동합니다.
+              </p>
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                버튼 링크
-              </label>
-              <input
-                type="text"
-                value={editingSlide.buttonLink || ''}
-                onChange={(e) => setEditingSlide({ ...editingSlide, buttonLink: e.target.value })}
-                placeholder="/contact"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
+            {editingSlide.buttonText && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  버튼 텍스트 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editingSlide.buttonText || ''}
+                  onChange={(e) => setEditingSlide({ ...editingSlide, buttonText: e.target.value })}
+                  placeholder={editingSlide.buttonLink ? '자세히 보기' : '전화 상담'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+              </div>
+            )}
+
+            {editingSlide.buttonText && editingSlide.buttonLink !== '' && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  버튼 링크 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={editingSlide.buttonLink || ''}
+                  onChange={(e) => setEditingSlide({ ...editingSlide, buttonLink: e.target.value })}
+                  placeholder="/contact 또는 /notices"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  💡 내부 페이지는 /로 시작 (예: /contact), 외부 링크는 https://로 시작
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -353,6 +412,18 @@ export default function HeroCarouselManager() {
                     <h4 className="font-bold text-gray-900">{slide.title}</h4>
                     {slide.description && (
                       <p className="text-sm text-gray-600 mt-1 line-clamp-2">{slide.description}</p>
+                    )}
+                    {slide.buttonText && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                          slide.buttonLink
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}>
+                          {slide.buttonLink ? '🔗 링크 버튼' : '📞 전화 버튼'}
+                        </span>
+                        <span className="text-xs text-gray-600">"{slide.buttonText}"</span>
+                      </div>
                     )}
                   </div>
                   <span className="text-xs font-semibold text-gray-500 ml-2">

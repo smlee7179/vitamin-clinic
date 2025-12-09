@@ -5,41 +5,100 @@ import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
-interface Treatment {
-  id: string;
+interface Feature {
   title: string;
   description: string;
   icon: string;
-  category: string | null;
-  features: string[];
-  imageUrl?: string;
+}
+
+interface TargetPatient {
+  title: string;
+  description: string;
+}
+
+interface TreatmentMethod {
+  title: string;
+  description: string;
+}
+
+interface ClinicPage {
+  id: string;
+  clinicType: string;
+  heroImageUrl: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  description: string;
+  features?: string; // JSON string
+  targetPatients?: string; // JSON string
+  symptoms?: string; // JSON array of strings
+  treatmentMethods?: string; // JSON array
 }
 
 export default function PainClinicPage() {
-  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const [clinicData, setClinicData] = useState<ClinicPage | null>(null);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [targetPatients, setTargetPatients] = useState<TargetPatient[]>([]);
+  const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [treatmentMethods, setTreatmentMethods] = useState<TreatmentMethod[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTreatments = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/treatments');
-        if (response.ok) {
-          const data = await response.json();
-          // Filter special category treatments (통증 클리닉 = 특수치료)
-          const painTreatments = data
-            .filter((t: Treatment & { active: boolean }) => t.active && t.category === 'special')
-            .sort((a: Treatment & { order: number }, b: Treatment & { order: number }) => a.order - b.order);
-          setTreatments(painTreatments);
+        // Fetch clinic page data
+        const clinicResponse = await fetch('/api/clinic-pages?clinicType=pain');
+        if (clinicResponse.ok) {
+          const clinicPageData = await clinicResponse.json();
+          if (clinicPageData) {
+            setClinicData(clinicPageData);
+            setFeatures(JSON.parse(clinicPageData.features || '[]'));
+            setTargetPatients(JSON.parse(clinicPageData.targetPatients || '[]'));
+            setSymptoms(JSON.parse(clinicPageData.symptoms || '[]'));
+            setTreatmentMethods(JSON.parse(clinicPageData.treatmentMethods || '[]'));
+          }
         }
       } catch (error) {
-        console.error('Failed to fetch treatments:', error);
+        console.error('Failed to fetch data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTreatments();
+    fetchData();
   }, []);
+
+  // Default fallback data
+  const defaultData = {
+    heroImageUrl: '',
+    heroTitle: '',
+    heroSubtitle: '',
+    description: ''
+  };
+
+  const displayData = clinicData || defaultData;
+
+  // 아이콘 이름을 SVG 컴포넌트로 변환하는 함수
+  const getIconSvg = (iconName: string) => {
+    const icons: { [key: string]: React.ReactElement } = {
+      shield: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      ),
+      flask: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+      ),
+      heart: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      ),
+      star: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+      ),
+      check: (
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      ),
+    };
+
+    return icons[iconName] || icons.shield;
+  };
 
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
@@ -51,8 +110,8 @@ export default function PainClinicPage() {
           <section className="w-full relative">
             <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
               <Image
-                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&q=80"
-                alt="통증 클리닉"
+                src={displayData.heroImageUrl}
+                alt={displayData.heroTitle}
                 fill
                 priority
                 className="object-cover"
@@ -61,13 +120,13 @@ export default function PainClinicPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60 pointer-events-none" />
             </div>
-            <div className="absolute inset-0 flex flex-col gap-6 items-start justify-end p-6 md:p-12">
-              <div className="flex flex-col gap-3 text-left max-w-3xl">
-                <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                  통증 클리닉
+            <div className="absolute inset-0 flex flex-col gap-6 items-center justify-end p-6 md:p-12">
+              <div className="flex flex-col gap-3 text-center max-w-3xl">
+                <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
+                  {displayData.heroTitle}
                 </h1>
-                <h2 className="text-white text-base font-normal leading-normal md:text-lg">
-                  만성 통증, 신경병증성 통증 등 다양한 통증 질환을 전문적으로 치료합니다.
+                <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
+                  {displayData.heroSubtitle}
                 </h2>
               </div>
             </div>
@@ -75,186 +134,117 @@ export default function PainClinicPage() {
 
           {/* Clinic Introduction */}
           <section className="w-full py-12 md:py-16">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-[#343A40] text-2xl md:text-3xl font-bold text-center mb-6">
-                통증 클리닉 소개
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-[#343A40] text-2xl md:text-3xl font-bold text-center mb-8">
+                통증클리닉이란?
               </h2>
-              <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm">
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  통증은 단순한 증상을 넘어 삶의 질을 크게 저하시키는 질환입니다.
-                  비타민마취통증의학과 통증 클리닉은 마취통증의학과 전문의의 풍부한 경험과
-                  최신 통증 치료 기술을 바탕으로 만성 통증의 근본 원인을 찾아 해결합니다.
+
+              {/* Main Description */}
+              <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm mb-8">
+                <p className="text-gray-700 leading-relaxed text-base mb-6 whitespace-pre-wrap">
+                  {displayData.description}
                 </p>
-                <p className="text-gray-700 leading-relaxed">
-                  대상포진 후 신경통, 삼차신경통, 복합부위통증증후군(CRPS) 등
-                  난치성 통증부터 일반적인 근골격계 통증까지 폭넓은 통증 질환을
-                  비수술적 방법으로 효과적으로 치료합니다.
-                </p>
-              </div>
-            </div>
-          </section>
 
-          {/* Common Pain Conditions */}
-          <section className="w-full pb-8 md:pb-12">
-            <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
-              주요 치료 질환
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                {
-                  title: '대상포진 후 신경통',
-                  description: '대상포진 감염 후 지속되는 만성 신경병증성 통증',
-                  icon: '⚡'
-                },
-                {
-                  title: '삼차신경통',
-                  description: '얼굴 부위의 극심한 전기 충격 같은 통증',
-                  icon: '😖'
-                },
-                {
-                  title: '복합부위통증증후군',
-                  description: '외상 후 발생하는 심한 만성 통증 질환(CRPS)',
-                  icon: '🔥'
-                },
-                {
-                  title: '근막동통증후군',
-                  description: '근육과 근막의 통증 유발점으로 인한 통증',
-                  icon: '💢'
-                },
-                {
-                  title: '두통/편두통',
-                  description: '만성 긴장성 두통, 편두통, 군발두통 등',
-                  icon: '🤕'
-                },
-                {
-                  title: '암성 통증',
-                  description: '암 치료 과정에서 발생하는 다양한 통증',
-                  icon: '🎗️'
-                }
-              ].map((condition, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="text-4xl mb-3">{condition.icon}</div>
-                  <h4 className="font-bold text-lg text-[#343A40] mb-2">
-                    {condition.title}
-                  </h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {condition.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Treatment Features */}
-          <section className="w-full pb-8 md:pb-12">
-            <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
-              통증 클리닉 특징
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {[
-                {
-                  title: '마취통증의학과 전문의 진료',
-                  description: '통증 치료 전문가의 정확한 진단과 치료',
-                  icon: '👨‍⚕️'
-                },
-                {
-                  title: '다학제적 접근',
-                  description: '약물치료, 신경블록, 물리치료 등 종합적 치료',
-                  icon: '🔬'
-                },
-                {
-                  title: '최신 치료 장비',
-                  description: '초음파 유도 시술 등 정밀한 통증 치료',
-                  icon: '🏥'
-                },
-                {
-                  title: '맞춤형 통증 관리',
-                  description: '환자별 통증 원인에 따른 개별화된 치료 계획',
-                  icon: '📋'
-                }
-              ].map((feature, index) => (
-                <div
-                  key={index}
-                  className="bg-gradient-to-br from-[#f97316]/10 to-white rounded-lg p-6 shadow-sm border border-[#f97316]/20"
-                >
-                  <div className="text-4xl mb-3">{feature.icon}</div>
-                  <h4 className="font-bold text-lg text-[#343A40] mb-2">
-                    {feature.title}
-                  </h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Treatments List */}
-          <section className="w-full pb-12 md:pb-16">
-            <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
-              통증 치료 프로그램
-            </h3>
-            {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex flex-col gap-3 rounded-xl bg-white p-4 border border-gray-200 animate-pulse">
-                    <div className="w-full aspect-video bg-gray-200 rounded-lg" />
-                    <div className="h-6 bg-gray-200 rounded w-2/3" />
-                    <div className="h-16 bg-gray-200 rounded" />
+                {/* Key Features Cards (inside text box) */}
+                {features.length > 0 && (
+                  <div className={`grid gap-4 mt-8 pt-6 border-t border-gray-200 ${
+                    features.length === 1
+                      ? 'grid-cols-1 max-w-2xl mx-auto'
+                      : features.length === 2
+                        ? 'grid-cols-1 md:grid-cols-2'
+                        : 'grid-cols-1 md:grid-cols-3'
+                  }`}>
+                    {features.map((feature, index) => (
+                      <div key={index} className="flex flex-col items-center text-center p-6">
+                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                          <svg className="w-8 h-8 text-[#f97316]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {getIconSvg(feature.icon)}
+                          </svg>
+                        </div>
+                        <h3 className="font-bold text-lg text-[#343A40] mb-3">{feature.title}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            ) : treatments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-4">
-                <div className="text-center max-w-md">
-                  <span className="text-7xl mb-4 block">🏥</span>
-                  <p className="text-gray-500 text-lg font-medium mb-2">
-                    통증 클리닉 치료 프로그램을 준비 중입니다.
-                  </p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    관리자 페이지에서 치료 정보를 추가해주세요.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {treatments.map((treatment) => (
+            </div>
+          </section>
+
+          {/* Target Patients */}
+          {targetPatients.length > 0 && (
+            <section className="w-full pb-8 md:pb-12">
+              <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
+                주요 진료
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {targetPatients.map((patient, index) => (
                   <div
-                    key={treatment.id}
-                    className="flex flex-col gap-3 rounded-xl bg-white p-4 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                    key={index}
+                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div
-                      className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
-                      style={{
-                        backgroundImage: `url("${treatment.imageUrl}")`
-                      }}
-                    />
-                    <div className="flex flex-col flex-grow">
-                      <p className="text-gray-900 text-lg font-bold leading-normal">
-                        {treatment.title}
-                      </p>
-                      <p className="text-gray-600 text-sm font-normal leading-normal mt-1 mb-3 flex-grow">
-                        {treatment.description}
-                      </p>
-                      {treatment.features && treatment.features.length > 0 && (
-                        <ul className="text-xs text-gray-500 space-y-1 mb-3">
-                          {treatment.features.slice(0, 3).map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-1">
-                              <span className="text-[#f97316] mt-0.5">•</span>
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+                    <h4 className="font-bold text-lg text-[#D4AF37] mb-2">
+                      {patient.title}
+                    </h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {patient.description}
+                    </p>
                   </div>
                 ))}
               </div>
-            )}
-          </section>
+            </section>
+          )}
+
+          {/* Symptoms Checklist */}
+          {symptoms.length > 0 && (
+            <section className="w-full pb-8 md:pb-12">
+              <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
+                이런 증상이 있다면 방문하세요
+              </h3>
+              <div className="max-w-4xl mx-auto bg-white rounded-xl p-6 md:p-8 shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {symptoms.map((symptom, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="mt-1 flex-shrink-0">
+                        <svg className="w-5 h-5 text-[#f97316]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {symptom}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Treatment Methods */}
+          {treatmentMethods.length > 0 && (
+            <section className="w-full pb-12 md:pb-16">
+              <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
+                통증 치료 방법
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {treatmentMethods.map((method, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <h4 className="font-bold text-lg text-[#343A40] mb-3">
+                      {method.title}
+                    </h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {method.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
 
