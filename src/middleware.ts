@@ -93,7 +93,7 @@ export async function middleware(request: NextRequest) {
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
       "media-src 'self'",
-      "connect-src 'self' https://www.google-analytics.com",
+      "connect-src 'self' https://www.google-analytics.com https://vercel.com https://*.blob.vercel-storage.com",
       "frame-src 'self'",
       "object-src 'none'",
       "base-uri 'self'",
