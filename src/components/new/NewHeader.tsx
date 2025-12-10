@@ -170,7 +170,8 @@ export default function NewHeader() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-800"
+              className="md:hidden p-3 -mr-3 text-gray-800 hover:text-[#f97316] transition-colors"
+              aria-label="메뉴"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -185,11 +186,11 @@ export default function NewHeader() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-b border-gray-200">
-            <nav className="flex flex-col gap-4">
+          <div className="md:hidden py-4 border-b border-gray-200 animate-in slide-in-from-top duration-200">
+            <nav className="flex flex-col gap-2">
               <Link
                 href="/doctors"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 의료진 소개
@@ -197,7 +198,7 @@ export default function NewHeader() {
 
               <Link
                 href="/about"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium"
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 병원소개
@@ -207,11 +208,11 @@ export default function NewHeader() {
               <div>
                 <button
                   onClick={() => setServicesMenuOpen(!servicesMenuOpen)}
-                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-sm font-medium flex items-center justify-between"
+                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
                 >
                   진료안내
                   <svg
-                    className={`w-4 h-4 transition-transform ${servicesMenuOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 transition-transform ${servicesMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -220,24 +221,24 @@ export default function NewHeader() {
                   </svg>
                 </button>
                 {servicesMenuOpen && (
-                  <div className="mt-2 ml-4 flex flex-col gap-2">
+                  <div className="mt-1 ml-2 flex flex-col gap-1">
                     <Link
                       href="/services/spine"
-                      className="text-gray-600 hover:text-[#f97316] text-sm"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 척추 클리닉
                     </Link>
                     <Link
                       href="/services/joint"
-                      className="text-gray-600 hover:text-[#f97316] text-sm"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 관절 클리닉
                     </Link>
                     <Link
                       href="/services/pain"
-                      className="text-gray-600 hover:text-[#f97316] text-sm"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 통증 클리닉
@@ -250,11 +251,11 @@ export default function NewHeader() {
               <div>
                 <button
                   onClick={() => setTreatmentsMenuOpen(!treatmentsMenuOpen)}
-                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-sm font-medium flex items-center justify-between"
+                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
                 >
                   치료소개
                   <svg
-                    className={`w-4 h-4 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -263,17 +264,17 @@ export default function NewHeader() {
                   </svg>
                 </button>
                 {treatmentsMenuOpen && (
-                  <div className="mt-2 ml-4 flex flex-col gap-2">
+                  <div className="mt-1 ml-2 flex flex-col gap-1">
                     <Link
                       href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] text-sm"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 비수술 치료
                     </Link>
                     <Link
                       href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] text-sm"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       • 도수 치료
