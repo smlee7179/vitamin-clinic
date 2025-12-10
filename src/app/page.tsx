@@ -13,10 +13,9 @@ export default function Home() {
     <div className="bg-[#f8f7f5]">
       <NewHeader />
 
-      <main className="flex flex-1 justify-center py-5">
-        <div className="layout-content-container flex flex-col max-w-6xl flex-1 px-4">
-          <NewHeroCarousel />
-        </div>
+      {/* Hero Carousel - Full Width */}
+      <main className="w-full py-5">
+        <NewHeroCarousel />
       </main>
 
       <NewInfoCards />

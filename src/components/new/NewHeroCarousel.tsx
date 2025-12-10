@@ -75,7 +75,7 @@ export default function NewHeroCarousel() {
   if (loading) {
     return (
       <section className="w-full relative">
-        <div className="w-full h-[400px] md:h-[480px] bg-gray-200 animate-pulse rounded-xl" />
+        <div className="w-full h-[400px] md:h-[480px] bg-gray-200 animate-pulse" />
       </section>
     );
   }
@@ -84,7 +84,7 @@ export default function NewHeroCarousel() {
     // Default slide if no slides configured
     return (
       <section className="w-full relative">
-        <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+        <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden bg-gray-900">
           <Image
             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop"
             alt="병원 환경"
@@ -121,7 +121,7 @@ export default function NewHeroCarousel() {
 
   return (
     <section className="w-full relative">
-      <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+      <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden bg-gray-900">
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
