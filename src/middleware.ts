@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
     '/api/hero-slides',   // Public hero slides
     '/api/popups',        // Public popups
     '/api/notices',       // Public notices
+    '/api/hospital-info', // Public hospital info (header/footer)
     '/manifest.json',     // PWA manifest
   ];
 
