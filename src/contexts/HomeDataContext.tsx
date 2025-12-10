@@ -63,13 +63,19 @@ export function HomeDataProvider({ children }: { children: ReactNode }) {
       fetch('/api/popups').then(res => res.json()),
     ])
       .then(([slidesData, noticesData, popupData]) => {
-        setHeroSlides(slidesData);
-        setNotices(noticesData);
-        setPopup(popupData);
+        // Validate and set data with fallbacks
+        setHeroSlides(Array.isArray(slidesData) ? slidesData : []);
+        setNotices(Array.isArray(noticesData) ? noticesData : []);
+        // popupData can be null or an object (not an array)
+        setPopup(popupData && !popupData.error ? popupData : null);
         setLoading(false);
       })
       .catch(err => {
         console.error('Failed to load home data:', err);
+        // Set safe defaults on error
+        setHeroSlides([]);
+        setNotices([]);
+        setPopup(null);
         setLoading(false);
       });
   }, []);
