@@ -23,6 +23,7 @@ export default function NewHeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState<string>('051-469-7581');
+  const [aspectRatio, setAspectRatio] = useState<number>(16 / 9); // Default 16:9
 
   useEffect(() => {
     fetchSlides();
@@ -59,6 +60,16 @@ export default function NewHeroCarousel() {
       if (response.ok) {
         const data = await response.json();
         setSlides(data);
+
+        // Calculate aspect ratio from first slide's image
+        if (data.length > 0 && data[0].imageUrl) {
+          const img = new window.Image();
+          img.onload = () => {
+            const ratio = img.width / img.height;
+            setAspectRatio(ratio);
+          };
+          img.src = data[0].imageUrl;
+        }
       }
     } catch (error) {
       console.error('Failed to fetch hero slides:', error);
@@ -75,7 +86,10 @@ export default function NewHeroCarousel() {
   if (loading) {
     return (
       <section className="w-full relative">
-        <div className="w-full h-[400px] md:h-[480px] bg-gray-200 animate-pulse rounded-xl" />
+        <div
+          className="w-full bg-gray-200 animate-pulse rounded-xl"
+          style={{ aspectRatio: aspectRatio.toString() }}
+        />
       </section>
     );
   }
@@ -84,13 +98,16 @@ export default function NewHeroCarousel() {
     // Default slide if no slides configured
     return (
       <section className="w-full relative">
-        <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+        <div
+          className="w-full relative overflow-hidden rounded-xl bg-gray-900"
+          style={{ aspectRatio: aspectRatio.toString() }}
+        >
           <Image
             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1920&h=1080&fit=crop"
             alt="병원 환경"
             fill
             priority
-            className="object-contain"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, 1200px"
             quality={85}
           />
@@ -121,7 +138,10 @@ export default function NewHeroCarousel() {
 
   return (
     <section className="w-full relative">
-      <div className="w-full h-[400px] md:h-[480px] relative overflow-hidden rounded-xl bg-gray-900">
+      <div
+        className="w-full relative overflow-hidden rounded-xl bg-gray-900"
+        style={{ aspectRatio: aspectRatio.toString() }}
+      >
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -133,7 +153,7 @@ export default function NewHeroCarousel() {
                 alt={slide.title}
                 fill
                 priority={index === 0}
-                className="object-contain"
+                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 1200px"
                 quality={85}
               />
