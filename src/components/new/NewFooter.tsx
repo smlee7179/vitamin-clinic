@@ -46,15 +46,15 @@ export default function NewFooter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and Copyright */}
           <div className="flex flex-col gap-4">
-            <Link href="/" className="flex items-center flex-shrink-0">
+            <Link href="/" className="flex items-center flex-shrink-0 max-w-[70%] md:max-w-none">
               {footerInfo?.logoUrl ? (
                 <Image
                   src={footerInfo.logoUrl}
                   alt={footerInfo.logoAlt || '병원 로고'}
                   width={1000}
                   height={60}
-                  className="h-12 w-auto object-contain"
-                  style={{ maxWidth: 'none' }}
+                  className="h-10 md:h-12 w-auto object-contain"
+                  style={{ maxWidth: '100%' }}
                 />
               ) : (
                 <svg
@@ -77,19 +77,19 @@ export default function NewFooter() {
                 </svg>
               )}
             </Link>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               {footerInfo?.copyrightText || '© 2024 비타민마취통증의학과. All Rights Reserved.'}
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="text-sm">
-            <h3 className="font-bold text-gray-800 mb-3">바로가기</h3>
+          <div className="text-sm md:text-base">
+            <h3 className="font-bold text-gray-800 mb-3 text-base md:text-lg">바로가기</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/doctors"
-                  className="text-gray-600 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                 >
                   의료진 소개
                 </Link>
@@ -97,18 +97,18 @@ export default function NewFooter() {
               <li>
                 <Link
                   href="/about"
-                  className="text-gray-600 hover:text-[#f97316] transition-colors"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                 >
                   병원소개
                 </Link>
               </li>
               <li className="pt-1">
-                <span className="text-gray-800 font-medium text-xs">진료안내</span>
+                <span className="text-gray-800 font-medium text-sm md:text-base">진료안내</span>
                 <ul className="ml-2 mt-1 space-y-1">
                   <li>
                     <Link
                       href="/services/spine"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-xs"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
                       • 척추 클리닉
                     </Link>
@@ -116,7 +116,7 @@ export default function NewFooter() {
                   <li>
                     <Link
                       href="/services/joint"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-xs"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
                       • 관절 클리닉
                     </Link>
@@ -124,7 +124,7 @@ export default function NewFooter() {
                   <li>
                     <Link
                       href="/services/pain"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-xs"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
                       • 통증 클리닉
                     </Link>
@@ -132,12 +132,12 @@ export default function NewFooter() {
                 </ul>
               </li>
               <li className="pt-1">
-                <span className="text-gray-800 font-medium text-xs">치료소개</span>
+                <span className="text-gray-800 font-medium text-sm md:text-base">치료소개</span>
                 <ul className="ml-2 mt-1 space-y-1">
                   <li>
                     <Link
                       href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-xs"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
                       • 비수술 치료
                     </Link>
@@ -145,7 +145,7 @@ export default function NewFooter() {
                   <li>
                     <Link
                       href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-xs"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
                       • 도수 치료
                     </Link>
@@ -156,12 +156,12 @@ export default function NewFooter() {
           </div>
 
           {/* Address */}
-          <div className="text-sm">
-            <h3 className="font-bold text-gray-800 mb-3">주소</h3>
-            <p className="text-gray-600">{footerInfo?.address || '부산광역시 동구 중앙대로 375'}</p>
-            <p className="text-gray-600">전화: {footerInfo?.phone || '051-469-7581'}</p>
-            {footerInfo?.fax && <p className="text-gray-600">팩스: {footerInfo.fax}</p>}
-            {footerInfo?.email && <p className="text-gray-600">이메일: {footerInfo.email}</p>}
+          <div className="text-sm md:text-base">
+            <h3 className="font-bold text-gray-800 mb-3 text-base md:text-lg">주소</h3>
+            <p className="text-gray-600 leading-relaxed">{footerInfo?.address || '부산광역시 동구 중앙대로 375'}</p>
+            <p className="text-gray-600 leading-relaxed">전화: {footerInfo?.phone || '051-469-7581'}</p>
+            {footerInfo?.fax && <p className="text-gray-600 leading-relaxed">팩스: {footerInfo.fax}</p>}
+            {footerInfo?.email && <p className="text-gray-600 leading-relaxed">이메일: {footerInfo.email}</p>}
           </div>
         </div>
       </div>

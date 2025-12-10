@@ -43,15 +43,15 @@ export default function NewHeader() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center flex-shrink-0 mr-4">
+          <Link href="/" className="flex items-center flex-shrink-0 mr-4 max-w-[60%] md:max-w-none">
             {logoUrl ? (
               <Image
                 src={logoUrl}
                 alt={logoAlt}
                 width={1000}
                 height={60}
-                className="h-16 w-auto object-contain"
-                style={{ maxWidth: 'none' }}
+                className="h-12 md:h-16 w-auto object-contain"
+                style={{ maxWidth: '100%' }}
                 priority
               />
             ) : (
