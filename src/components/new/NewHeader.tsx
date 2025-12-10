@@ -190,16 +190,24 @@ export default function NewHeader() {
             <nav className="flex flex-col gap-2">
               <Link
                 href="/doctors"
-                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
+                onClick={() => {
+                  setServicesMenuOpen(false);
+                  setTreatmentsMenuOpen(false);
+                  setMobileMenuOpen(false);
+                }}
               >
                 의료진 소개
               </Link>
 
               <Link
                 href="/about"
-                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
+                onClick={() => {
+                  setServicesMenuOpen(false);
+                  setTreatmentsMenuOpen(false);
+                  setMobileMenuOpen(false);
+                }}
               >
                 병원소개
               </Link>
@@ -224,22 +232,31 @@ export default function NewHeader() {
                   <div className="mt-1 ml-2 flex flex-col gap-1">
                     <Link
                       href="/services/spine"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
                     >
                       • 척추 클리닉
                     </Link>
                     <Link
                       href="/services/joint"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
                     >
                       • 관절 클리닉
                     </Link>
                     <Link
                       href="/services/pain"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
                     >
                       • 통증 클리닉
                     </Link>
@@ -267,15 +284,21 @@ export default function NewHeader() {
                   <div className="mt-1 ml-2 flex flex-col gap-1">
                     <Link
                       href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
+                      onClick={() => {
+                        setTreatmentsMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
                     >
                       • 비수술 치료
                     </Link>
                     <Link
                       href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
+                      onClick={() => {
+                        setTreatmentsMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
                     >
                       • 도수 치료
                     </Link>
