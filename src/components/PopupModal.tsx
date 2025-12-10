@@ -73,10 +73,11 @@ export default function PopupModal() {
 
         {/* Image Section */}
         {popup.imageUrl && (
-          <div className="relative h-48 w-full bg-gray-200">
+          <div className="relative w-full bg-gray-100 flex items-center justify-center" style={{ maxHeight: '400px' }}>
             <img
               alt={popup.title}
-              className="h-full w-full object-cover"
+              className="w-full h-auto object-contain"
+              style={{ maxHeight: '400px' }}
               src={popup.imageUrl}
             />
           </div>
