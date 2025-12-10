@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -22,11 +22,71 @@ interface TourImage {
 export default function AboutPage() {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [tourImages, setTourImages] = useState<TourImage[]>([]);
+  const equipmentScrollRef = useRef<HTMLDivElement>(null);
+  const tourScrollRef = useRef<HTMLDivElement>(null);
+  const [showEquipmentLeftArrow, setShowEquipmentLeftArrow] = useState(false);
+  const [showEquipmentRightArrow, setShowEquipmentRightArrow] = useState(true);
+  const [showTourLeftArrow, setShowTourLeftArrow] = useState(false);
+  const [showTourRightArrow, setShowTourRightArrow] = useState(true);
 
   useEffect(() => {
     fetchEquipment();
     fetchTourImages();
   }, []);
+
+  const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, setLeft: (v: boolean) => void, setRight: (v: boolean) => void) => {
+    if (!ref.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+    setLeft(scrollLeft > 10);
+    setRight(scrollLeft < scrollWidth - clientWidth - 10);
+  };
+
+  const scroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    if (!ref.current) return;
+    const scrollAmount = 400;
+    ref.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  // Drag to scroll functionality
+  const useDragScroll = (ref: React.RefObject<HTMLDivElement | null>) => {
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeft, setScrollLeft] = useState(0);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+      if (!ref.current) return;
+      setIsDragging(true);
+      setStartX(e.pageX - ref.current.offsetLeft);
+      setScrollLeft(ref.current.scrollLeft);
+      ref.current.style.cursor = 'grabbing';
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+      if (!isDragging || !ref.current) return;
+      e.preventDefault();
+      const x = e.pageX - ref.current.offsetLeft;
+      const walk = (x - startX) * 2;
+      ref.current.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      if (ref.current) ref.current.style.cursor = 'grab';
+    };
+
+    const handleMouseLeave = () => {
+      setIsDragging(false);
+      if (ref.current) ref.current.style.cursor = 'grab';
+    };
+
+    return { handleMouseDown, handleMouseMove, handleMouseUp, handleMouseLeave };
+  };
+
+  const equipmentDrag = useDragScroll(equipmentScrollRef);
+  const tourDrag = useDragScroll(tourScrollRef);
 
   const fetchEquipment = async () => {
     try {
@@ -59,7 +119,7 @@ export default function AboutPage() {
       <main>
         {/* Hospital Equipment Section */}
         {equipment.length > 0 && (
-          <section className="bg-white px-4 md:px-10 py-16 md:py-20 overflow-hidden">
+          <section className="bg-white px-4 md:px-10 py-16 md:py-20">
             <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               병원 장비 소개
             </h2>
@@ -67,78 +127,75 @@ export default function AboutPage() {
               최신 의료 장비로 정확한 진단과 효과적인 치료를 제공합니다.
             </p>
 
-            {/* 데이터가 4개 미만: 정적 그리드 */}
-            {equipment.length < 4 ? (
-              <div className="max-w-[1140px] mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {equipment.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-[#f8f7f5] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="aspect-video bg-gray-200 relative">
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="p-6">
-                        <h3 className="font-bold text-lg text-[#343A40] mb-2">
-                          {item.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              /* 데이터가 4개 이상: 무한 스크롤 애니메이션 */
-              <div className="relative">
-                <div
-                  className="flex gap-6 hover:pause-animation"
-                  style={{
-                    animation: `scroll-left ${equipment.length * 8}s linear infinite`
-                  }}
+            <div className="max-w-[1140px] mx-auto relative">
+              {/* 좌측 화살표 */}
+              {showEquipmentLeftArrow && equipment.length > 3 && (
+                <button
+                  onClick={() => scroll(equipmentScrollRef, 'left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                  aria-label="이전"
                 >
-                  {[...Array(2)].map((_, setIndex) => (
-                    <div key={setIndex} className="flex gap-6 flex-shrink-0">
-                      {equipment.map((item) => (
-                        <div
-                          key={`${setIndex}-${item.id}`}
-                          className="flex-shrink-0 w-80 bg-[#f8f7f5] rounded-xl overflow-hidden shadow-sm"
-                        >
-                          <div className="aspect-video bg-gray-200 relative">
-                            <img
-                              src={item.imageUrl}
-                              alt={item.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="p-6">
-                            <h3 className="font-bold text-lg text-[#343A40] mb-2">
-                              {item.name}
-                            </h3>
-                            <p className="text-sm text-gray-600 leading-relaxed">
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+
+              {/* 스크롤 컨테이너 */}
+              <div
+                ref={equipmentScrollRef}
+                onScroll={() => handleScroll(equipmentScrollRef, setShowEquipmentLeftArrow, setShowEquipmentRightArrow)}
+                onMouseDown={equipmentDrag.handleMouseDown}
+                onMouseMove={equipmentDrag.handleMouseMove}
+                onMouseUp={equipmentDrag.handleMouseUp}
+                onMouseLeave={equipmentDrag.handleMouseLeave}
+                className="flex gap-6 overflow-x-auto scrollbar-hide cursor-grab select-none"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {equipment.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex-shrink-0 w-80 bg-[#f8f7f5] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="aspect-video bg-gray-200 relative">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-full h-full object-cover pointer-events-none"
+                        draggable="false"
+                      />
                     </div>
-                  ))}
-                </div>
+                    <div className="p-6">
+                      <h3 className="font-bold text-lg text-[#343A40] mb-2">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
+
+              {/* 우측 화살표 */}
+              {showEquipmentRightArrow && equipment.length > 3 && (
+                <button
+                  onClick={() => scroll(equipmentScrollRef, 'right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                  aria-label="다음"
+                >
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </section>
         )}
 
         {/* Hospital Tour Section */}
         {tourImages.length > 0 && (
-          <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20 overflow-hidden">
+          <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
             <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               병원 둘러보기
             </h2>
@@ -146,66 +203,66 @@ export default function AboutPage() {
               쾌적하고 편안한 병원 시설을 소개합니다.
             </p>
 
-            {/* 데이터가 4개 미만: 정적 그리드 */}
-            {tourImages.length < 4 ? (
-              <div className="max-w-[1140px] mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {tourImages.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="aspect-[4/3] bg-gray-200 relative">
-                        <img
-                          src={item.imageUrl}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-bold text-base text-[#343A40] text-center">
-                          {item.title}
-                        </h3>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              /* 데이터가 4개 이상: 무한 스크롤 애니메이션 */
-              <div className="relative">
-                <div
-                  className="flex gap-6 hover:pause-animation"
-                  style={{
-                    animation: `scroll-left ${tourImages.length * 10}s linear infinite`
-                  }}
+            <div className="max-w-[1140px] mx-auto relative">
+              {/* 좌측 화살표 */}
+              {showTourLeftArrow && tourImages.length > 3 && (
+                <button
+                  onClick={() => scroll(tourScrollRef, 'left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                  aria-label="이전"
                 >
-                  {[...Array(2)].map((_, setIndex) => (
-                    <div key={setIndex} className="flex gap-6 flex-shrink-0">
-                      {tourImages.map((item) => (
-                        <div
-                          key={`${setIndex}-${item.id}`}
-                          className="flex-shrink-0 w-96 bg-white rounded-xl overflow-hidden shadow-sm"
-                        >
-                          <div className="aspect-[4/3] bg-gray-200 relative">
-                            <img
-                              src={item.imageUrl}
-                              alt={item.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="p-4">
-                            <h3 className="font-bold text-base text-[#343A40] text-center">
-                              {item.title}
-                            </h3>
-                          </div>
-                        </div>
-                      ))}
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              )}
+
+              {/* 스크롤 컨테이너 */}
+              <div
+                ref={tourScrollRef}
+                onScroll={() => handleScroll(tourScrollRef, setShowTourLeftArrow, setShowTourRightArrow)}
+                onMouseDown={tourDrag.handleMouseDown}
+                onMouseMove={tourDrag.handleMouseMove}
+                onMouseUp={tourDrag.handleMouseUp}
+                onMouseLeave={tourDrag.handleMouseLeave}
+                className="flex gap-6 overflow-x-auto scrollbar-hide cursor-grab select-none"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {tourImages.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex-shrink-0 w-96 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="aspect-[4/3] bg-gray-200 relative">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover pointer-events-none"
+                        draggable="false"
+                      />
                     </div>
-                  ))}
-                </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-base text-[#343A40] text-center">
+                        {item.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
+
+              {/* 우측 화살표 */}
+              {showTourRightArrow && tourImages.length > 3 && (
+                <button
+                  onClick={() => scroll(tourScrollRef, 'right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110"
+                  aria-label="다음"
+                >
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </section>
         )}
       </main>

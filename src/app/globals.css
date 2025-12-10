@@ -257,6 +257,16 @@
     white-space: nowrap;
     border-width: 0;
   }
+
+  /* 스크롤바 숨기기 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* 고대비 모드 - 접근성 */
