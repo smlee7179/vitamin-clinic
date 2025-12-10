@@ -1,37 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-interface Notice {
-  id: string;
-  title: string;
-  category: string;
-  important: boolean;
-  createdAt: string;
-}
+import { useHomeData } from '@/contexts/HomeDataContext';
 
 export default function NewNotices() {
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        const response = await fetch('/api/notices?limit=5');
-        if (response.ok) {
-          const data = await response.json();
-          setNotices(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch notices:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotices();
-  }, []);
+  const { notices, loading } = useHomeData();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

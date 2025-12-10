@@ -7,11 +7,13 @@ import NewNotices from '@/components/new/NewNotices';
 import NewFooter from '@/components/new/NewFooter';
 import PopupModal from '@/components/PopupModal';
 import FloatingCallButton from '@/components/new/FloatingCallButton';
+import { HomeDataProvider } from '@/contexts/HomeDataContext';
 
 export default function Home() {
   return (
-    <div className="bg-[#f8f7f5]">
-      <NewHeader />
+    <HomeDataProvider>
+      <div className="bg-[#f8f7f5]">
+        <NewHeader />
 
       {/* Hero Carousel */}
       <main className="flex flex-1 justify-center py-5">
@@ -28,8 +30,9 @@ export default function Home() {
       {/* Popup Modal */}
       <PopupModal />
 
-      {/* Floating Call Button */}
-      <FloatingCallButton />
-    </div>
+        {/* Floating Call Button */}
+        <FloatingCallButton />
+      </div>
+    </HomeDataProvider>
   );
 }

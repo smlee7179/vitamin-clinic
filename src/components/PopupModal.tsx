@@ -1,60 +1,39 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface Popup {
-  id: string;
-  title: string;
-  content: string;
-  imageUrl: string | null;
-  active: boolean;
-  showDoNotShow: boolean;
-  startDate: string | null;
-  endDate: string | null;
-}
+import Image from 'next/image';
+import { useHomeData } from '@/contexts/HomeDataContext';
 
 export default function PopupModal() {
-  const [popup, setPopup] = useState<Popup | null>(null);
+  const { popup: contextPopup } = useHomeData();
   const [isVisible, setIsVisible] = useState(false);
   const [doNotShowToday, setDoNotShowToday] = useState(false);
 
   useEffect(() => {
-    fetchPopup();
-  }, []);
+    if (!contextPopup || !contextPopup.id) return;
 
-  const fetchPopup = async () => {
-    try {
-      // Check if popup was hidden today
-      const hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
-      const today = new Date().toDateString();
+    // Check if popup was hidden today
+    const hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
+    const today = new Date().toDateString();
 
-      const response = await fetch('/api/popups');
-      if (response.ok) {
-        const data = await response.json();
-
-        // Only show if popup exists and wasn't hidden today
-        if (data && data.id && hiddenPopups[data.id] !== today) {
-          setPopup(data);
-          setIsVisible(true);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch popup:', error);
+    // Only show if popup exists and wasn't hidden today
+    if (hiddenPopups[contextPopup.id] !== today) {
+      setIsVisible(true);
     }
-  };
+  }, [contextPopup]);
 
   const handleClose = () => {
-    if (doNotShowToday && popup) {
+    if (doNotShowToday && contextPopup) {
       // Save to localStorage
       const hiddenPopups = JSON.parse(localStorage.getItem('hiddenPopups') || '{}');
       const today = new Date().toDateString();
-      hiddenPopups[popup.id] = today;
+      hiddenPopups[contextPopup.id] = today;
       localStorage.setItem('hiddenPopups', JSON.stringify(hiddenPopups));
     }
     setIsVisible(false);
   };
 
-  if (!isVisible || !popup) {
+  if (!isVisible || !contextPopup) {
     return null;
   }
 
@@ -72,13 +51,16 @@ export default function PopupModal() {
         </button>
 
         {/* Image Section */}
-        {popup.imageUrl && (
-          <div className="relative w-full bg-gray-100 flex items-center justify-center" style={{ maxHeight: '400px' }}>
-            <img
-              alt={popup.title}
+        {contextPopup.imageUrl && (
+          <div className="relative w-full bg-gray-100 flex items-center justify-center overflow-hidden" style={{ maxHeight: '400px' }}>
+            <Image
+              alt={contextPopup.title}
+              src={contextPopup.imageUrl}
+              width={500}
+              height={400}
               className="w-full h-auto object-contain"
               style={{ maxHeight: '400px' }}
-              src={popup.imageUrl}
+              quality={85}
             />
           </div>
         )}
@@ -86,17 +68,17 @@ export default function PopupModal() {
         {/* Content Section */}
         <div className="flex flex-col p-6 sm:p-8">
           <h1 className="text-center text-xl font-bold leading-tight tracking-tight text-[#333333] sm:text-2xl">
-            {popup.title}
+            {contextPopup.title}
           </h1>
           <div
             className="mt-3 text-center text-sm font-normal leading-relaxed text-gray-600"
-            dangerouslySetInnerHTML={{ __html: popup.content }}
+            dangerouslySetInnerHTML={{ __html: contextPopup.content }}
           />
         </div>
 
         {/* Footer with checkbox and close button */}
         <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-3">
-          {popup.showDoNotShow && (
+          {contextPopup.showDoNotShow && (
             <label className="flex cursor-pointer items-center gap-x-2">
               <input
                 type="checkbox"

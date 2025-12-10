@@ -1,48 +1,17 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface HeroSlide {
-  id: string;
-  imageUrl: string;
-  title: string;
-  description: string | null;
-  buttonText: string | null;
-  buttonLink: string | null;
-  imageWidth: number | null;
-  imageHeight: number | null;
-  aspectRatio: string | null;
-  order: number;
-  active: boolean;
-}
+import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
+import { useHomeData } from '@/contexts/HomeDataContext';
 
 export default function NewHeroCarousel() {
-  const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState<string>('051-469-7581');
-  const [aspectRatio, setAspectRatio] = useState<number>(16 / 9); // Default 16:9
-
-  useEffect(() => {
-    fetchSlides();
-    fetchPhoneNumber();
-  }, []);
-
-  const fetchPhoneNumber = async () => {
-    try {
-      const response = await fetch('/api/hospital-info');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.phone) {
-          setPhoneNumber(data.phone);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch phone number:', error);
-    }
-  };
+  const [aspectRatio] = useState<number>(16 / 9); // Default 16:9
+  const { hospitalInfo } = useHospitalInfo();
+  const { heroSlides: slides, loading } = useHomeData();
+  const phoneNumber = hospitalInfo?.phone || '051-469-7581';
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -53,30 +22,6 @@ export default function NewHeroCarousel() {
 
     return () => clearInterval(interval);
   }, [slides.length]);
-
-  const fetchSlides = async () => {
-    try {
-      const response = await fetch('/api/hero-slides');
-      if (response.ok) {
-        const data = await response.json();
-        setSlides(data);
-
-        // Calculate aspect ratio from first slide's image
-        if (data.length > 0 && data[0].imageUrl) {
-          const img = new window.Image();
-          img.onload = () => {
-            const ratio = img.width / img.height;
-            setAspectRatio(ratio);
-          };
-          img.src = data[0].imageUrl;
-        }
-      }
-    } catch (error) {
-      console.error('Failed to fetch hero slides:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);

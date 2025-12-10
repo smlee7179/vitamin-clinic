@@ -3,6 +3,7 @@ import { Inter, Pacifico } from "next/font/google";
 import GoogleAnalytics from "../components/analytics/GoogleAnalytics";
 import PerformanceMonitor from "../components/analytics/PerformanceMonitor";
 import ProgressBar from "../components/layout/ProgressBar";
+import { HospitalInfoProvider } from "../contexts/HospitalInfoContext";
 import { Metadata } from "next";
 
 const pacifico = Pacifico({
@@ -88,14 +89,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="geo.placename" content="부산광역시 해운대구" />
         <meta name="geo.position" content="35.1586;129.1603" />
         <meta name="ICBM" content="35.1586, 129.1603" />
-        <link rel="stylesheet" href="/remixicon.min.css" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
       </head>
       <body className={`${inter.variable} ${pacifico.variable} antialiased min-h-screen bg-neutral-50 text-neutral-900`}>
         <GoogleAnalytics />
         <PerformanceMonitor />
         <ProgressBar />
-        {children}
+        <HospitalInfoProvider>
+          {children}
+        </HospitalInfoProvider>
       </body>
     </html>
   );

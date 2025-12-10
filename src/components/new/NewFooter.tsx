@@ -1,44 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface FooterInfo {
-  id: string;
-  hospitalName: string;
-  address: string;
-  representative: string | null;
-  businessNumber: string | null;
-  phone: string;
-  fax: string | null;
-  email: string | null;
-  facebookUrl: string | null;
-  instagramUrl: string | null;
-  youtubeUrl: string | null;
-  copyrightText: string;
-  logoUrl: string | null;
-  logoAlt: string;
-}
+import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
 
 export default function NewFooter() {
-  const [footerInfo, setFooterInfo] = useState<FooterInfo | null>(null);
-
-  useEffect(() => {
-    fetchFooterInfo();
-  }, []);
-
-  const fetchFooterInfo = async () => {
-    try {
-      const response = await fetch('/api/hospital-info');
-      if (response.ok) {
-        const data = await response.json();
-        setFooterInfo(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch footer info:', error);
-    }
-  };
+  const { hospitalInfo } = useHospitalInfo();
 
   return (
     <footer className="bg-gray-100 mt-24 border-t border-gray-200">
@@ -47,10 +14,10 @@ export default function NewFooter() {
           {/* Logo and Copyright */}
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center flex-shrink-0 max-w-[70%] md:max-w-none">
-              {footerInfo?.logoUrl ? (
+              {hospitalInfo?.logoUrl ? (
                 <Image
-                  src={footerInfo.logoUrl}
-                  alt={footerInfo.logoAlt || '병원 로고'}
+                  src={hospitalInfo.logoUrl}
+                  alt={hospitalInfo.logoAlt || '병원 로고'}
                   width={1000}
                   height={60}
                   className="h-10 md:h-12 w-auto object-contain"
@@ -78,7 +45,7 @@ export default function NewFooter() {
               )}
             </Link>
             <p className="text-xs md:text-sm text-gray-500">
-              {footerInfo?.copyrightText || '© 2024 비타민마취통증의학과. All Rights Reserved.'}
+              {hospitalInfo?.copyrightText || '© 2024 비타민마취통증의학과. All Rights Reserved.'}
             </p>
           </div>
 
@@ -158,10 +125,10 @@ export default function NewFooter() {
           {/* Address */}
           <div className="text-sm md:text-base">
             <h3 className="font-bold text-gray-800 mb-3 text-base md:text-lg">주소</h3>
-            <p className="text-gray-600 leading-relaxed">{footerInfo?.address || '부산광역시 동구 중앙대로 375'}</p>
-            <p className="text-gray-600 leading-relaxed">전화: {footerInfo?.phone || '051-469-7581'}</p>
-            {footerInfo?.fax && <p className="text-gray-600 leading-relaxed">팩스: {footerInfo.fax}</p>}
-            {footerInfo?.email && <p className="text-gray-600 leading-relaxed">이메일: {footerInfo.email}</p>}
+            <p className="text-gray-600 leading-relaxed">{hospitalInfo?.address || '부산광역시 동구 중앙대로 375'}</p>
+            <p className="text-gray-600 leading-relaxed">전화: {hospitalInfo?.phone || '051-469-7581'}</p>
+            {hospitalInfo?.fax && <p className="text-gray-600 leading-relaxed">팩스: {hospitalInfo.fax}</p>}
+            {hospitalInfo?.email && <p className="text-gray-600 leading-relaxed">이메일: {hospitalInfo.email}</p>}
           </div>
         </div>
       </div>

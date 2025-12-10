@@ -3,25 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
 
 export default function NewHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
   const [treatmentsMenuOpen, setTreatmentsMenuOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [logoAlt, setLogoAlt] = useState('병원 로고');
+  const { hospitalInfo } = useHospitalInfo();
 
   useEffect(() => {
-    // 병원 정보에서 로고 가져오기
-    fetch('/api/hospital-info')
-      .then(res => res.json())
-      .then(data => {
-        if (data.logoUrl) {
-          setLogoUrl(data.logoUrl);
-          setLogoAlt(data.logoAlt || '병원 로고');
-        }
-      })
-      .catch(err => console.error('Failed to load logo:', err));
 
     // 데스크톱에서만 드롭다운 외부 클릭 시 닫기 (모바일은 제외)
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,10 +37,10 @@ export default function NewHeader() {
         <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0 mr-4 max-w-[60%] md:max-w-none">
-            {logoUrl ? (
+            {hospitalInfo?.logoUrl ? (
               <Image
-                src={logoUrl}
-                alt={logoAlt}
+                src={hospitalInfo.logoUrl}
+                alt={hospitalInfo.logoAlt || '병원 로고'}
                 width={1000}
                 height={60}
                 className="h-12 md:h-16 w-auto object-contain"
