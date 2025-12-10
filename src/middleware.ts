@@ -13,12 +13,18 @@ export async function middleware(request: NextRequest) {
     '/api/marquee',
     '/api/health',
     '/api/system-info',
-    '/api/doctors',       // Public doctors list
-    '/api/hero-slides',   // Public hero slides
-    '/api/popups',        // Public popups
-    '/api/notices',       // Public notices
-    '/api/hospital-info', // Public hospital info (header/footer)
-    '/manifest.json',     // PWA manifest
+    '/api/doctors',         // Public doctors list
+    '/api/hero-slides',     // Public hero slides
+    '/api/popups',          // Public popups
+    '/api/notices',         // Public notices
+    '/api/hospital-info',   // Public hospital info (header/footer)
+    '/api/greeting',        // Public greeting message (doctors page)
+    '/api/services',        // Public services/clinics info
+    '/api/clinic-pages',    // Public clinic pages content
+    '/api/treatment-pages', // Public treatment pages content
+    '/api/page-hero',       // Public page hero sections
+    '/api/equipment',       // Public equipment info
+    '/manifest.json',       // PWA manifest
   ];
 
   // Check if this is a public API GET request
