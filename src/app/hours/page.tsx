@@ -194,38 +194,38 @@ export default function HoursPage() {
             <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-12">원장님 상세 진료 시간표</h2>
             <div className="p-4 flex flex-col lg:flex-row gap-8">
               {/* Schedule Table */}
-              <div className="flex-grow overflow-x-auto">
-                <table className="w-full text-center border-collapse">
+              <div className="flex-grow overflow-x-auto shadow-sm rounded-lg border border-[#e6e0db]">
+                <table className="w-full text-center border-collapse min-w-[600px]">
                   <thead className="bg-[#ee8c2b]/10">
                     <tr>
-                      <th className="p-4 font-medium text-sm text-[#181411] border border-[#e6e0db]">시간</th>
+                      <th className="p-2 md:p-4 font-medium text-xs md:text-sm text-[#181411] border border-[#e6e0db]">시간</th>
                       {DAY_LABELS.map((label) => (
-                        <th key={label} className="p-4 font-medium text-sm text-[#181411] border border-[#e6e0db]">
+                        <th key={label} className="p-2 md:p-4 font-medium text-xs md:text-sm text-[#181411] border border-[#e6e0db]">
                           {label}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="text-[#897561] text-sm bg-white">
+                  <tbody className="text-[#897561] text-xs md:text-sm bg-white">
                     <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db]">오전</td>
+                      <td className="p-2 md:p-4 font-medium text-[#181411] border border-[#e6e0db]">오전</td>
                       {DAYS_OF_WEEK.map((day) => (
-                        <td key={`${day}-morning`} className="p-4 border border-[#e6e0db]">
+                        <td key={`${day}-morning`} className="p-2 md:p-4 border border-[#e6e0db]">
                           {getScheduleForDay(day, 'morning')}
                         </td>
                       ))}
                     </tr>
                     <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db]">점심</td>
-                      <td className="p-4 border border-[#e6e0db]" colSpan={5}>점심시간</td>
-                      <td className="p-4 border border-[#e6e0db] bg-gray-100">-</td>
+                      <td className="p-2 md:p-4 font-medium text-[#181411] border border-[#e6e0db]">점심</td>
+                      <td className="p-2 md:p-4 border border-[#e6e0db]" colSpan={5}>점심시간</td>
+                      <td className="p-2 md:p-4 border border-[#e6e0db] bg-gray-100">-</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db]">오후</td>
+                      <td className="p-2 md:p-4 font-medium text-[#181411] border border-[#e6e0db]">오후</td>
                       {DAYS_OF_WEEK.map((day) => (
                         <td
                           key={`${day}-afternoon`}
-                          className={`p-4 border border-[#e6e0db] ${day === 'saturday' ? 'bg-gray-100' : ''}`}
+                          className={`p-2 md:p-4 border border-[#e6e0db] ${day === 'saturday' ? 'bg-gray-100' : ''}`}
                         >
                           {day === 'saturday' ? '휴진' : getScheduleForDay(day, 'afternoon')}
                         </td>
