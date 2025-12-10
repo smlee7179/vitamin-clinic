@@ -192,9 +192,11 @@ export default function NewHeader() {
                 href="/doctors"
                 className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
                 onClick={() => {
-                  setServicesMenuOpen(false);
-                  setTreatmentsMenuOpen(false);
-                  setMobileMenuOpen(false);
+                  setTimeout(() => {
+                    setServicesMenuOpen(false);
+                    setTreatmentsMenuOpen(false);
+                    setMobileMenuOpen(false);
+                  }, 100);
                 }}
               >
                 의료진 소개
@@ -204,9 +206,11 @@ export default function NewHeader() {
                 href="/about"
                 className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
                 onClick={() => {
-                  setServicesMenuOpen(false);
-                  setTreatmentsMenuOpen(false);
-                  setMobileMenuOpen(false);
+                  setTimeout(() => {
+                    setServicesMenuOpen(false);
+                    setTreatmentsMenuOpen(false);
+                    setMobileMenuOpen(false);
+                  }, 100);
                 }}
               >
                 병원소개
@@ -238,10 +242,11 @@ export default function NewHeader() {
                     <Link
                       href="/services/spine"
                       className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setServicesMenuOpen(false);
-                        setMobileMenuOpen(false);
+                      onClick={() => {
+                        setTimeout(() => {
+                          setServicesMenuOpen(false);
+                          setMobileMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       • 척추 클리닉
@@ -249,10 +254,11 @@ export default function NewHeader() {
                     <Link
                       href="/services/joint"
                       className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setServicesMenuOpen(false);
-                        setMobileMenuOpen(false);
+                      onClick={() => {
+                        setTimeout(() => {
+                          setServicesMenuOpen(false);
+                          setMobileMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       • 관절 클리닉
@@ -260,10 +266,11 @@ export default function NewHeader() {
                     <Link
                       href="/services/pain"
                       className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setServicesMenuOpen(false);
-                        setMobileMenuOpen(false);
+                      onClick={() => {
+                        setTimeout(() => {
+                          setServicesMenuOpen(false);
+                          setMobileMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       • 통증 클리닉
@@ -298,10 +305,11 @@ export default function NewHeader() {
                     <Link
                       href="/treatments/non-surgical"
                       className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setTreatmentsMenuOpen(false);
-                        setMobileMenuOpen(false);
+                      onClick={() => {
+                        setTimeout(() => {
+                          setTreatmentsMenuOpen(false);
+                          setMobileMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       • 비수술 치료
@@ -309,10 +317,11 @@ export default function NewHeader() {
                     <Link
                       href="/treatments/manual-therapy"
                       className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setTreatmentsMenuOpen(false);
-                        setMobileMenuOpen(false);
+                      onClick={() => {
+                        setTimeout(() => {
+                          setTreatmentsMenuOpen(false);
+                          setMobileMenuOpen(false);
+                        }, 100);
                       }}
                     >
                       • 도수 치료
