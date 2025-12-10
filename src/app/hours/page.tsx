@@ -130,22 +130,22 @@ export default function HoursPage() {
         {/* Page Heading */}
         <div className="flex flex-wrap justify-between gap-3 p-4">
           <div className="flex min-w-72 flex-col gap-3">
-            <p className="text-[#181411] text-4xl font-black leading-tight tracking-[-0.033em]">진료시간 안내</p>
-            <p className="text-[#897561] text-base font-normal leading-normal">비타민마취통증의학과의 진료 시간표를 확인하세요.</p>
+            <p className="text-[#181411] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">진료시간 안내</p>
+            <p className="text-[#897561] text-base md:text-lg font-normal leading-normal">비타민마취통증의학과의 진료 시간표를 확인하세요.</p>
           </div>
         </div>
 
         {/* Overall Clinic Hours */}
-        <h2 className="text-[#181411] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8 md:pt-12">병원 전체 진료시간</h2>
+        <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8 md:pt-12">병원 전체 진료시간</h2>
         <div className="p-4">
           {clinicHours ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 rounded-xl border border-solid border-[#e6e0db] shadow-sm">
               <div className="flex flex-col gap-2 p-2">
                 <div className="flex items-center gap-2 text-[#897561]">
-                  <span className="material-symbols-outlined text-base">calendar_month</span>
-                  <p className="text-sm font-medium">평일</p>
+                  <span className="material-symbols-outlined text-base md:text-lg">calendar_month</span>
+                  <p className="text-sm md:text-base font-medium">평일</p>
                 </div>
-                <p className="text-[#181411] text-base font-bold leading-normal">
+                <p className="text-[#181411] text-base md:text-lg font-bold leading-normal">
                   {clinicHours.weekdayOpen} - {clinicHours.weekdayClose}
                 </p>
               </div>
@@ -191,7 +191,7 @@ export default function HoursPage() {
         {/* Doctor's Schedule */}
         {chiefDoctor && (
           <>
-            <h2 className="text-[#181411] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-12">원장님 상세 진료 시간표</h2>
+            <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-12">원장님 상세 진료 시간표</h2>
             <div className="p-4 flex flex-col lg:flex-row gap-8">
               {/* Schedule Table */}
               <div className="flex-grow overflow-x-auto">

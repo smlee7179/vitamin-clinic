@@ -63,10 +63,10 @@ export default function ContactPage() {
             {/* Page Heading */}
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <div className="flex min-w-72 flex-col gap-3">
-                <p className="text-[#181511] text-4xl font-black leading-tight tracking-[-0.033em]">
+                <p className="text-[#181511] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
                   오시는 길 & 진료안내
                 </p>
-                <p className="text-[#8a7960] text-base font-normal leading-normal">
+                <p className="text-[#8a7960] text-base md:text-lg font-normal leading-normal">
                   비타민마취통증의학과에 오시는 길을 안내해드립니다.
                 </p>
               </div>
@@ -125,7 +125,7 @@ export default function ContactPage() {
             {/* Contact Details */}
             <div className="flex flex-col gap-6">
               <div className="flex flex-col">
-                <h2 className="text-[#181511] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
+                <h2 className="text-[#181511] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
                   상세 정보
                 </h2>
                 <div className="flex flex-col divide-y divide-[#EAE8E4] border-t border-b border-[#EAE8E4]">
