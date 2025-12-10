@@ -226,12 +226,12 @@ export default function DoctorsPage() {
                     {sortedSchedules.length > 0 && (
                       <div className="p-6">
                         <h4 className="font-bold text-base md:text-lg text-gray-700 mb-3">진료 시간표</h4>
-                        <div className="overflow-x-auto md:overflow-x-visible rounded-lg border border-gray-200 shadow-sm">
-                          <table className="w-full border-collapse text-xs md:text-sm min-w-[480px] md:min-w-0">
+                        <div className="overflow-x-visible rounded-lg border border-gray-200 shadow-sm">
+                          <table className="w-full border-collapse text-xs md:text-sm">
                             <thead>
                               <tr className="bg-gray-50">
                                 {sortedSchedules.map((schedule) => (
-                                  <th key={schedule.id} className="py-2 px-2 md:px-3 text-center font-semibold text-gray-700 border border-gray-200 whitespace-nowrap">
+                                  <th key={schedule.id} className="py-2 px-1 md:px-3 text-center font-semibold text-gray-700 border border-gray-200">
                                     {DAY_OF_WEEK_MAP[schedule.dayOfWeek]}
                                   </th>
                                 ))}
@@ -243,8 +243,8 @@ export default function DoctorsPage() {
                                   // If either morning or afternoon is available, show as available
                                   const isAvailable = schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available';
                                   return (
-                                    <td key={schedule.id} className="py-2 md:py-3 px-2 md:px-3 text-center border border-gray-200">
-                                      <span className={`inline-block px-3 py-1 rounded text-xs font-medium whitespace-nowrap ${
+                                    <td key={schedule.id} className="py-2 md:py-3 px-1 md:px-3 text-center border border-gray-200">
+                                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                                         isAvailable
                                           ? 'bg-green-100 text-green-700'
                                           : 'bg-red-100 text-red-700'
