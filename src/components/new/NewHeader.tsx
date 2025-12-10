@@ -215,8 +215,13 @@ export default function NewHeader() {
               {/* Services Mobile Dropdown */}
               <div>
                 <button
-                  onClick={() => setServicesMenuOpen(!servicesMenuOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setTreatmentsMenuOpen(false);
+                    setServicesMenuOpen(!servicesMenuOpen);
+                  }}
                   className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
+                  type="button"
                 >
                   진료안내
                   <svg
@@ -229,11 +234,12 @@ export default function NewHeader() {
                   </svg>
                 </button>
                 {servicesMenuOpen && (
-                  <div className="mt-1 ml-2 flex flex-col gap-1">
+                  <div className="mt-1 ml-2 flex flex-col gap-1 bg-gray-50 rounded-lg p-2">
                     <Link
                       href="/services/spine"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
-                      onClick={() => {
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setServicesMenuOpen(false);
                         setMobileMenuOpen(false);
                       }}
@@ -242,8 +248,9 @@ export default function NewHeader() {
                     </Link>
                     <Link
                       href="/services/joint"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
-                      onClick={() => {
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setServicesMenuOpen(false);
                         setMobileMenuOpen(false);
                       }}
@@ -252,8 +259,9 @@ export default function NewHeader() {
                     </Link>
                     <Link
                       href="/services/pain"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
-                      onClick={() => {
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setServicesMenuOpen(false);
                         setMobileMenuOpen(false);
                       }}
@@ -267,8 +275,13 @@ export default function NewHeader() {
               {/* Treatments Mobile Dropdown */}
               <div>
                 <button
-                  onClick={() => setTreatmentsMenuOpen(!treatmentsMenuOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setServicesMenuOpen(false);
+                    setTreatmentsMenuOpen(!treatmentsMenuOpen);
+                  }}
                   className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
+                  type="button"
                 >
                   치료소개
                   <svg
@@ -281,11 +294,12 @@ export default function NewHeader() {
                   </svg>
                 </button>
                 {treatmentsMenuOpen && (
-                  <div className="mt-1 ml-2 flex flex-col gap-1">
+                  <div className="mt-1 ml-2 flex flex-col gap-1 bg-gray-50 rounded-lg p-2">
                     <Link
                       href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
-                      onClick={() => {
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setTreatmentsMenuOpen(false);
                         setMobileMenuOpen(false);
                       }}
@@ -294,8 +308,9 @@ export default function NewHeader() {
                     </Link>
                     <Link
                       href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-2 px-4 rounded-lg hover:bg-orange-50 transition-colors block"
-                      onClick={() => {
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setTreatmentsMenuOpen(false);
                         setMobileMenuOpen(false);
                       }}
