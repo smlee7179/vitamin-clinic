@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import ModernImageUpload from '@/components/admin/ModernImageUpload';
 
 interface Popup {
   id: string;
@@ -20,7 +21,6 @@ export default function PopupsManager() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingPopup, setEditingPopup] = useState<Popup | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -50,34 +50,6 @@ export default function PopupsManager() {
       console.error('Failed to fetch popups:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const formDataUpload = new FormData();
-    formDataUpload.append('file', file);
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formDataUpload,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setFormData({ ...formData, imageUrl: data.url });
-      } else {
-        alert('이미지 업로드 실패');
-      }
-    } catch (error) {
-      console.error('Upload error:', error);
-      alert('이미지 업로드 중 오류 발생');
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -287,26 +259,14 @@ export default function PopupsManager() {
 
               {/* Image Upload */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  이미지 (선택)
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploading}
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:bg-orange-500 file:text-white hover:file:bg-orange-600"
+                <ModernImageUpload
+                  currentImage={formData.imageUrl}
+                  onUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+                  label="이미지 (선택)"
+                  aspectRatio="landscape"
+                  maxSize={20}
+                  preset="default"
                 />
-                {uploading && <p className="mt-2 text-sm text-orange-500">업로드 중...</p>}
-                {formData.imageUrl && (
-                  <div className="mt-4">
-                    <img
-                      src={formData.imageUrl}
-                      alt="Preview"
-                      className="w-full h-48 object-cover rounded-lg border border-gray-200"
-                    />
-                  </div>
-                )}
               </div>
 
               {/* Date Range */}

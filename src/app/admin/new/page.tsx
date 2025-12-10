@@ -7,7 +7,6 @@ import LogoManager from '@/components/admin/sections/LogoManager';
 import FooterManager from '@/components/admin/sections/FooterManager';
 import HeroCarouselManager from '@/components/admin/sections/HeroCarouselManager';
 import NoticesManager from '@/components/admin/sections/NoticesManager';
-import TreatmentsManager from '@/components/admin/sections/TreatmentsManager';
 import PageHeroManager from '@/components/admin/sections/PageHeroManager';
 import GreetingManager from '@/components/admin/sections/GreetingManager';
 import EquipmentManager from '@/components/admin/sections/EquipmentManager';
@@ -140,8 +139,7 @@ export default function NewAdminPage() {
       icon: '💉',
       sections: [
         { id: 'non-surgical', name: '비수술 치료' },
-        { id: 'manual-therapy', name: '도수 치료' },
-        { id: 'treatments', name: '치료법 항목 관리' }
+        { id: 'manual-therapy', name: '도수 치료' }
       ]
     },
     {
@@ -223,8 +221,6 @@ export default function NewAdminPage() {
         return <TreatmentPagesManager treatmentType="non-surgical" />;
       case 'treatments-manual-therapy':
         return <TreatmentPagesManager treatmentType="manual-therapy" />;
-      case 'treatments-treatments':
-        return <TreatmentsManager />;
 
       // 진료시간
       case 'hours-page-heading':
