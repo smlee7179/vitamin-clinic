@@ -147,10 +147,10 @@ export default function ManualTherapyPage() {
             </div>
             <div className="absolute inset-0 flex flex-col gap-6 items-center justify-end p-6 md:p-12">
               <div className="flex flex-col gap-3 text-center max-w-3xl">
-                <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
+                <h1 className="text-white text-3xl font-black leading-tight tracking-tight md:text-4xl lg:text-5xl whitespace-pre-wrap">
                   {displayData.heroTitle}
                 </h1>
-                <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
+                <h2 className="text-white text-base font-normal leading-normal md:text-lg lg:text-xl whitespace-pre-wrap">
                   {displayData.heroSubtitle}
                 </h2>
               </div>
@@ -160,11 +160,11 @@ export default function ManualTherapyPage() {
           {/* Treatment Introduction - 소개글 카드 */}
           <section className="w-full py-12 md:py-16">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-[#343A40] text-2xl md:text-3xl font-bold text-center mb-8">
+              <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8">
                 도수 치료 소개
               </h2>
               <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm">
-                <p className="text-gray-700 leading-relaxed text-base whitespace-pre-wrap">
+                <p className="text-gray-700 leading-relaxed text-base md:text-lg whitespace-pre-wrap">
                   {displayData.description}
                 </p>
               </div>

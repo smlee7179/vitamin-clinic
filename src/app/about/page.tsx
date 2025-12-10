@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
@@ -120,10 +121,10 @@ export default function AboutPage() {
         {/* Hospital Equipment Section */}
         {equipment.length > 0 && (
           <section className="bg-white px-4 md:px-10 py-16 md:py-20">
-            <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
+            <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               병원 장비 소개
             </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-gray-600 text-base md:text-lg mb-12 max-w-2xl mx-auto">
               최신 의료 장비로 정확한 진단과 효과적인 치료를 제공합니다.
             </p>
 
@@ -158,11 +159,14 @@ export default function AboutPage() {
                     className="flex-shrink-0 w-80 bg-[#f8f7f5] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="aspect-video bg-gray-200 relative">
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.name}
-                        className="w-full h-full object-cover pointer-events-none"
+                        fill
+                        className="object-cover pointer-events-none"
                         draggable="false"
+                        sizes="(max-width: 768px) 90vw, 320px"
+                        quality={85}
                       />
                     </div>
                     <div className="p-6">
@@ -196,10 +200,10 @@ export default function AboutPage() {
         {/* Hospital Tour Section */}
         {tourImages.length > 0 && (
           <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
-            <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
+            <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               병원 둘러보기
             </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-gray-600 text-base md:text-lg mb-12 max-w-2xl mx-auto">
               쾌적하고 편안한 병원 시설을 소개합니다.
             </p>
 
@@ -234,11 +238,14 @@ export default function AboutPage() {
                     className="flex-shrink-0 w-96 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="aspect-[4/3] bg-gray-200 relative">
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-full h-full object-cover pointer-events-none"
+                        fill
+                        className="object-cover pointer-events-none"
                         draggable="false"
+                        sizes="(max-width: 768px) 90vw, 384px"
+                        quality={85}
                       />
                     </div>
                     <div className="p-4">
