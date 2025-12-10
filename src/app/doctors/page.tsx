@@ -145,15 +145,15 @@ export default function DoctorsPage() {
                 )}
                 {/* Greeting Content */}
                 <div className="flex flex-col gap-4 w-full p-8 md:p-12">
-                  <h2 className="text-[#343A40] tracking-tight text-2xl md:text-3xl font-bold leading-tight">
+                  <h2 className="text-[#343A40] tracking-tight text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
                     인사말
                   </h2>
                   <div
-                    className="text-gray-600 text-base leading-relaxed whitespace-pre-wrap [&_p]:mb-[1em] [&_p]:min-h-[1.5em] [&_p:last-child]:mb-0"
+                    className="text-gray-600 text-base md:text-lg leading-relaxed whitespace-pre-wrap [&_p]:mb-[1em] [&_p]:min-h-[1.5em] [&_p:last-child]:mb-0"
                     dangerouslySetInnerHTML={{ __html: greeting.content }}
                   />
                   {greeting.signature && (
-                    <p className="text-right font-bold text-lg text-[#343A40] mt-4">
+                    <p className="text-right font-bold text-lg md:text-xl text-[#343A40] mt-4">
                       {greeting.signature}
                     </p>
                   )}
@@ -166,10 +166,10 @@ export default function DoctorsPage() {
         {/* Doctor Section */}
         {doctors.length > 0 && (
           <section className="px-4 md:px-10 py-16 md:py-20">
-            <h2 className="text-[#343A40] text-[28px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
+            <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 text-center">
               의료진 소개
             </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-center text-gray-600 text-base md:text-lg mb-12 max-w-2xl mx-auto">
               비타민마취통증의학과의 분야별 전문 의료진이 환자 여러분의 건강한 삶을 위해 최선을 다하고 있습니다.
             </p>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1140px] mx-auto">
@@ -213,8 +213,8 @@ export default function DoctorsPage() {
                     {/* Career Section */}
                     {doctor.career && (
                       <div className="p-6 border-b border-gray-200">
-                        <h4 className="font-bold text-sm text-gray-700 mb-3">경력</h4>
-                        <ul className="text-gray-600 text-sm space-y-1.5 list-disc list-inside">
+                        <h4 className="font-bold text-base md:text-lg text-gray-700 mb-3">경력</h4>
+                        <ul className="text-gray-600 text-sm md:text-base space-y-1.5 list-disc list-inside">
                           {doctor.career.split('\n').map((line, idx) => (
                             line.trim() && <li key={`career-${idx}`}>{line.trim()}</li>
                           ))}
@@ -225,7 +225,7 @@ export default function DoctorsPage() {
                     {/* Schedule Section */}
                     {sortedSchedules.length > 0 && (
                       <div className="p-6">
-                        <h4 className="font-bold text-sm text-gray-700 mb-3">진료 시간표</h4>
+                        <h4 className="font-bold text-base md:text-lg text-gray-700 mb-3">진료 시간표</h4>
                         <div className="overflow-x-auto">
                           <table className="w-full border-collapse text-sm">
                             <thead>

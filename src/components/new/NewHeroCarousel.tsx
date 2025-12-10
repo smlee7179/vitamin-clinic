@@ -115,10 +115,10 @@ export default function NewHeroCarousel() {
         </div>
         <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-6 md:p-12">
           <div className="flex flex-col gap-3 text-center max-w-3xl">
-            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
+            <h1 className="text-white text-3xl font-black leading-tight tracking-tight md:text-4xl lg:text-5xl whitespace-pre-wrap">
               환자 중심의 전문적인 치료
             </h1>
-            <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg lg:text-xl whitespace-pre-wrap">
               저희는 최신 시설과 따뜻한 마음으로 최상의 의료 서비스를 제공합니다.
             </h2>
             <a
@@ -166,11 +166,11 @@ export default function NewHeroCarousel() {
       {/* Slide Content Overlay */}
       <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center p-6 md:p-12">
         <div className="flex flex-col gap-3 text-center max-w-3xl">
-          <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl whitespace-pre-wrap">
+          <h1 className="text-white text-3xl font-black leading-tight tracking-tight md:text-4xl lg:text-5xl whitespace-pre-wrap">
             {slides[currentSlide].title}
           </h1>
           {slides[currentSlide].description && (
-            <h2 className="text-white text-base font-normal leading-normal md:text-lg whitespace-pre-wrap">
+            <h2 className="text-white text-base font-normal leading-normal md:text-lg lg:text-xl whitespace-pre-wrap">
               {slides[currentSlide].description}
             </h2>
           )}

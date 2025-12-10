@@ -44,10 +44,10 @@ export default function NewInfoCards() {
 
                 {/* Content */}
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-[#f97316] transition-colors">
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 group-hover:text-[#f97316] transition-colors">
                     {card.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
                     {card.description}
                   </p>
 

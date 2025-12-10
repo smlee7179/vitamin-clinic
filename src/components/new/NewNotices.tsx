@@ -85,7 +85,7 @@ export default function NewNotices() {
           </div>
         <div className="divide-y divide-gray-200">
           {notices.length === 0 ? (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-gray-500 text-base md:text-lg">
               등록된 소식이 없습니다.
             </div>
           ) : (
@@ -94,15 +94,15 @@ export default function NewNotices() {
                 <div>
                   <Link
                     href={`/notices/${notice.id}`}
-                    className="text-gray-800 hover:text-[#f97316] text-base font-medium transition-colors"
+                    className="text-gray-800 hover:text-[#f97316] text-base md:text-lg font-medium transition-colors"
                   >
                     {notice.title}
                   </Link>
-                  <p className="text-gray-500 text-sm mt-1">
+                  <p className="text-gray-500 text-sm md:text-base mt-1">
                     {notice.category}
                   </p>
                 </div>
-                <span className="text-gray-400 text-sm whitespace-nowrap ml-4">
+                <span className="text-gray-400 text-sm md:text-base whitespace-nowrap ml-4">
                   {formatDate(notice.createdAt)}
                 </span>
               </div>
