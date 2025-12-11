@@ -154,173 +154,72 @@ export default function HoursPage() {
           </div>
         )}
 
-        {/* Hospital Hours Table */}
+        {/* Hospital Hours - Text Format */}
         <div className="p-4 mt-8">
           <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] pb-6">
             병원 진료 시간
           </h2>
 
-          {schedules.length > 0 ? (
-            <div className="bg-white rounded-xl border border-solid border-[#e6e0db] shadow-sm overflow-hidden">
-              {/* Desktop View */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full text-center border-collapse">
-                  <thead className="bg-[#ee8c2b]/10">
-                    <tr>
-                      <th className="p-4 font-semibold text-sm text-[#181411] border border-[#e6e0db] w-24">
-                        시간
-                      </th>
-                      {DAYS_ORDER.map((day) => (
-                        <th key={day} className="p-4 font-semibold text-sm text-[#181411] border border-[#e6e0db]">
-                          {DAY_LABELS[day]}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="text-[#897561] text-sm">
-                    {/* Morning Row */}
-                    <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db] bg-gray-50">
-                        오전
-                      </td>
-                      {DAYS_ORDER.map((day) => {
-                        const schedule = getScheduleForDay(day);
-                        return (
-                          <td key={`${day}-morning`} className="p-3 border border-[#e6e0db]">
-                            {schedule?.isClosed ? (
-                              <span className="text-red-500 font-semibold">휴진</span>
-                            ) : schedule?.morningOpen && schedule?.morningClose ? (
-                              <div className="font-medium text-gray-900">
-                                {schedule.morningOpen} - {schedule.morningClose}
-                              </div>
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-
-                    {/* Lunch Row */}
-                    <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db] bg-gray-50">
-                        점심
-                      </td>
-                      {DAYS_ORDER.map((day) => {
-                        const schedule = getScheduleForDay(day);
-                        return (
-                          <td
-                            key={`${day}-lunch`}
-                            className={`p-3 border border-[#e6e0db] ${schedule?.isClosed ? 'bg-gray-100' : ''}`}
-                          >
-                            {schedule?.isClosed ? (
-                              <span className="text-gray-400">-</span>
-                            ) : schedule?.lunchStart && schedule?.lunchEnd ? (
-                              <div className="text-gray-600">
-                                {schedule.lunchStart} - {schedule.lunchEnd}
-                              </div>
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-
-                    {/* Afternoon Row */}
-                    <tr>
-                      <td className="p-4 font-medium text-[#181411] border border-[#e6e0db] bg-gray-50">
-                        오후
-                      </td>
-                      {DAYS_ORDER.map((day) => {
-                        const schedule = getScheduleForDay(day);
-                        return (
-                          <td
-                            key={`${day}-afternoon`}
-                            className={`p-3 border border-[#e6e0db] ${schedule?.isClosed || day === 'saturday' ? 'bg-gray-100' : ''}`}
-                          >
-                            {schedule?.isClosed || day === 'saturday' ? (
-                              <span className="text-red-500 font-semibold">휴진</span>
-                            ) : schedule?.afternoonOpen && schedule?.afternoonClose ? (
-                              <div className="font-medium text-gray-900">
-                                {schedule.afternoonOpen} - {schedule.afternoonClose}
-                              </div>
-                            ) : (
-                              <span className="text-gray-400">-</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  </tbody>
-                </table>
+          <div className="bg-white rounded-xl border border-solid border-[#e6e0db] shadow-sm p-6 md:p-8">
+            <div className="space-y-6">
+              {/* Weekday Hours */}
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-20 md:w-24">
+                  <span className="inline-block bg-orange-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                    평일
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg md:text-xl font-bold text-gray-900">
+                    오전 09:00 ~ 오후 06:00
+                  </p>
+                </div>
               </div>
 
-              {/* Mobile View */}
-              <div className="md:hidden">
-                <div className="divide-y divide-gray-200">
-                  {DAYS_ORDER.map((day) => {
-                    const schedule = getScheduleForDay(day);
-                    return (
-                      <div key={day} className="p-4">
-                        <h3 className="font-bold text-lg text-[#181411] mb-3">
-                          {DAY_LABELS[day]}요일
-                        </h3>
+              {/* Saturday Hours */}
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-20 md:w-24">
+                  <span className="inline-block bg-blue-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                    토요일
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg md:text-xl font-bold text-gray-900">
+                    오전 09:00 ~ 오후 01:00
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">(점심시간 없음)</p>
+                </div>
+              </div>
 
-                        {schedule?.isClosed ? (
-                          <div className="text-red-500 font-semibold">휴진</div>
-                        ) : (
-                          <div className="space-y-3 text-sm">
-                            {/* Morning */}
-                            <div>
-                              <div className="font-medium text-gray-700 mb-1">오전</div>
-                              {schedule?.morningOpen && schedule?.morningClose ? (
-                                <div className="text-gray-900">
-                                  {schedule.morningOpen} - {schedule.morningClose}
-                                </div>
-                              ) : (
-                                <div className="text-gray-400">-</div>
-                              )}
-                            </div>
+              {/* Lunch Time */}
+              <div className="flex items-start gap-4 pt-4 border-t border-gray-200">
+                <div className="flex-shrink-0 w-20 md:w-24">
+                  <span className="inline-block bg-gray-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                    점심시간
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg md:text-xl font-bold text-gray-900">
+                    오후 01:00 ~ 02:00
+                  </p>
+                </div>
+              </div>
 
-                            {/* Lunch */}
-                            <div>
-                              <div className="font-medium text-gray-700 mb-1">점심</div>
-                              {schedule?.lunchStart && schedule?.lunchEnd ? (
-                                <div className="text-gray-600">
-                                  {schedule.lunchStart} - {schedule.lunchEnd}
-                                </div>
-                              ) : (
-                                <div className="text-gray-400">-</div>
-                              )}
-                            </div>
-
-                            {/* Afternoon */}
-                            <div>
-                              <div className="font-medium text-gray-700 mb-1">오후</div>
-                              {day === 'saturday' || !schedule?.afternoonOpen || !schedule?.afternoonClose ? (
-                                <div className="text-red-500 font-semibold">휴진</div>
-                              ) : (
-                                <div className="text-gray-900">
-                                  {schedule.afternoonOpen} - {schedule.afternoonClose}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+              {/* Closed Days */}
+              <div className="flex items-start gap-4 pt-4 border-t border-gray-200">
+                <div className="flex-shrink-0 w-20 md:w-24">
+                  <span className="inline-block bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                    휴진
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-lg md:text-xl font-bold text-gray-900">
+                    일요일, 공휴일
+                  </p>
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-              <span className="material-symbols-outlined text-6xl text-gray-400 mb-4">schedule</span>
-              <p className="text-gray-500">진료시간 정보가 없습니다.</p>
-              <p className="text-sm text-gray-400 mt-2">관리자 페이지에서 진료시간을 설정해주세요.</p>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Doctor Schedule Table */}
@@ -357,12 +256,12 @@ export default function HoursPage() {
                           return (
                             <td
                               key={`${doctor.id}-${day}`}
-                              className={`p-3 border border-[#e6e0db] ${status === 'unavailable' ? 'bg-gray-100' : ''}`}
+                              className={`p-3 border border-[#e6e0db] ${status === 'unavailable' ? 'bg-gray-100' : 'bg-green-50'}`}
                             >
                               {status === 'available' ? (
-                                <span className="text-green-600 font-semibold">진료</span>
+                                <span className="text-green-600 font-semibold">●</span>
                               ) : (
-                                <span className="text-red-500 font-semibold">휴진</span>
+                                <span className="text-gray-400">-</span>
                               )}
                             </td>
                           );
@@ -373,32 +272,54 @@ export default function HoursPage() {
                 </table>
               </div>
 
-              {/* Mobile View */}
-              <div className="md:hidden">
-                <div className="divide-y divide-gray-200">
-                  {doctors.map((doctor) => (
-                    <div key={doctor.id} className="p-4">
-                      <h3 className="font-bold text-lg text-[#181411] mb-3">
-                        {doctor.name}
-                      </h3>
-                      <div className="grid grid-cols-3 gap-2 text-sm">
+              {/* Mobile View - Improved Design */}
+              <div className="md:hidden p-4 space-y-6">
+                {doctors.map((doctor) => (
+                  <div key={doctor.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    {/* Doctor Name Header */}
+                    <div className="bg-orange-500 text-white px-4 py-3">
+                      <h3 className="font-bold text-lg">{doctor.name}</h3>
+                    </div>
+
+                    {/* Schedule Grid */}
+                    <div className="p-3">
+                      <div className="grid grid-cols-6 gap-1">
                         {DAYS_ORDER.map((day) => {
                           const status = getDoctorStatusForDay(doctor.id, day);
                           return (
-                            <div key={`${doctor.id}-${day}`} className="text-center p-2 rounded border border-gray-200">
-                              <div className="font-medium text-gray-700 mb-1">{DAY_LABELS[day]}</div>
-                              {status === 'available' ? (
-                                <span className="text-green-600 font-semibold text-xs">진료</span>
-                              ) : (
-                                <span className="text-red-500 font-semibold text-xs">휴진</span>
-                              )}
+                            <div
+                              key={`${doctor.id}-${day}`}
+                              className={`text-center py-3 rounded-lg ${
+                                status === 'available'
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-gray-200 text-gray-500'
+                              }`}
+                            >
+                              <div className="text-xs font-bold mb-1">
+                                {DAY_LABELS[day]}
+                              </div>
+                              <div className="text-lg font-bold">
+                                {status === 'available' ? '●' : '-'}
+                              </div>
                             </div>
                           );
                         })}
                       </div>
+
+                      {/* Legend */}
+                      <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-200">
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <span className="text-xs text-gray-600">진료</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+                          <span className="text-xs text-gray-600">휴진</span>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           ) : (
