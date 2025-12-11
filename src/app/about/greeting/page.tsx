@@ -5,14 +5,6 @@ import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
-interface PageHero {
-  id: string;
-  page: string;
-  imageUrl: string;
-  title: string;
-  subtitle: string | null;
-}
-
 interface Greeting {
   id: string;
   imageUrl: string;
@@ -21,25 +13,11 @@ interface Greeting {
 }
 
 export default function GreetingPage() {
-  const [hero, setHero] = useState<PageHero | null>(null);
   const [greeting, setGreeting] = useState<Greeting | null>(null);
 
   useEffect(() => {
-    fetchHero();
     fetchGreeting();
   }, []);
-
-  const fetchHero = async () => {
-    try {
-      const response = await fetch('/api/page-hero?page=doctors');
-      if (response.ok) {
-        const data = await response.json();
-        setHero(data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch page hero:', error);
-    }
-  };
 
   const fetchGreeting = async () => {
     try {
@@ -62,11 +40,11 @@ export default function GreetingPage() {
           <section className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
             <div className="max-w-[1140px] mx-auto">
               <div className="flex flex-col bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden">
-                {hero?.imageUrl && (
+                {greeting.imageUrl && (
                   <div className="w-full bg-gray-50 flex items-center justify-center p-6 md:p-8">
                     <div className="w-full max-w-2xl">
                       <Image
-                        src={hero.imageUrl}
+                        src={greeting.imageUrl}
                         alt="인사말"
                         width={800}
                         height={800}
