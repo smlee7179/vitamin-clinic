@@ -14,7 +14,6 @@ import HospitalTourManager from '@/components/admin/sections/HospitalTourManager
 import ServicesManager from '@/components/admin/sections/ServicesManager';
 import ContactInfoManager from '@/components/admin/sections/ContactInfoManager';
 import PageHeadingManager from '@/components/admin/sections/PageHeadingManager';
-import UnifiedScheduleManager from '@/components/admin/sections/UnifiedScheduleManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
@@ -141,15 +140,6 @@ export default function NewAdminPage() {
       ]
     },
     {
-      id: 'hours',
-      name: '진료시간',
-      icon: '⏰',
-      sections: [
-        { id: 'page-heading', name: '페이지 헤딩' },
-        { id: 'unified-schedule', name: '통합 시간표' }
-      ]
-    },
-    {
       id: 'notices',
       name: '공지사항',
       icon: '📢',
@@ -217,12 +207,6 @@ export default function NewAdminPage() {
         return <TreatmentPagesManager treatmentType="non-surgical" />;
       case 'treatments-manual-therapy':
         return <TreatmentPagesManager treatmentType="manual-therapy" />;
-
-      // 진료시간
-      case 'hours-page-heading':
-        return <PageHeadingManager page="hours" pageName="진료시간" />;
-      case 'hours-unified-schedule':
-        return <UnifiedScheduleManager />;
 
       // 공지사항
       case 'notices-hero-banner':
