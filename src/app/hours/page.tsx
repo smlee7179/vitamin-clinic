@@ -4,14 +4,6 @@ import { useState, useEffect } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
-interface DoctorScheduleInfo {
-  doctorId: string;
-  doctorName: string;
-  morningAvailable: boolean;
-  afternoonAvailable: boolean;
-  note?: string;
-}
-
 interface UnifiedSchedule {
   id: string;
   dayOfWeek: string;
@@ -22,8 +14,22 @@ interface UnifiedSchedule {
   lunchStart?: string;
   lunchEnd?: string;
   isClosed: boolean;
-  doctors: DoctorScheduleInfo[] | string; // Can be string from API, parsed to array
   note?: string;
+}
+
+interface DoctorSchedule {
+  id: string;
+  doctorId: string;
+  dayOfWeek: string;
+  morningStatus: string;
+  afternoonStatus: string;
+  note: string | null;
+}
+
+interface Doctor {
+  id: string;
+  name: string;
+  active: boolean;
 }
 
 interface PageHeading {
@@ -46,6 +52,8 @@ const DAYS_ORDER = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'sat
 
 export default function HoursPage() {
   const [schedules, setSchedules] = useState<UnifiedSchedule[]>([]);
+  const [doctorSchedules, setDoctorSchedules] = useState<DoctorSchedule[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [pageHeading, setPageHeading] = useState<PageHeading | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,26 +63,31 @@ export default function HoursPage() {
 
   const fetchData = async () => {
     try {
-      const [schedulesRes, headingRes] = await Promise.all([
+      const [schedulesRes, headingRes, doctorSchedulesRes, doctorsRes] = await Promise.all([
         fetch('/api/unified-schedule'),
-        fetch('/api/page-heading?page=hours')
+        fetch('/api/page-heading?page=hours'),
+        fetch('/api/doctor-schedule'),
+        fetch('/api/doctors')
       ]);
 
       if (schedulesRes.ok) {
         const schedulesData = await schedulesRes.json();
-        // Ensure doctors field is always an array
-        const parsedSchedules = schedulesData.map((schedule: UnifiedSchedule) => ({
-          ...schedule,
-          doctors: typeof schedule.doctors === 'string'
-            ? JSON.parse(schedule.doctors || '[]')
-            : (schedule.doctors || [])
-        }));
-        setSchedules(parsedSchedules);
+        setSchedules(schedulesData);
       }
 
       if (headingRes.ok) {
         const headingData = await headingRes.json();
         setPageHeading(headingData);
+      }
+
+      if (doctorSchedulesRes.ok) {
+        const doctorSchedulesData = await doctorSchedulesRes.json();
+        setDoctorSchedules(doctorSchedulesData);
+      }
+
+      if (doctorsRes.ok) {
+        const doctorsData = await doctorsRes.json();
+        setDoctors(doctorsData.filter((d: Doctor) => d.active));
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -85,6 +98,16 @@ export default function HoursPage() {
 
   const getScheduleForDay = (dayOfWeek: string): UnifiedSchedule | undefined => {
     return schedules.find(s => s.dayOfWeek === dayOfWeek);
+  };
+
+  const getDoctorStatusForDay = (doctorId: string, dayOfWeek: string): 'available' | 'unavailable' => {
+    const schedule = doctorSchedules.find(ds => ds.doctorId === doctorId && ds.dayOfWeek === dayOfWeek);
+    if (!schedule) return 'unavailable';
+    // If either morning or afternoon is available, show as available
+    if (schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available') {
+      return 'available';
+    }
+    return 'unavailable';
   };
 
   if (loading) {
@@ -131,10 +154,10 @@ export default function HoursPage() {
           </div>
         )}
 
-        {/* Unified Schedule Table */}
+        {/* Hospital Hours Table */}
         <div className="p-4 mt-8">
           <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] pb-6">
-            진료 시간표
+            병원 진료 시간
           </h2>
 
           {schedules.length > 0 ? (
@@ -167,21 +190,8 @@ export default function HoursPage() {
                             {schedule?.isClosed ? (
                               <span className="text-red-500 font-semibold">휴진</span>
                             ) : schedule?.morningOpen && schedule?.morningClose ? (
-                              <div>
-                                <div className="font-medium text-gray-900 mb-1">
-                                  {schedule.morningOpen} - {schedule.morningClose}
-                                </div>
-                                {Array.isArray(schedule.doctors) && schedule.doctors.length > 0 && (
-                                  <div className="text-xs space-y-1">
-                                    {schedule.doctors
-                                      .filter(d => d.morningAvailable)
-                                      .map(doctor => (
-                                        <div key={`${day}-morning-${doctor.doctorId}`} className="text-orange-600">
-                                          {doctor.doctorName}
-                                        </div>
-                                      ))}
-                                  </div>
-                                )}
+                              <div className="font-medium text-gray-900">
+                                {schedule.morningOpen} - {schedule.morningClose}
                               </div>
                             ) : (
                               <span className="text-gray-400">-</span>
@@ -232,27 +242,11 @@ export default function HoursPage() {
                             {schedule?.isClosed || day === 'saturday' ? (
                               <span className="text-red-500 font-semibold">휴진</span>
                             ) : schedule?.afternoonOpen && schedule?.afternoonClose ? (
-                              <div>
-                                <div className="font-medium text-gray-900 mb-1">
-                                  {schedule.afternoonOpen} - {schedule.afternoonClose}
-                                </div>
-                                {Array.isArray(schedule.doctors) && schedule.doctors.length > 0 && (
-                                  <div className="text-xs space-y-1">
-                                    {schedule.doctors
-                                      .filter(d => d.afternoonAvailable)
-                                      .map(doctor => (
-                                        <div key={`${day}-afternoon-${doctor.doctorId}`} className="text-orange-600">
-                                          {doctor.doctorName}
-                                        </div>
-                                      ))}
-                                  </div>
-                                )}
+                              <div className="font-medium text-gray-900">
+                                {schedule.afternoonOpen} - {schedule.afternoonClose}
                               </div>
                             ) : (
                               <span className="text-gray-400">-</span>
-                            )}
-                            {schedule?.note && (
-                              <div className="text-xs text-gray-500 mt-1">{schedule.note}</div>
                             )}
                           </td>
                         );
@@ -281,18 +275,8 @@ export default function HoursPage() {
                             <div>
                               <div className="font-medium text-gray-700 mb-1">오전</div>
                               {schedule?.morningOpen && schedule?.morningClose ? (
-                                <div>
-                                  <div className="text-gray-900">
-                                    {schedule.morningOpen} - {schedule.morningClose}
-                                  </div>
-                                  {Array.isArray(schedule.doctors) && schedule.doctors.some(d => d.morningAvailable) && (
-                                    <div className="text-xs text-orange-600 mt-1">
-                                      {schedule.doctors
-                                        .filter(d => d.morningAvailable)
-                                        .map(d => d.doctorName)
-                                        .join(', ')}
-                                    </div>
-                                  )}
+                                <div className="text-gray-900">
+                                  {schedule.morningOpen} - {schedule.morningClose}
                                 </div>
                               ) : (
                                 <div className="text-gray-400">-</div>
@@ -317,27 +301,11 @@ export default function HoursPage() {
                               {day === 'saturday' || !schedule?.afternoonOpen || !schedule?.afternoonClose ? (
                                 <div className="text-red-500 font-semibold">휴진</div>
                               ) : (
-                                <div>
-                                  <div className="text-gray-900">
-                                    {schedule.afternoonOpen} - {schedule.afternoonClose}
-                                  </div>
-                                  {Array.isArray(schedule.doctors) && schedule.doctors.some(d => d.afternoonAvailable) && (
-                                    <div className="text-xs text-orange-600 mt-1">
-                                      {schedule.doctors
-                                        .filter(d => d.afternoonAvailable)
-                                        .map(d => d.doctorName)
-                                        .join(', ')}
-                                    </div>
-                                  )}
+                                <div className="text-gray-900">
+                                  {schedule.afternoonOpen} - {schedule.afternoonClose}
                                 </div>
                               )}
                             </div>
-
-                            {schedule?.note && (
-                              <div className="text-xs text-gray-500 italic border-t pt-2">
-                                {schedule.note}
-                              </div>
-                            )}
                           </div>
                         )}
                       </div>
@@ -351,6 +319,93 @@ export default function HoursPage() {
               <span className="material-symbols-outlined text-6xl text-gray-400 mb-4">schedule</span>
               <p className="text-gray-500">진료시간 정보가 없습니다.</p>
               <p className="text-sm text-gray-400 mt-2">관리자 페이지에서 진료시간을 설정해주세요.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Doctor Schedule Table */}
+        <div className="p-4 mt-12">
+          <h2 className="text-[#181411] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em] pb-6">
+            원장님 시간표
+          </h2>
+
+          {doctors.length > 0 ? (
+            <div className="bg-white rounded-xl border border-solid border-[#e6e0db] shadow-sm overflow-hidden">
+              {/* Desktop View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-center border-collapse">
+                  <thead className="bg-[#ee8c2b]/10">
+                    <tr>
+                      <th className="p-4 font-semibold text-sm text-[#181411] border border-[#e6e0db] w-32">
+                        원장님
+                      </th>
+                      {DAYS_ORDER.map((day) => (
+                        <th key={day} className="p-4 font-semibold text-sm text-[#181411] border border-[#e6e0db]">
+                          {DAY_LABELS[day]}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="text-[#897561] text-sm">
+                    {doctors.map((doctor) => (
+                      <tr key={doctor.id}>
+                        <td className="p-4 font-medium text-[#181411] border border-[#e6e0db] bg-gray-50">
+                          {doctor.name}
+                        </td>
+                        {DAYS_ORDER.map((day) => {
+                          const status = getDoctorStatusForDay(doctor.id, day);
+                          return (
+                            <td
+                              key={`${doctor.id}-${day}`}
+                              className={`p-3 border border-[#e6e0db] ${status === 'unavailable' ? 'bg-gray-100' : ''}`}
+                            >
+                              {status === 'available' ? (
+                                <span className="text-green-600 font-semibold">진료</span>
+                              ) : (
+                                <span className="text-red-500 font-semibold">휴진</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden">
+                <div className="divide-y divide-gray-200">
+                  {doctors.map((doctor) => (
+                    <div key={doctor.id} className="p-4">
+                      <h3 className="font-bold text-lg text-[#181411] mb-3">
+                        {doctor.name}
+                      </h3>
+                      <div className="grid grid-cols-3 gap-2 text-sm">
+                        {DAYS_ORDER.map((day) => {
+                          const status = getDoctorStatusForDay(doctor.id, day);
+                          return (
+                            <div key={`${doctor.id}-${day}`} className="text-center p-2 rounded border border-gray-200">
+                              <div className="font-medium text-gray-700 mb-1">{DAY_LABELS[day]}</div>
+                              {status === 'available' ? (
+                                <span className="text-green-600 font-semibold text-xs">진료</span>
+                              ) : (
+                                <span className="text-red-500 font-semibold text-xs">휴진</span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
+              <span className="material-symbols-outlined text-6xl text-gray-400 mb-4">person</span>
+              <p className="text-gray-500">의료진 정보가 없습니다.</p>
+              <p className="text-sm text-gray-400 mt-2">관리자 페이지에서 의료진을 등록해주세요.</p>
             </div>
           )}
         </div>

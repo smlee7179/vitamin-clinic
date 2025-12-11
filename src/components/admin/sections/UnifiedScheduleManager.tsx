@@ -2,21 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-interface DoctorSchedule {
-  id: string;
-  doctorId: string;
-  dayOfWeek: string;
-  morningStatus: string;
-  afternoonStatus: string;
-  note: string | null;
-}
-
-interface Doctor {
-  id: string;
-  name: string;
-  active: boolean;
-}
-
 interface UnifiedSchedule {
   id?: string;
   dayOfWeek: string;
@@ -27,7 +12,6 @@ interface UnifiedSchedule {
   lunchStart?: string;
   lunchEnd?: string;
   isClosed: boolean;
-  doctors: string; // JSON string
   note?: string;
 }
 
@@ -42,8 +26,6 @@ const DAYS_OF_WEEK = [
 
 export default function UnifiedScheduleManager() {
   const [schedules, setSchedules] = useState<UnifiedSchedule[]>([]);
-  const [doctorSchedules, setDoctorSchedules] = useState<DoctorSchedule[]>([]);
-  const [doctorsList, setDoctorsList] = useState<Doctor[]>([]);
   const [selectedDay, setSelectedDay] = useState<string>('monday');
   const [currentSchedule, setCurrentSchedule] = useState<UnifiedSchedule>({
     dayOfWeek: 'monday',
@@ -54,7 +36,6 @@ export default function UnifiedScheduleManager() {
     lunchStart: '13:00',
     lunchEnd: '14:00',
     isClosed: false,
-    doctors: '[]',
     note: ''
   });
   const [loading, setLoading] = useState(true);
@@ -68,29 +49,15 @@ export default function UnifiedScheduleManager() {
     if (selectedDay) {
       updateCurrentSchedule(selectedDay);
     }
-  }, [selectedDay, schedules, doctorSchedules, doctorsList]);
+  }, [selectedDay, schedules]);
 
   const fetchData = async () => {
     try {
-      const [schedulesRes, doctorSchedulesRes, doctorsRes] = await Promise.all([
-        fetch('/api/unified-schedule'),
-        fetch('/api/doctor-schedule'),
-        fetch('/api/doctors')
-      ]);
+      const schedulesRes = await fetch('/api/unified-schedule');
 
       if (schedulesRes.ok) {
         const data = await schedulesRes.json();
         setSchedules(data);
-      }
-
-      if (doctorSchedulesRes.ok) {
-        const data = await doctorSchedulesRes.json();
-        setDoctorSchedules(data);
-      }
-
-      if (doctorsRes.ok) {
-        const data = await doctorsRes.json();
-        setDoctorsList(data);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -102,24 +69,8 @@ export default function UnifiedScheduleManager() {
   const updateCurrentSchedule = (day: string) => {
     const existingSchedule = schedules.find(s => s.dayOfWeek === day);
 
-    // Get doctor schedules for this day
-    const dayDoctorSchedules = doctorSchedules.filter(ds => ds.dayOfWeek === day);
-    const doctorsData = dayDoctorSchedules.map(ds => {
-      const doctor = doctorsList.find(d => d.id === ds.doctorId);
-      return {
-        doctorId: ds.doctorId,
-        doctorName: doctor?.name || 'Unknown',
-        morningAvailable: ds.morningStatus === 'available',
-        afternoonAvailable: ds.afternoonStatus === 'available',
-        note: ds.note || undefined
-      };
-    });
-
     if (existingSchedule) {
-      setCurrentSchedule({
-        ...existingSchedule,
-        doctors: JSON.stringify(doctorsData)
-      });
+      setCurrentSchedule(existingSchedule);
     } else {
       setCurrentSchedule({
         dayOfWeek: day,
@@ -130,7 +81,6 @@ export default function UnifiedScheduleManager() {
         lunchStart: '13:00',
         lunchEnd: '14:00',
         isClosed: false,
-        doctors: JSON.stringify(doctorsData),
         note: ''
       });
     }
@@ -159,30 +109,6 @@ export default function UnifiedScheduleManager() {
     }
   };
 
-  const getDoctorsForDay = (day: string) => {
-    const schedule = schedules.find(s => s.dayOfWeek === day);
-    if (schedule && schedule.doctors) {
-      try {
-        return JSON.parse(schedule.doctors);
-      } catch (e) {
-        return [];
-      }
-    }
-
-    // If no schedule exists, get from doctor schedules
-    const dayDoctorSchedules = doctorSchedules.filter(ds => ds.dayOfWeek === day);
-    return dayDoctorSchedules.map(ds => {
-      const doctor = doctorsList.find(d => d.id === ds.doctorId);
-      return {
-        doctorId: ds.doctorId,
-        doctorName: doctor?.name || 'Unknown',
-        morningAvailable: ds.morningStatus === 'available',
-        afternoonAvailable: ds.afternoonStatus === 'available',
-        note: ds.note || undefined
-      };
-    });
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -191,14 +117,12 @@ export default function UnifiedScheduleManager() {
     );
   }
 
-  const currentDoctors = getDoctorsForDay(selectedDay);
-
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">통합 진료 시간표 관리</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">병원 진료 시간 관리</h2>
         <p className="text-sm text-gray-600 mb-6">
-          병원 진료시간을 설정합니다. 의료진 스케줄은 '의료진 소개 &gt; 의료진 관리'에서 설정한 내용이 자동으로 반영됩니다.
+          병원 전체 운영 시간을 설정합니다. 원장님별 진료 시간은 '의료진 소개 &gt; 의료진 관리'에서 설정할 수 있습니다.
         </p>
 
         <div className="mb-6">
@@ -334,67 +258,6 @@ export default function UnifiedScheduleManager() {
                   </div>
                 </div>
 
-                {/* Doctor Schedules - Read Only */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">의료진 스케줄</h3>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                      자동 반영 (읽기 전용)
-                    </span>
-                  </div>
-
-                  {currentDoctors.length === 0 ? (
-                    <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                      <p className="text-gray-500">등록된 의료진 스케줄이 없습니다.</p>
-                      <p className="text-sm text-gray-400 mt-1">
-                        '의료진 소개 &gt; 의료진 관리'에서 의료진 스케줄을 설정하세요.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {currentDoctors.map((doctor: any) => (
-                        <div key={doctor.doctorId} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                          <div className="flex items-center justify-between mb-3">
-                            <h4 className="font-medium text-gray-900">{doctor.doctorName}</h4>
-                            <span className="text-xs text-gray-500">의료진 관리에서 설정됨</span>
-                          </div>
-
-                          <div className="flex gap-6">
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={doctor.morningAvailable}
-                                disabled
-                                className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 opacity-60"
-                              />
-                              <span className="text-sm text-gray-600">오전 진료</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={doctor.afternoonAvailable}
-                                disabled
-                                className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500 opacity-60"
-                              />
-                              <span className="text-sm text-gray-600">오후 진료</span>
-                            </div>
-                          </div>
-
-                          {doctor.note && (
-                            <div className="mt-3 text-xs text-gray-500 italic border-t pt-2">
-                              {doctor.note}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <p className="text-xs text-gray-500 mt-3">
-                    ℹ️ 의료진별 진료시간 변경은 '의료진 소개 &gt; 의료진 관리' 메뉴에서 가능합니다.
-                  </p>
-                </div>
-
                 {/* Special Note */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -439,14 +302,12 @@ export default function UnifiedScheduleManager() {
                 <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">오전</th>
                 <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">점심</th>
                 <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">오후</th>
-                <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">의료진</th>
               </tr>
             </thead>
             <tbody>
               {DAYS_OF_WEEK.map(day => {
                 const schedule = schedules.find(s => s.dayOfWeek === day.key) ||
                   (day.key === selectedDay ? currentSchedule : null);
-                const doctors = getDoctorsForDay(day.key);
 
                 return (
                   <tr key={day.key} className={day.key === selectedDay ? 'bg-orange-50' : ''}>
@@ -473,17 +334,6 @@ export default function UnifiedScheduleManager() {
                         schedule?.afternoonOpen && schedule?.afternoonClose &&
                         `${schedule.afternoonOpen} - ${schedule.afternoonClose}`
                       )}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {!schedule?.isClosed && doctors && doctors.length > 0 ? (
-                        <div className="space-y-1">
-                          {doctors.map((d: any) => (
-                            <div key={d.doctorId} className="text-xs">
-                              {d.doctorName} ({d.morningAvailable ? '오전' : ''}{d.morningAvailable && d.afternoonAvailable ? '/' : ''}{d.afternoonAvailable ? '오후' : ''})
-                            </div>
-                          ))}
-                        </div>
-                      ) : null}
                     </td>
                   </tr>
                 );
