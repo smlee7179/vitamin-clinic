@@ -18,7 +18,7 @@ interface Doctor {
   name: string;
   title: string;
   specialty: string;
-  imageUrl: string;
+  photoUrl: string;
   experience: string | null;
   education: string | null;
   certifications: string | null;
@@ -100,9 +100,9 @@ export default function DoctorsPage() {
                   className="bg-white rounded-xl overflow-hidden shadow-sm border border-[#E5E7EB] hover:shadow-md transition-shadow"
                 >
                   <div className="aspect-square bg-gray-100 relative">
-                    {doctor.imageUrl ? (
+                    {doctor.photoUrl ? (
                       <Image
-                        src={doctor.imageUrl}
+                        src={doctor.photoUrl}
                         alt={doctor.name}
                         fill
                         className="object-cover"
