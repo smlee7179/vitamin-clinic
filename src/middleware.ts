@@ -26,6 +26,7 @@ export async function middleware(request: NextRequest) {
     '/api/equipment',       // Public equipment info
     '/api/hospital-tour',   // Public hospital tour images (about page)
     '/api/doctor-schedule', // Public doctor schedules (doctors page)
+    '/api/unified-schedule', // Public unified schedule (hours page)
     '/manifest.json',       // PWA manifest
   ];
 

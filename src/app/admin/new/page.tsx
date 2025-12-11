@@ -17,6 +17,7 @@ import ContactInfoManager from '@/components/admin/sections/ContactInfoManager';
 import PageHeadingManager from '@/components/admin/sections/PageHeadingManager';
 import DoctorScheduleManager from '@/components/admin/sections/DoctorScheduleManager';
 import PageNoticeManager from '@/components/admin/sections/PageNoticeManager';
+import UnifiedScheduleManager from '@/components/admin/sections/UnifiedScheduleManager';
 import InfoCardManager from '@/components/admin/sections/InfoCardManager';
 import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
@@ -147,9 +148,10 @@ export default function NewAdminPage() {
       name: '진료시간',
       icon: '⏰',
       sections: [
+        { id: 'unified-schedule', name: '통합 시간표' },
         { id: 'page-heading', name: '페이지 헤딩' },
-        { id: 'clinic-hours', name: '병원 진료시간' },
-        { id: 'doctor-schedule', name: '원장 시간표' },
+        { id: 'clinic-hours', name: '병원 진료시간 (구)' },
+        { id: 'doctor-schedule', name: '원장 시간표 (구)' },
         { id: 'notice', name: '참고사항' }
       ]
     },
@@ -223,6 +225,8 @@ export default function NewAdminPage() {
         return <TreatmentPagesManager treatmentType="manual-therapy" />;
 
       // 진료시간
+      case 'hours-unified-schedule':
+        return <UnifiedScheduleManager />;
       case 'hours-page-heading':
         return <PageHeadingManager page="hours" pageName="진료시간" />;
       case 'hours-clinic-hours':

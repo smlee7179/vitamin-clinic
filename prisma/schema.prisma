@@ -318,6 +318,23 @@ model PageNotice {
   createdAt DateTime @default(now())
 }
 
+// 통합 진료 시간표 (병원 진료시간 + 의사별 스케줄)
+model UnifiedSchedule {
+  id             String   @id @default(cuid())
+  dayOfWeek      String   @unique // "monday", "tuesday", ... "saturday"
+  morningOpen    String?  // "09:00"
+  morningClose   String?  // "13:00"
+  afternoonOpen  String?  // "14:00"
+  afternoonClose String?  // "18:00"
+  lunchStart     String?  // "13:00"
+  lunchEnd       String?  // "14:00"
+  isClosed       Boolean  @default(false) // 휴진일 여부
+  doctors        String   // JSON array: [{doctorId, doctorName, morningAvailable, afternoonAvailable, note}]
+  note           String?  // 특별 공지 (예: "토요일 오후 휴진")
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+}
+
 // 정보 카드 (공지사항 페이지 등)
 model InfoCard {
   id          String   @id @default(cuid())
