@@ -21,7 +21,7 @@ interface TreatmentMethod {
 
 interface ClinicPage {
   id?: string;
-  clinicType: 'spine' | 'joint' | 'pain';
+  clinicType: 'spine' | 'joint' | 'pain' | 'osteoporosis' | 'wellness';
   heroImageUrl: string;
   heroTitle: string;
   heroSubtitle: string;
@@ -33,13 +33,15 @@ interface ClinicPage {
 }
 
 interface ClinicPagesManagerProps {
-  clinicType: 'spine' | 'joint' | 'pain';
+  clinicType: 'spine' | 'joint' | 'pain' | 'osteoporosis' | 'wellness';
 }
 
 const CLINIC_NAMES = {
   spine: '척추 클리닉',
   joint: '관절 클리닉',
-  pain: '통증 클리닉'
+  pain: '통증 클리닉',
+  osteoporosis: '골다공증 클리닉',
+  wellness: '비타민 웰니스'
 };
 
 export default function ClinicPagesManager({ clinicType }: ClinicPagesManagerProps) {
