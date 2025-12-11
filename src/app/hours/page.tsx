@@ -22,7 +22,7 @@ interface UnifiedSchedule {
   lunchStart?: string;
   lunchEnd?: string;
   isClosed: boolean;
-  doctors: DoctorScheduleInfo[];
+  doctors: DoctorScheduleInfo[] | string; // Can be string from API, parsed to array
   note?: string;
 }
 
@@ -62,7 +62,14 @@ export default function HoursPage() {
 
       if (schedulesRes.ok) {
         const schedulesData = await schedulesRes.json();
-        setSchedules(schedulesData);
+        // Ensure doctors field is always an array
+        const parsedSchedules = schedulesData.map((schedule: UnifiedSchedule) => ({
+          ...schedule,
+          doctors: typeof schedule.doctors === 'string'
+            ? JSON.parse(schedule.doctors || '[]')
+            : (schedule.doctors || [])
+        }));
+        setSchedules(parsedSchedules);
       }
 
       if (headingRes.ok) {
@@ -164,7 +171,7 @@ export default function HoursPage() {
                                 <div className="font-medium text-gray-900 mb-1">
                                   {schedule.morningOpen} - {schedule.morningClose}
                                 </div>
-                                {schedule.doctors && schedule.doctors.length > 0 && (
+                                {Array.isArray(schedule.doctors) && schedule.doctors.length > 0 && (
                                   <div className="text-xs space-y-1">
                                     {schedule.doctors
                                       .filter(d => d.morningAvailable)
@@ -229,7 +236,7 @@ export default function HoursPage() {
                                 <div className="font-medium text-gray-900 mb-1">
                                   {schedule.afternoonOpen} - {schedule.afternoonClose}
                                 </div>
-                                {schedule.doctors && schedule.doctors.length > 0 && (
+                                {Array.isArray(schedule.doctors) && schedule.doctors.length > 0 && (
                                   <div className="text-xs space-y-1">
                                     {schedule.doctors
                                       .filter(d => d.afternoonAvailable)
@@ -278,7 +285,7 @@ export default function HoursPage() {
                                   <div className="text-gray-900">
                                     {schedule.morningOpen} - {schedule.morningClose}
                                   </div>
-                                  {schedule.doctors && schedule.doctors.some(d => d.morningAvailable) && (
+                                  {Array.isArray(schedule.doctors) && schedule.doctors.some(d => d.morningAvailable) && (
                                     <div className="text-xs text-orange-600 mt-1">
                                       {schedule.doctors
                                         .filter(d => d.morningAvailable)
@@ -314,7 +321,7 @@ export default function HoursPage() {
                                   <div className="text-gray-900">
                                     {schedule.afternoonOpen} - {schedule.afternoonClose}
                                   </div>
-                                  {schedule.doctors && schedule.doctors.some(d => d.afternoonAvailable) && (
+                                  {Array.isArray(schedule.doctors) && schedule.doctors.some(d => d.afternoonAvailable) && (
                                     <div className="text-xs text-orange-600 mt-1">
                                       {schedule.doctors
                                         .filter(d => d.afternoonAvailable)
