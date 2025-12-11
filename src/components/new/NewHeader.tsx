@@ -7,8 +7,8 @@ import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
 
 export default function NewHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [aboutMenuOpen, setAboutMenuOpen] = useState(false);
   const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
-  const [treatmentsMenuOpen, setTreatmentsMenuOpen] = useState(false);
   const { hospitalInfo } = useHospitalInfo();
 
   useEffect(() => {
@@ -19,11 +19,11 @@ export default function NewHeader() {
       if (window.innerWidth < 768) return;
 
       const target = event.target as HTMLElement;
+      if (!target.closest('.about-dropdown')) {
+        setAboutMenuOpen(false);
+      }
       if (!target.closest('.services-dropdown')) {
         setServicesMenuOpen(false);
-      }
-      if (!target.closest('.treatments-dropdown')) {
-        setTreatmentsMenuOpen(false);
       }
     };
 
@@ -64,21 +64,58 @@ export default function NewHeader() {
           {/* Desktop Navigation */}
           <div className="flex flex-1 justify-end items-center gap-8">
             <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/doctors"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
-              >
-                의료진 소개
-              </Link>
+              {/* 병원소개 Dropdown */}
+              <div className="relative about-dropdown">
+                <button
+                  onClick={() => setAboutMenuOpen(!aboutMenuOpen)}
+                  className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors flex items-center gap-1"
+                >
+                  병원소개
+                  <svg
+                    className={`w-4 h-4 transition-transform ${aboutMenuOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
 
-              <Link
-                href="/about"
-                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
-              >
-                병원소개
-              </Link>
+                {aboutMenuOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <Link
+                      href="/about/greeting"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setAboutMenuOpen(false)}
+                    >
+                      인사말
+                    </Link>
+                    <Link
+                      href="/about/doctors"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setAboutMenuOpen(false)}
+                    >
+                      의료진소개
+                    </Link>
+                    <Link
+                      href="/about/hours"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setAboutMenuOpen(false)}
+                    >
+                      진료시간안내
+                    </Link>
+                    <Link
+                      href="/about/contact"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setAboutMenuOpen(false)}
+                    >
+                      오시는 길
+                    </Link>
+                  </div>
+                )}
+              </div>
 
-              {/* Services Dropdown */}
+              {/* 진료안내 Dropdown */}
               <div className="relative services-dropdown">
                 <button
                   onClick={() => setServicesMenuOpen(!servicesMenuOpen)}
@@ -96,68 +133,76 @@ export default function NewHeader() {
                 </button>
 
                 {servicesMenuOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <Link
                       href="/services/spine"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                       onClick={() => setServicesMenuOpen(false)}
                     >
-                      척추 클리닉
+                      척추클리닉
                     </Link>
                     <Link
                       href="/services/joint"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                       onClick={() => setServicesMenuOpen(false)}
                     >
-                      관절 클리닉
+                      관절클리닉
                     </Link>
                     <Link
                       href="/services/pain"
                       className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
                       onClick={() => setServicesMenuOpen(false)}
                     >
-                      통증 클리닉
+                      통증클리닉
+                    </Link>
+                    <Link
+                      href="/services/osteoporosis"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
+                    >
+                      골다공증 클리닉
+                    </Link>
+                    <Link
+                      href="/services/manual-therapy"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
+                    >
+                      도수치료 및 물리치료
+                    </Link>
+                    <Link
+                      href="/services/wellness"
+                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
+                      onClick={() => setServicesMenuOpen(false)}
+                    >
+                      비타민 웰니스
                     </Link>
                   </div>
                 )}
               </div>
 
-              {/* Treatments Dropdown */}
-              <div className="relative treatments-dropdown">
-                <button
-                  onClick={() => setTreatmentsMenuOpen(!treatmentsMenuOpen)}
-                  className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors flex items-center gap-1"
-                >
-                  치료소개
-                  <svg
-                    className={`w-4 h-4 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+              {/* 장비 및 시설 */}
+              <Link
+                href="/facilities"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+              >
+                장비 및 시설
+              </Link>
 
-                {treatmentsMenuOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <Link
-                      href="/treatments/non-surgical"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
-                      onClick={() => setTreatmentsMenuOpen(false)}
-                    >
-                      비수술 치료
-                    </Link>
-                    <Link
-                      href="/treatments/manual-therapy"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
-                      onClick={() => setTreatmentsMenuOpen(false)}
-                    >
-                      도수 치료
-                    </Link>
-                  </div>
-                )}
-              </div>
+              {/* 오시는길 */}
+              <Link
+                href="/contact"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+              >
+                오시는길
+              </Link>
+
+              {/* 공지사항 */}
+              <Link
+                href="/notices"
+                className="text-gray-800 hover:text-[#f97316] text-sm font-medium leading-normal transition-colors"
+              >
+                공지사항
+              </Link>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -181,36 +226,79 @@ export default function NewHeader() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-b border-gray-200 animate-in slide-in-from-top duration-200">
             <nav className="flex flex-col gap-2">
-              <Link
-                href="/doctors"
-                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
-                onClick={() => {
-                  setServicesMenuOpen(false);
-                  setTreatmentsMenuOpen(false);
-                  setMobileMenuOpen(false);
-                }}
-              >
-                의료진 소개
-              </Link>
-
-              <Link
-                href="/about"
-                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
-                onClick={() => {
-                  setServicesMenuOpen(false);
-                  setTreatmentsMenuOpen(false);
-                  setMobileMenuOpen(false);
-                }}
-              >
-                병원소개
-              </Link>
-
-              {/* Services Mobile Dropdown */}
+              {/* 병원소개 Mobile Dropdown */}
               <div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setTreatmentsMenuOpen(false);
+                    setServicesMenuOpen(false);
+                    setAboutMenuOpen(!aboutMenuOpen);
+                  }}
+                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
+                  type="button"
+                >
+                  병원소개
+                  <svg
+                    className={`w-5 h-5 transition-transform ${aboutMenuOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {aboutMenuOpen && (
+                  <div className="mt-1 ml-2 flex flex-col gap-1 bg-gray-50 rounded-lg p-2">
+                    <Link
+                      href="/about/greeting"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setAboutMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 인사말
+                    </Link>
+                    <Link
+                      href="/about/doctors"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setAboutMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 의료진소개
+                    </Link>
+                    <Link
+                      href="/about/hours"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setAboutMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 진료시간안내
+                    </Link>
+                    <Link
+                      href="/about/contact"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setAboutMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 오시는 길
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* 진료안내 Mobile Dropdown */}
+              <div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAboutMenuOpen(false);
                     setServicesMenuOpen(!servicesMenuOpen);
                   }}
                   className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
@@ -236,7 +324,7 @@ export default function NewHeader() {
                         setMobileMenuOpen(false);
                       }}
                     >
-                      • 척추 클리닉
+                      • 척추클리닉
                     </Link>
                     <Link
                       href="/services/joint"
@@ -246,7 +334,7 @@ export default function NewHeader() {
                         setMobileMenuOpen(false);
                       }}
                     >
-                      • 관절 클리닉
+                      • 관절클리닉
                     </Link>
                     <Link
                       href="/services/pain"
@@ -256,58 +344,80 @@ export default function NewHeader() {
                         setMobileMenuOpen(false);
                       }}
                     >
-                      • 통증 클리닉
+                      • 통증클리닉
+                    </Link>
+                    <Link
+                      href="/services/osteoporosis"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 골다공증 클리닉
+                    </Link>
+                    <Link
+                      href="/services/manual-therapy"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 도수치료 및 물리치료
+                    </Link>
+                    <Link
+                      href="/services/wellness"
+                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
+                      onClick={() => {
+                        setServicesMenuOpen(false);
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      • 비타민 웰니스
                     </Link>
                   </div>
                 )}
               </div>
 
-              {/* Treatments Mobile Dropdown */}
-              <div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setServicesMenuOpen(false);
-                    setTreatmentsMenuOpen(!treatmentsMenuOpen);
-                  }}
-                  className="w-full text-left text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors flex items-center justify-between"
-                  type="button"
-                >
-                  치료소개
-                  <svg
-                    className={`w-5 h-5 transition-transform ${treatmentsMenuOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {treatmentsMenuOpen && (
-                  <div className="mt-1 ml-2 flex flex-col gap-1 bg-gray-50 rounded-lg p-2">
-                    <Link
-                      href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={() => {
-                        setTreatmentsMenuOpen(false);
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      • 비수술 치료
-                    </Link>
-                    <Link
-                      href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={() => {
-                        setTreatmentsMenuOpen(false);
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      • 도수 치료
-                    </Link>
-                  </div>
-                )}
-              </div>
+              {/* 장비 및 시설 */}
+              <Link
+                href="/facilities"
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
+                onClick={() => {
+                  setAboutMenuOpen(false);
+                  setServicesMenuOpen(false);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                장비 및 시설
+              </Link>
+
+              {/* 오시는길 */}
+              <Link
+                href="/contact"
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
+                onClick={() => {
+                  setAboutMenuOpen(false);
+                  setServicesMenuOpen(false);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                오시는길
+              </Link>
+
+              {/* 공지사항 */}
+              <Link
+                href="/notices"
+                className="text-gray-800 hover:text-[#f97316] text-base font-medium py-3 px-2 rounded-lg hover:bg-orange-50 transition-colors block"
+                onClick={() => {
+                  setAboutMenuOpen(false);
+                  setServicesMenuOpen(false);
+                  setMobileMenuOpen(false);
+                }}
+              >
+                공지사항
+              </Link>
             </nav>
           </div>
         )}

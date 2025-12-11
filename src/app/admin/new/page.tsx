@@ -102,22 +102,14 @@ export default function NewAdminPage() {
       ]
     },
     {
-      id: 'doctors',
-      name: '의료진 소개',
-      icon: '👨‍⚕️',
-      sections: [
-        { id: 'hero-image', name: '상단 이미지' },
-        { id: 'greeting', name: '인사말 관리' },
-        { id: 'doctors', name: '의료진 관리' }
-      ]
-    },
-    {
       id: 'about',
       name: '병원소개',
       icon: '🏥',
       sections: [
-        { id: 'equipment', name: '병원 장비 관리' },
-        { id: 'tour', name: '병원 둘러보기 관리' }
+        { id: 'greeting', name: '인사말' },
+        { id: 'doctors', name: '의료진소개' },
+        { id: 'hours', name: '진료시간안내' },
+        { id: 'contact', name: '오시는 길' }
       ]
     },
     {
@@ -125,18 +117,21 @@ export default function NewAdminPage() {
       name: '진료안내',
       icon: '💊',
       sections: [
-        { id: 'spine-clinic', name: '척추 클리닉' },
-        { id: 'joint-clinic', name: '관절 클리닉' },
-        { id: 'pain-clinic', name: '통증 클리닉' }
+        { id: 'spine-clinic', name: '척추클리닉' },
+        { id: 'joint-clinic', name: '관절클리닉' },
+        { id: 'pain-clinic', name: '통증클리닉' },
+        { id: 'osteoporosis-clinic', name: '골다공증 클리닉' },
+        { id: 'manual-therapy', name: '도수치료 및 물리치료' },
+        { id: 'wellness', name: '비타민 웰니스' }
       ]
     },
     {
-      id: 'treatments',
-      name: '치료소개',
-      icon: '💉',
+      id: 'facilities',
+      name: '장비 및 시설',
+      icon: '🏗️',
       sections: [
-        { id: 'non-surgical', name: '비수술 치료' },
-        { id: 'manual-therapy', name: '도수 치료' }
+        { id: 'equipment', name: '병원 장비 관리' },
+        { id: 'tour', name: '병원 둘러보기 관리' }
       ]
     },
     {
@@ -147,17 +142,6 @@ export default function NewAdminPage() {
         { id: 'hero-banner', name: '상단 배너' },
         { id: 'notices', name: '공지사항 목록 관리' },
         { id: 'info-cards', name: '안내 정보 카드' }
-      ]
-    },
-    {
-      id: 'contact',
-      name: '오시는길',
-      icon: '📍',
-      sections: [
-        { id: 'page-heading', name: '페이지 헤딩' },
-        { id: 'map', name: '지도 관리' },
-        { id: 'contact-info', name: '연락처 정보' },
-        { id: 'transportation', name: '대중교통 안내' }
       ]
     }
   ];
@@ -180,19 +164,18 @@ export default function NewAdminPage() {
       case 'main-hero-carousel':
         return <HeroCarouselManager />;
 
-      // 의료진 소개
-      case 'doctors-hero-image':
-        return <PageHeroManager page="doctors" pageName="의료진 소개" />;
-      case 'doctors-greeting':
-        return <GreetingManager />;
-      case 'doctors-doctors':
-        return <DoctorsManager />;
-
       // 병원소개
-      case 'about-equipment':
-        return <EquipmentManager />;
-      case 'about-tour':
-        return <HospitalTourManager />;
+      case 'about-greeting':
+        return <GreetingManager />;
+      case 'about-doctors':
+        return <DoctorsManager />;
+      case 'about-hours':
+        return <div className="text-center py-12 text-gray-500">
+          <p className="text-lg mb-2">진료시간 안내</p>
+          <p className="text-sm">진료시간은 병원 정보 관리에서 설정할 수 있습니다.</p>
+        </div>;
+      case 'about-contact':
+        return <ContactInfoManager />;
 
       // 진료안내
       case 'services-spine-clinic':
@@ -201,12 +184,18 @@ export default function NewAdminPage() {
         return <ClinicPagesManager clinicType="joint" />;
       case 'services-pain-clinic':
         return <ClinicPagesManager clinicType="pain" />;
-
-      // 치료소개
-      case 'treatments-non-surgical':
-        return <TreatmentPagesManager treatmentType="non-surgical" />;
-      case 'treatments-manual-therapy':
+      case 'services-osteoporosis-clinic':
+        return <ClinicPagesManager clinicType="osteoporosis" />;
+      case 'services-manual-therapy':
         return <TreatmentPagesManager treatmentType="manual-therapy" />;
+      case 'services-wellness':
+        return <ClinicPagesManager clinicType="wellness" />;
+
+      // 장비 및 시설
+      case 'facilities-equipment':
+        return <EquipmentManager />;
+      case 'facilities-tour':
+        return <HospitalTourManager />;
 
       // 공지사항
       case 'notices-hero-banner':
@@ -215,16 +204,6 @@ export default function NewAdminPage() {
         return <NoticesManager />;
       case 'notices-info-cards':
         return <InfoCardManager />;
-
-      // 오시는길
-      case 'contact-page-heading':
-        return <PageHeadingManager page="contact" pageName="오시는길" />;
-      case 'contact-map':
-        return <ContactInfoManager />; // Map URLs included in contact info
-      case 'contact-contact-info':
-        return <ContactInfoManager />;
-      case 'contact-transportation':
-        return <ContactInfoManager />; // Transportation info included in contact info
 
       default:
         return (

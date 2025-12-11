@@ -5,73 +5,57 @@ import Image from 'next/image';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
-interface Treatment {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  category: string | null;
-  features: string[];
-  imageUrl?: string;
-}
-
-interface ProgramItem {
-  title: string;
-  content: string;
-}
-
-interface TreatmentProgram {
-  title: string;
-  description: string;
-  items: ProgramItem[];
-}
-
-interface Advantage {
+interface Feature {
   title: string;
   description: string;
   icon: string;
 }
 
-interface TreatmentPage {
+interface TargetPatient {
+  title: string;
+  description: string;
+}
+
+interface TreatmentMethod {
+  title: string;
+  description: string;
+}
+
+interface ClinicPage {
   id: string;
-  treatmentType: string;
+  clinicType: string;
   heroImageUrl: string;
   heroTitle: string;
   heroSubtitle: string;
   description: string;
-  treatmentPrograms?: string; // JSON string
-  advantages?: string; // JSON string
+  features?: string; // JSON string
+  targetPatients?: string; // JSON string
+  symptoms?: string; // JSON array of strings
+  treatmentMethods?: string; // JSON array
 }
 
-export default function NonSurgicalPage() {
-  const [treatments, setTreatments] = useState<Treatment[]>([]);
-  const [treatmentData, setTreatmentData] = useState<TreatmentPage | null>(null);
-  const [treatmentPrograms, setTreatmentPrograms] = useState<TreatmentProgram[]>([]);
-  const [advantages, setAdvantages] = useState<Advantage[]>([]);
+export default function OsteoporosisClinicPage() {
+  const [clinicData, setClinicData] = useState<ClinicPage | null>(null);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [targetPatients, setTargetPatients] = useState<TargetPatient[]>([]);
+  const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [treatmentMethods, setTreatmentMethods] = useState<TreatmentMethod[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch treatment page data
-        const treatmentResponse = await fetch('/api/treatment-pages?treatmentType=non-surgical');
-        if (treatmentResponse.ok) {
-          const treatmentPageData = await treatmentResponse.json();
-          if (treatmentPageData) {
-            setTreatmentData(treatmentPageData);
-            setTreatmentPrograms(JSON.parse(treatmentPageData.treatmentPrograms || '[]'));
-            setAdvantages(JSON.parse(treatmentPageData.advantages || '[]'));
+        // Fetch clinic page data
+        const clinicResponse = await fetch('/api/clinic-pages?clinicType=osteoporosis');
+        if (clinicResponse.ok) {
+          const clinicPageData = await clinicResponse.json();
+          if (clinicPageData) {
+            setClinicData(clinicPageData);
+            setFeatures(JSON.parse(clinicPageData.features || '[]'));
+            setTargetPatients(JSON.parse(clinicPageData.targetPatients || '[]'));
+            setSymptoms(JSON.parse(clinicPageData.symptoms || '[]'));
+            setTreatmentMethods(JSON.parse(clinicPageData.treatmentMethods || '[]'));
           }
-        }
-
-        // Fetch treatments - non-surgical category
-        const treatmentsResponse = await fetch('/api/treatments');
-        if (treatmentsResponse.ok) {
-          const data = await treatmentsResponse.json();
-          const nonSurgicalTreatments = data
-            .filter((t: Treatment & { active: boolean }) => t.active && t.category === 'non-surgical')
-            .sort((a: Treatment & { order: number }, b: Treatment & { order: number }) => a.order - b.order);
-          setTreatments(nonSurgicalTreatments);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -91,7 +75,7 @@ export default function NonSurgicalPage() {
     description: ''
   };
 
-  const displayData = treatmentData || defaultData;
+  const displayData = clinicData || defaultData;
 
   // 아이콘 이름을 SVG 컴포넌트로 변환하는 함수
   const getIconSvg = (iconName: string) => {
@@ -110,15 +94,6 @@ export default function NonSurgicalPage() {
       ),
       check: (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      ),
-      zap: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      ),
-      target: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4m13.657-5.657L5.343 18.343m13.314 0L5.343 5.657" />
-      ),
-      award: (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
       ),
     };
 
@@ -157,91 +132,113 @@ export default function NonSurgicalPage() {
             </div>
           </section>
 
-          {/* Treatment Introduction - 소개글 카드 */}
+          {/* Clinic Introduction */}
           <section className="w-full py-12 md:py-16">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8">
-                비수술 치료 소개
+                척추클리닉이란?
               </h2>
-              <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm">
-                <p className="text-gray-700 leading-relaxed text-base md:text-lg whitespace-pre-wrap">
+
+              {/* Main Description */}
+              <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm mb-8">
+                <p className="text-gray-700 leading-relaxed text-base md:text-lg mb-6 whitespace-pre-wrap">
                   {displayData.description}
                 </p>
+
+                {/* Key Features Cards (inside text box) */}
+                {features.length > 0 && (
+                  <div className={`grid gap-4 mt-8 pt-6 border-t border-gray-200 ${
+                    features.length === 1
+                      ? 'grid-cols-1 max-w-2xl mx-auto'
+                      : features.length === 2
+                        ? 'grid-cols-1 md:grid-cols-2'
+                        : 'grid-cols-1 md:grid-cols-3'
+                  }`}>
+                    {features.map((feature, index) => (
+                      <div key={index} className="flex flex-col items-center text-center p-6">
+                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                          <svg className="w-8 h-8 text-[#f97316]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {getIconSvg(feature.icon)}
+                          </svg>
+                        </div>
+                        <h3 className="font-bold text-lg text-[#343A40] mb-3">{feature.title}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>
 
-          {/* Treatment Programs - 주요 치료 프로그램 */}
-          {treatmentPrograms.length > 0 && (
+          {/* Target Patients */}
+          {targetPatients.length > 0 && (
             <section className="w-full pb-8 md:pb-12">
               <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
-                주요 치료 프로그램
+                주요 진료
               </h3>
-              <div className="grid grid-cols-1 gap-6 max-w-5xl mx-auto">
-                {treatmentPrograms.map((program, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {targetPatients.map((patient, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-xl p-6 md:p-8 shadow-sm"
+                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <h4 className="font-bold text-xl text-[#343A40] mb-3">
-                      {program.title}
+                    <h4 className="font-bold text-lg text-[#D4AF37] mb-2">
+                      {patient.title}
                     </h4>
-                    <p className="text-gray-600 leading-relaxed mb-6">
-                      {program.description}
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      {patient.description}
                     </p>
-
-                    {/* Program Items */}
-                    {program.items && program.items.length > 0 && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {program.items.map((item, itemIndex) => (
-                          <div
-                            key={itemIndex}
-                            className="bg-gray-50 rounded-lg p-4 border border-gray-200"
-                          >
-                            <h5 className="font-bold text-base text-[#D4AF37] mb-2">
-                              {item.title}
-                            </h5>
-                            <p className="text-sm text-gray-600 leading-relaxed">
-                              {item.content}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Advantages - 비타민 치료의 장점 */}
-          {advantages.length > 0 && (
+          {/* Symptoms Checklist */}
+          {symptoms.length > 0 && (
+            <section className="w-full pb-8 md:pb-12">
+              <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
+                이런 증상이 있다면 방문하세요
+              </h3>
+              <div className="max-w-4xl mx-auto bg-white rounded-xl p-6 md:p-8 shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {symptoms.map((symptom, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="mt-1 flex-shrink-0">
+                        <svg className="w-5 h-5 text-[#f97316]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {symptom}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Treatment Methods */}
+          {treatmentMethods.length > 0 && (
             <section className="w-full pb-12 md:pb-16">
               <h3 className="text-[#343A40] text-xl md:text-2xl font-bold text-center mb-8">
-                비타민 비수술 치료의 장점
+                비타민 마취통증의학과 치료 방법
               </h3>
-              <div className={`grid gap-6 max-w-5xl mx-auto ${
-                advantages.length === 1
-                  ? 'grid-cols-1 max-w-2xl'
-                  : advantages.length === 2
-                    ? 'grid-cols-1 md:grid-cols-2'
-                    : 'grid-cols-1 md:grid-cols-3'
-              }`}>
-                {advantages.map((advantage, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {treatmentMethods.map((method, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center"
+                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                      <svg className="w-8 h-8 text-[#f97316]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {getIconSvg(advantage.icon)}
-                      </svg>
-                    </div>
                     <h4 className="font-bold text-lg text-[#343A40] mb-3">
-                      {advantage.title}
+                      {method.title}
                     </h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      {advantage.description}
+                      {method.description}
                     </p>
                   </div>
                 ))}
