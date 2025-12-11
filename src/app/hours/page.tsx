@@ -256,12 +256,12 @@ export default function HoursPage() {
                           return (
                             <td
                               key={`${doctor.id}-${day}`}
-                              className={`p-3 border border-[#e6e0db] ${status === 'unavailable' ? 'bg-gray-100' : 'bg-green-50'}`}
+                              className={`p-3 border border-[#e6e0db] ${status === 'unavailable' ? 'bg-red-100' : 'bg-green-50'}`}
                             >
                               {status === 'available' ? (
                                 <span className="text-green-600 font-semibold">●</span>
                               ) : (
-                                <span className="text-gray-400">-</span>
+                                <span className="text-red-600 font-semibold">●</span>
                               )}
                             </td>
                           );
@@ -292,14 +292,14 @@ export default function HoursPage() {
                               className={`text-center py-3 rounded-lg ${
                                 status === 'available'
                                   ? 'bg-green-500 text-white'
-                                  : 'bg-gray-200 text-gray-500'
+                                  : 'bg-red-500 text-white'
                               }`}
                             >
                               <div className="text-xs font-bold mb-1">
                                 {DAY_LABELS[day]}
                               </div>
                               <div className="text-lg font-bold">
-                                {status === 'available' ? '●' : '-'}
+                                {status === 'available' ? '●' : '●'}
                               </div>
                             </div>
                           );
@@ -313,7 +313,7 @@ export default function HoursPage() {
                           <span className="text-xs text-gray-600">진료</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
                           <span className="text-xs text-gray-600">휴진</span>
                         </div>
                       </div>
