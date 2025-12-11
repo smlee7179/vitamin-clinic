@@ -26,12 +26,11 @@ interface UnifiedSchedule {
   note?: string;
 }
 
-interface PageNotice {
+interface PageHeading {
   id: string;
   page: string;
-  content: string;
-  type: string;
-  active: boolean;
+  title: string;
+  subtitle: string | null;
 }
 
 const DAY_LABELS: { [key: string]: string } = {
@@ -47,7 +46,7 @@ const DAYS_ORDER = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'sat
 
 export default function HoursPage() {
   const [schedules, setSchedules] = useState<UnifiedSchedule[]>([]);
-  const [pageNotice, setPageNotice] = useState<PageNotice | null>(null);
+  const [pageHeading, setPageHeading] = useState<PageHeading | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,9 +55,9 @@ export default function HoursPage() {
 
   const fetchData = async () => {
     try {
-      const [schedulesRes, noticeRes] = await Promise.all([
+      const [schedulesRes, headingRes] = await Promise.all([
         fetch('/api/unified-schedule'),
-        fetch('/api/page-notice?page=hours')
+        fetch('/api/page-heading?page=hours')
       ]);
 
       if (schedulesRes.ok) {
@@ -66,11 +65,9 @@ export default function HoursPage() {
         setSchedules(schedulesData);
       }
 
-      if (noticeRes.ok) {
-        const noticeData = await noticeRes.json();
-        if (noticeData && noticeData.active) {
-          setPageNotice(noticeData);
-        }
+      if (headingRes.ok) {
+        const headingData = await headingRes.json();
+        setPageHeading(headingData);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -101,16 +98,31 @@ export default function HoursPage() {
 
       <main className="max-w-6xl mx-auto px-4 py-8 md:py-16">
         {/* Page Heading */}
-        <div className="flex flex-wrap justify-between gap-3 p-4">
-          <div className="flex min-w-72 flex-col gap-3">
-            <p className="text-[#181411] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
-              진료시간 안내
-            </p>
-            <p className="text-[#897561] text-base md:text-lg font-normal leading-normal">
-              비타민마취통증의학과의 진료 시간표를 확인하세요.
-            </p>
+        {pageHeading ? (
+          <div className="flex flex-wrap justify-between gap-3 p-4">
+            <div className="flex min-w-72 flex-col gap-3">
+              <p className="text-[#181411] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
+                {pageHeading.title}
+              </p>
+              {pageHeading.subtitle && (
+                <p className="text-[#897561] text-base md:text-lg font-normal leading-normal">
+                  {pageHeading.subtitle}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-wrap justify-between gap-3 p-4">
+            <div className="flex min-w-72 flex-col gap-3">
+              <p className="text-[#181411] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
+                진료시간 안내
+              </p>
+              <p className="text-[#897561] text-base md:text-lg font-normal leading-normal">
+                비타민마취통증의학과의 진료 시간표를 확인하세요.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Unified Schedule Table */}
         <div className="p-4 mt-8">
@@ -336,40 +348,6 @@ export default function HoursPage() {
           )}
         </div>
 
-        {/* Notice Box */}
-        {pageNotice ? (
-          <div className="p-4 mt-8">
-            <div className="bg-[#ee8c2b]/10 border-l-4 border-[#ee8c2b] p-6 rounded-lg">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <span className="material-symbols-outlined text-[#ee8c2b] text-2xl">info</span>
-                </div>
-                <div className="flex-grow">
-                  <h4 className="font-bold text-[#ee8c2b] mb-1">참고사항</h4>
-                  <p className="text-sm text-[#181411] whitespace-pre-wrap">{pageNotice.content}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4 mt-8">
-            <div className="bg-[#ee8c2b]/10 border-l-4 border-[#ee8c2b] p-6 rounded-lg">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  <span className="material-symbols-outlined text-[#ee8c2b] text-2xl">info</span>
-                </div>
-                <div className="flex-grow">
-                  <h4 className="font-bold text-[#ee8c2b] mb-1">참고사항</h4>
-                  <p className="text-sm text-[#181411]">
-                    예약 없이 방문하셔도 진료가 가능하지만, 대기 시간이 길어질 수 있습니다.{' '}
-                    <br className="hidden sm:inline" />
-                    원활한 진료를 위해 방문 전 전화 예약을 권장합니다. 공휴일은 휴진입니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
 
       <NewFooter />
