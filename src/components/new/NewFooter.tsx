@@ -53,21 +53,42 @@ export default function NewFooter() {
           <div className="text-sm md:text-base">
             <h3 className="font-bold text-gray-800 mb-3 text-base md:text-lg">바로가기</h3>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/doctors"
-                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
-                >
-                  의료진 소개
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
-                >
-                  병원소개
-                </Link>
+              <li className="pt-1">
+                <span className="text-gray-800 font-medium text-sm md:text-base">병원소개</span>
+                <ul className="ml-2 mt-1 space-y-1">
+                  <li>
+                    <Link
+                      href="/about/greeting"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 인사말
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about/doctors"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 의료진소개
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about/hours"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 진료시간안내
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about/contact"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 오시는 길
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li className="pt-1">
                 <span className="text-gray-800 font-medium text-sm md:text-base">진료안내</span>
@@ -77,7 +98,7 @@ export default function NewFooter() {
                       href="/services/spine"
                       className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
-                      • 척추 클리닉
+                      • 척추클리닉
                     </Link>
                   </li>
                   <li>
@@ -85,7 +106,7 @@ export default function NewFooter() {
                       href="/services/joint"
                       className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
-                      • 관절 클리닉
+                      • 관절클리닉
                     </Link>
                   </li>
                   <li>
@@ -93,31 +114,50 @@ export default function NewFooter() {
                       href="/services/pain"
                       className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
                     >
-                      • 통증 클리닉
+                      • 통증클리닉
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/osteoporosis"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 골다공증 클리닉
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/manual-therapy"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 도수치료 및 물리치료
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/services/wellness"
+                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                    >
+                      • 비타민 웰니스
                     </Link>
                   </li>
                 </ul>
               </li>
-              <li className="pt-1">
-                <span className="text-gray-800 font-medium text-sm md:text-base">치료소개</span>
-                <ul className="ml-2 mt-1 space-y-1">
-                  <li>
-                    <Link
-                      href="/treatments/non-surgical"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
-                    >
-                      • 비수술 치료
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/treatments/manual-therapy"
-                      className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
-                    >
-                      • 도수 치료
-                    </Link>
-                  </li>
-                </ul>
+              <li>
+                <Link
+                  href="/facilities"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                >
+                  장비 및 시설
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/notices"
+                  className="text-gray-600 hover:text-[#f97316] transition-colors text-sm md:text-base"
+                >
+                  공지사항
+                </Link>
               </li>
             </ul>
           </div>
