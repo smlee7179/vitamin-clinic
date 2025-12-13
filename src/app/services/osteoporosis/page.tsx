@@ -34,6 +34,12 @@ interface ClinicPage {
   treatmentMethods?: string; // JSON array
 }
 
+const CLINIC_TYPE = 'osteoporosis';
+const CLINIC_INFO = {
+  title: '골다공증 클리닉',
+  sectionName: '골다공증 클리닉이란?'
+};
+
 export default function OsteoporosisClinicPage() {
   const [clinicData, setClinicData] = useState<ClinicPage | null>(null);
   const [features, setFeatures] = useState<Feature[]>([]);
@@ -136,7 +142,7 @@ export default function OsteoporosisClinicPage() {
           <section className="w-full py-12 md:py-16">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-[#343A40] text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-8">
-                척추클리닉이란?
+                {CLINIC_INFO.sectionName}
               </h2>
 
               {/* Main Description */}
