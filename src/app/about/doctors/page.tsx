@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
+
+interface DoctorSchedule {
+  id: string;
+  doctorId: string;
+  dayOfWeek: string;
+  morningStatus: string;
+  afternoonStatus: string;
+  note: string | null;
+}
 
 interface Doctor {
   id: string;
@@ -15,7 +23,20 @@ interface Doctor {
   career: string;
   order: number;
   active: boolean;
+  schedules?: DoctorSchedule[];
 }
+
+const dayOfWeekMap: { [key: string]: string } = {
+  'monday': '월',
+  'tuesday': '화',
+  'wednesday': '수',
+  'thursday': '목',
+  'friday': '금',
+  'saturday': '토',
+  'sunday': '일',
+};
+
+const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -31,13 +52,73 @@ export default function DoctorsPage() {
       const response = await fetch('/api/doctors');
       if (response.ok) {
         const data = await response.json();
-        setDoctors(data);
+
+        // Fetch schedules for each doctor
+        const doctorsWithSchedules = await Promise.all(
+          data.map(async (doctor: Doctor) => {
+            try {
+              const scheduleResponse = await fetch(`/api/doctor-schedule?doctorId=${doctor.id}`);
+              if (scheduleResponse.ok) {
+                const schedules = await scheduleResponse.json();
+                return { ...doctor, schedules };
+              }
+            } catch (err) {
+              console.error(`Failed to fetch schedule for ${doctor.name}:`, err);
+            }
+            return doctor;
+          })
+        );
+
+        setDoctors(doctorsWithSchedules);
       }
     } catch (error) {
       console.error('Failed to fetch doctors:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderSchedule = (schedules: DoctorSchedule[] = []) => {
+    if (schedules.length === 0) {
+      return <p className="text-xs text-gray-500 text-center py-2">진료시간 정보 없음</p>;
+    }
+
+    // Sort schedules by day order
+    const sortedSchedules = [...schedules].sort((a, b) => {
+      return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
+    });
+
+    return (
+      <div className="space-y-1">
+        {sortedSchedules.map((schedule) => {
+          const day = dayOfWeekMap[schedule.dayOfWeek] || schedule.dayOfWeek;
+          const isClosed = schedule.morningStatus === 'closed' && schedule.afternoonStatus === 'closed';
+
+          if (isClosed) {
+            return (
+              <div key={schedule.id} className="flex items-center text-xs">
+                <span className="w-6 font-medium text-gray-700">{day}</span>
+                <span className="flex-1 text-gray-400">휴진</span>
+              </div>
+            );
+          }
+
+          return (
+            <div key={schedule.id} className="flex items-center text-xs">
+              <span className="w-6 font-medium text-gray-700">{day}</span>
+              <div className="flex-1 flex gap-2">
+                <span className={schedule.morningStatus === 'available' ? 'text-green-600' : 'text-gray-400'}>
+                  {schedule.morningStatus === 'available' ? '오전 ●' : '오전 ○'}
+                </span>
+                <span className={schedule.afternoonStatus === 'available' ? 'text-green-600' : 'text-gray-400'}>
+                  {schedule.afternoonStatus === 'available' ? '오후 ●' : '오후 ○'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -64,15 +145,16 @@ export default function DoctorsPage() {
                   key={doctor.id}
                   className="bg-white rounded-xl overflow-hidden shadow-sm border border-[#E5E7EB] hover:shadow-md transition-shadow"
                 >
-                  <div className="aspect-square bg-gray-100 relative">
+                  <div className="aspect-[4/5] bg-gray-100 relative">
                     {doctor.photoUrl ? (
                       <Image
                         src={doctor.photoUrl}
                         alt={doctor.name}
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        quality={85}
+                        quality={90}
+                        priority={doctor.order <= 3}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -97,20 +179,15 @@ export default function DoctorsPage() {
                     {doctor.career && (
                       <div className="mb-4">
                         <h4 className="text-xs font-semibold text-gray-700 mb-2">경력</h4>
-                        <p className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">
+                        <div className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto">
                           {doctor.career}
-                        </p>
+                        </div>
                       </div>
                     )}
 
                     <div className="mt-4 pt-4 border-t border-gray-200">
-                      <Link
-                        href="/about/hours"
-                        className="inline-flex items-center text-xs text-[#f97316] hover:text-[#ea580c] font-medium transition-colors"
-                      >
-                        진료시간 자세히 보기
-                        <span className="ml-1">→</span>
-                      </Link>
+                      <h4 className="text-xs font-semibold text-gray-700 mb-3">진료시간표</h4>
+                      {renderSchedule(doctor.schedules)}
                     </div>
                   </div>
                 </div>
