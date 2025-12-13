@@ -30,7 +30,10 @@ export default function NewHero() {
   return (
     <section className="w-full relative">
       {/* Slider Container */}
-      <div className="w-full h-[550px] overflow-hidden relative">
+      <div
+        className="w-full overflow-hidden relative rounded-xl"
+        style={{ aspectRatio: '16 / 9' }}
+      >
         <div
           className="w-full h-full flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -44,17 +47,17 @@ export default function NewHero() {
               }}
             >
               {/* Content Overlay */}
-              <div className="absolute inset-0 max-w-6xl mx-auto px-4 flex flex-col items-start justify-center text-left">
+              <div className="absolute inset-0 max-w-6xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center text-left">
                 <div className="max-w-2xl text-white">
-                  <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-[-0.033em]">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
                     {slide.title}
                   </h1>
-                  <h2 className="text-white/90 text-sm sm:text-base font-normal leading-normal mt-3">
+                  <h2 className="text-white/90 text-xs sm:text-sm md:text-base lg:text-lg font-normal leading-normal mt-3">
                     {slide.subtitle}
                   </h2>
                   <Link
                     href="/contact"
-                    className="mt-6 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 sm:h-12 sm:px-5 bg-[#f97316] text-white text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
+                    className="mt-4 sm:mt-6 inline-flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-3 sm:h-10 sm:px-4 md:h-12 md:px-5 bg-[#f97316] text-white text-xs sm:text-sm md:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-colors"
                   >
                     <span className="truncate">온라인 예약하기</span>
                   </Link>
