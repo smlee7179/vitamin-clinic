@@ -104,13 +104,6 @@ export default function NewHeader() {
                     >
                       진료시간안내
                     </Link>
-                    <Link
-                      href="/about/contact"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-[#f97316]/10 hover:text-[#f97316] transition-colors"
-                      onClick={() => setAboutMenuOpen(false)}
-                    >
-                      오시는 길
-                    </Link>
                   </div>
                 )}
               </div>
@@ -278,16 +271,6 @@ export default function NewHeader() {
                       }}
                     >
                       • 진료시간안내
-                    </Link>
-                    <Link
-                      href="/about/contact"
-                      className="text-gray-600 hover:text-[#f97316] text-base py-3 px-4 rounded-lg hover:bg-white transition-colors block touch-manipulation"
-                      onClick={() => {
-                        setAboutMenuOpen(false);
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      • 오시는 길
                     </Link>
                   </div>
                 )}
