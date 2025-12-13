@@ -123,28 +123,28 @@ export default function NoticesPage() {
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
-      <main>
+      <main className="py-8 sm:py-12 md:py-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#f97316] to-[#fb923c] text-white py-20">
-          <div className="max-w-6xl mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">공지사항</h1>
-            <p className="text-lg md:text-xl opacity-90">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 mb-8 sm:mb-12">
+          <div className="bg-white rounded-xl p-6 sm:p-8 md:p-10 shadow-sm border-l-4 border-[#f97316]">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-gray-900">공지사항</h1>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600">
               병원의 새로운 소식과 중요한 안내사항을 확인하세요
             </p>
           </div>
         </section>
 
         {/* Category Filter */}
-        <section className="max-w-6xl mx-auto px-4 py-8">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 mb-6 sm:mb-8">
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
               <button
                 key={category.value}
                 onClick={() => setSelectedCategory(category.value)}
-                className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                className={`px-4 sm:px-6 py-2 rounded-lg font-medium text-sm sm:text-base transition-all ${
                   selectedCategory === category.value
                     ? 'bg-[#f97316] text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 {category.label}
@@ -155,7 +155,7 @@ export default function NoticesPage() {
 
         {/* Page Notice */}
         {pageNotice && (
-          <section className="max-w-6xl mx-auto px-4 pb-6">
+          <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 mb-6 sm:mb-8">
             <div className={`rounded-xl p-4 border-2 ${getNoticeStyle(pageNotice.type)}`}>
               <div className="flex items-start gap-3">
                 <span className="text-2xl">{getNoticeIcon(pageNotice.type)}</span>
@@ -166,13 +166,13 @@ export default function NoticesPage() {
         )}
 
         {/* Notices List */}
-        <section className="max-w-6xl mx-auto px-4 pb-16">
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 mb-12 sm:mb-16 md:mb-20">
           {loading ? (
-            <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 animate-pulse"
+                  className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 animate-pulse"
                 >
                   <div className="h-6 bg-gray-200 rounded w-3/4 mb-3" />
                   <div className="h-4 bg-gray-200 rounded w-full mb-2" />
@@ -188,12 +188,12 @@ export default function NoticesPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
               {notices.map((notice) => (
                 <Link
                   key={notice.id}
                   href={`/notices/${notice.id}`}
-                  className={`block bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all ${
+                  className={`block bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-sm hover:shadow-md transition-all ${
                     notice.important
                       ? 'border-2 border-[#f97316]'
                       : 'border border-gray-200'
@@ -202,19 +202,19 @@ export default function NoticesPage() {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="flex-grow">
                       {/* Meta Info */}
-                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
                         {notice.important && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white">
+                          <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white">
                             <span className="mr-1">🔔</span>
                             중요
                           </span>
                         )}
                         {notice.category && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#f97316]/10 text-[#f97316]">
+                          <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-semibold bg-[#f97316]/10 text-[#f97316]">
                             {notice.category}
                           </span>
                         )}
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs sm:text-sm text-gray-500">
                           {new Date(notice.createdAt).toLocaleDateString('ko-KR', {
                             year: 'numeric',
                             month: 'long',
@@ -224,19 +224,19 @@ export default function NoticesPage() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-900">
+                      <h3 className="text-base sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 text-gray-900">
                         {notice.title}
                       </h3>
 
                       {/* Content Preview */}
                       <div
-                        className="text-base text-gray-600 leading-relaxed line-clamp-3"
+                        className="text-sm sm:text-base text-gray-600 leading-relaxed line-clamp-2 sm:line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: notice.content }}
                       />
                     </div>
 
                     {/* Arrow Icon */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#f97316] to-[#fb923c] flex items-center justify-center shadow-md">
+                    <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#f97316] to-[#fb923c] flex items-center justify-center shadow-md">
                       <svg
                         className="w-5 h-5 text-white"
                         fill="none"
@@ -259,45 +259,43 @@ export default function NoticesPage() {
         </section>
 
         {/* Info Section */}
-        <section className="bg-gray-50 py-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid md:grid-cols-3 gap-8">
-              {infoCards.length > 0 ? (
-                infoCards.map((card) => (
-                  <div key={card.id} className="text-center">
-                    <div className="text-4xl mb-4">{card.emoji}</div>
-                    <h3 className="font-bold text-gray-900 mb-2">{card.title}</h3>
-                    <p className="text-sm text-gray-600">
-                      {card.description}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <>
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">📅</div>
-                    <h3 className="font-bold text-gray-900 mb-2">정기 업데이트</h3>
-                    <p className="text-sm text-gray-600">
-                      주요 소식은 정기적으로 업데이트됩니다
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">🔔</div>
-                    <h3 className="font-bold text-gray-900 mb-2">중요 공지</h3>
-                    <p className="text-sm text-gray-600">
-                      중요한 안내사항을 놓치지 마세요
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">📞</div>
-                    <h3 className="font-bold text-gray-900 mb-2">문의하기</h3>
-                    <p className="text-sm text-gray-600">
-                      궁금한 사항은 전화로 문의해주세요
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pb-12 sm:pb-16 md:pb-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {infoCards.length > 0 ? (
+              infoCards.map((card) => (
+                <div key={card.id} className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{card.emoji}</div>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2">{card.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    {card.description}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📅</div>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2">정기 업데이트</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    주요 소식은 정기적으로 업데이트됩니다
+                  </p>
+                </div>
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🔔</div>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2">중요 공지</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    중요한 안내사항을 놓치지 마세요
+                  </p>
+                </div>
+                <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm text-center">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📞</div>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2">문의하기</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    궁금한 사항은 전화로 문의해주세요
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </section>
       </main>
