@@ -4,137 +4,209 @@ import { useState, useEffect } from 'react';
 import NewHeader from '@/components/new/NewHeader';
 import NewFooter from '@/components/new/NewFooter';
 
-interface ClinicHours {
+interface DoctorSchedule {
   id: string;
+  doctorId: string;
   dayOfWeek: string;
-  openTime: string;
-  closeTime: string;
-  lunchStartTime: string | null;
-  lunchEndTime: string | null;
-  isClosed: boolean;
+  morningStatus: string;
+  afternoonStatus: string;
+  note: string | null;
+}
+
+interface Doctor {
+  id: string;
+  name: string;
+  title: string;
+  specialty: string;
+  photoUrl: string | null;
+  order: number;
+  active: boolean;
+  schedules?: DoctorSchedule[];
 }
 
 const dayOfWeekMap: { [key: string]: string } = {
-  'monday': '월요일',
-  'tuesday': '화요일',
-  'wednesday': '수요일',
-  'thursday': '목요일',
-  'friday': '금요일',
-  'saturday': '토요일',
-  'sunday': '일요일',
+  'monday': '월',
+  'tuesday': '화',
+  'wednesday': '수',
+  'thursday': '목',
+  'friday': '금',
+  'saturday': '토',
+  'sunday': '일',
 };
 
-const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export default function HoursPage() {
-  const [clinicHours, setClinicHours] = useState<ClinicHours[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchClinicHours();
+    fetchDoctors();
   }, []);
 
-  const fetchClinicHours = async () => {
+  const fetchDoctors = async () => {
     try {
-      const response = await fetch('/api/clinic-hours');
+      setLoading(true);
+      const response = await fetch('/api/doctors');
       if (response.ok) {
         const data = await response.json();
-        // Sort by day of week
-        const sorted = data.sort((a: ClinicHours, b: ClinicHours) => {
-          return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
-        });
-        setClinicHours(sorted);
+
+        // Fetch schedules for each doctor
+        const doctorsWithSchedules = await Promise.all(
+          data.map(async (doctor: Doctor) => {
+            try {
+              const scheduleResponse = await fetch(`/api/doctor-schedule?doctorId=${doctor.id}`);
+              if (scheduleResponse.ok) {
+                const schedules = await scheduleResponse.json();
+                return { ...doctor, schedules };
+              }
+            } catch (err) {
+              console.error(`Failed to fetch schedule for ${doctor.name}:`, err);
+            }
+            return doctor;
+          })
+        );
+
+        setDoctors(doctorsWithSchedules);
       }
     } catch (error) {
-      console.error('Failed to fetch clinic hours:', error);
+      console.error('Failed to fetch doctors:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const formatTime = (time: string) => {
-    return time.slice(0, 5); // HH:MM format
+  const renderSchedule = (schedules: DoctorSchedule[] = []) => {
+    if (schedules.length === 0) {
+      return (
+        <div className="text-center py-4 text-gray-500 text-sm">
+          진료시간 정보 없음
+        </div>
+      );
+    }
+
+    // Sort schedules by day order (Mon-Sat only)
+    const sortedSchedules = [...schedules]
+      .filter(s => s.dayOfWeek !== 'sunday')
+      .sort((a, b) => {
+        return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
+      });
+
+    return (
+      <div className="grid grid-cols-6 gap-2">
+        {sortedSchedules.map((schedule) => {
+          const day = dayOfWeekMap[schedule.dayOfWeek] || schedule.dayOfWeek;
+          const isClosed = schedule.morningStatus === 'closed' && schedule.afternoonStatus === 'closed';
+          const isAvailable = schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available';
+
+          return (
+            <div
+              key={schedule.id}
+              className={`
+                text-center py-3 px-2 rounded-lg font-semibold text-sm
+                ${isAvailable
+                  ? 'bg-green-50 text-green-700 border-2 border-green-200'
+                  : 'bg-gray-50 text-gray-400 border-2 border-gray-200'}
+              `}
+            >
+              <div className="mb-1">{day}</div>
+              <div className="text-xs">
+                {isAvailable ? '진료' : '휴진'}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
-      <main className="flex flex-1 justify-center py-5">
-        <div className="layout-content-container flex flex-col w-full max-w-[960px] flex-1 px-4">
-          <div className="flex flex-col gap-10 mt-10 mb-10">
-            {/* Page Heading */}
-            <div className="flex flex-wrap justify-between gap-3">
-              <div className="flex min-w-72 flex-col gap-3">
-                <p className="text-[#181511] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
-                  진료시간 안내
-                </p>
-                <p className="text-[#8a7960] text-base md:text-lg font-normal leading-normal">
-                  비타민마취통증의학과의 진료 시간을 안내해드립니다.
-                </p>
-              </div>
+      <main className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
+        <div className="max-w-[1140px] mx-auto">
+          {/* Page Heading */}
+          <div className="text-center mb-12">
+            <h1 className="text-[#343A40] text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-[-0.015em] mb-4">
+              진료시간 안내
+            </h1>
+            <p className="text-[#8a7960] text-base md:text-lg">
+              의료진별 진료 시간을 확인하세요.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#f97316]"></div>
+              <p className="mt-4 text-gray-500">진료시간 정보를 불러오는 중...</p>
             </div>
-
-            {/* Clinic Hours Table */}
-            <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6 md:p-8">
-              {loading ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">진료시간 정보를 불러오는 중...</p>
-                </div>
-              ) : clinicHours.length > 0 ? (
-                <div className="space-y-4">
-                  {clinicHours.map((hours) => (
-                    <div
-                      key={hours.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between py-4 border-b border-gray-200 last:border-0"
-                    >
-                      <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                        <span className="text-[#f97316] font-bold text-lg w-20">
-                          {dayOfWeekMap[hours.dayOfWeek]}
-                        </span>
-                      </div>
-                      <div className="flex-1 sm:text-right">
-                        {hours.isClosed ? (
-                          <span className="text-red-500 font-medium">휴진</span>
-                        ) : (
-                          <div className="text-[#343A40]">
-                            <div className="font-medium">
-                              {formatTime(hours.openTime)} - {formatTime(hours.closeTime)}
-                            </div>
-                            {hours.lunchStartTime && hours.lunchEndTime && (
-                              <div className="text-sm text-gray-500">
-                                점심시간: {formatTime(hours.lunchStartTime)} - {formatTime(hours.lunchEndTime)}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+          ) : (
+            <>
+              {/* Standard Hours Info */}
+              <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6 md:p-8 mb-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#f97316]">schedule</span>
+                  병원 진료시간
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                      <span className="font-medium text-gray-700">평일 (월~금)</span>
+                      <span className="text-gray-900">09:00 - 18:00</span>
                     </div>
-                  ))}
-
-                  {/* Notice */}
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <div className="bg-orange-50 rounded-lg p-4">
-                      <div className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-[#f97316] text-xl">info</span>
-                        <div className="text-sm text-gray-700">
-                          <p className="font-semibold mb-1">공휴일 휴진 안내</p>
-                          <p>공휴일은 휴진입니다. 방문 전 미리 확인해주세요.</p>
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                      <span className="font-medium text-gray-700">토요일</span>
+                      <span className="text-gray-900">09:00 - 13:00</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="font-medium text-gray-700">일요일 / 공휴일</span>
+                      <span className="text-red-500 font-medium">휴진</span>
+                    </div>
+                  </div>
+                  <div className="bg-orange-50 rounded-lg p-4 flex items-start gap-3">
+                    <span className="material-symbols-outlined text-[#f97316] text-xl">info</span>
+                    <div className="text-sm text-gray-700">
+                      <p className="font-semibold mb-2">점심시간 안내</p>
+                      <p>평일: 13:00 - 14:00</p>
+                      <p className="mt-2 text-xs text-gray-600">
+                        점심시간에는 진료가 불가합니다.
+                      </p>
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">진료시간 정보가 없습니다.</p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    관리자 페이지에서 진료시간을 설정해주세요.
-                  </p>
+              </div>
+
+              {/* Doctor Schedules */}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">원장님별 진료시간</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {doctors.map((doctor) => (
+                    <div
+                      key={doctor.id}
+                      className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                    >
+                      <div className="bg-gradient-to-br from-[#f97316] to-[#ea580c] p-6 text-white">
+                        <h3 className="text-xl font-bold mb-1">{doctor.name}</h3>
+                        <p className="text-orange-100 text-sm">{doctor.title}</p>
+                        <p className="text-orange-100 text-xs mt-1">{doctor.specialty}</p>
+                      </div>
+                      <div className="p-6">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-4">진료 요일</h4>
+                        {renderSchedule(doctor.schedules)}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
-          </div>
+
+                {doctors.length === 0 && (
+                  <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-12 text-center">
+                    <p className="text-gray-500">등록된 의료진이 없습니다.</p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </main>
 
