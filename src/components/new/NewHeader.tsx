@@ -43,7 +43,7 @@ export default function NewHeader() {
                 alt={hospitalInfo.logoAlt || '병원 로고'}
                 width={1000}
                 height={60}
-                className="h-12 md:h-16 w-auto object-contain"
+                className="h-8 md:h-10 w-auto object-contain"
                 style={{ maxWidth: '100%' }}
                 priority
               />
