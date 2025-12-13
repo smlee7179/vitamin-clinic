@@ -466,71 +466,51 @@ export default function DoctorsManager() {
                 <div className="space-y-4">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <p className="text-sm text-blue-800">
-                      의료진별 요일 진료 여부를 설정합니다. 오전/오후 각각 진료 또는 휴진을 선택하고, 필요시 특이사항을 입력하세요.
+                      의료진별 요일 진료 여부를 설정합니다. 월~토요일의 진료 여부를 선택하세요.
                     </p>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                      <thead>
-                        <tr className="bg-gray-100">
-                          <th className="py-3 px-4 text-left font-semibold border border-gray-300">요일</th>
-                          <th className="py-3 px-4 text-center font-semibold border border-gray-300">오전</th>
-                          <th className="py-3 px-4 text-center font-semibold border border-gray-300">오후</th>
-                          <th className="py-3 px-4 text-left font-semibold border border-gray-300">특이사항</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {scheduleData.map((schedule, index) => (
-                          <tr key={schedule.dayOfWeek} className="border-b border-gray-300">
-                            <td className="py-3 px-4 font-medium border border-gray-300">
-                              {DAYS_OF_WEEK[index].label}
-                            </td>
-                            <td className="py-3 px-4 text-center border border-gray-300">
-                              <select
-                                value={schedule.morningStatus}
-                                onChange={(e) => {
-                                  const newSchedule = [...scheduleData];
-                                  newSchedule[index].morningStatus = e.target.value as 'available' | 'closed';
-                                  setScheduleData(newSchedule);
-                                }}
-                                className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                              >
-                                <option value="available">진료</option>
-                                <option value="closed">휴진</option>
-                              </select>
-                            </td>
-                            <td className="py-3 px-4 text-center border border-gray-300">
-                              <select
-                                value={schedule.afternoonStatus}
-                                onChange={(e) => {
-                                  const newSchedule = [...scheduleData];
-                                  newSchedule[index].afternoonStatus = e.target.value as 'available' | 'closed';
-                                  setScheduleData(newSchedule);
-                                }}
-                                className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                              >
-                                <option value="available">진료</option>
-                                <option value="closed">휴진</option>
-                              </select>
-                            </td>
-                            <td className="py-3 px-4 border border-gray-300">
-                              <input
-                                type="text"
-                                value={schedule.note}
-                                onChange={(e) => {
-                                  const newSchedule = [...scheduleData];
-                                  newSchedule[index].note = e.target.value;
-                                  setScheduleData(newSchedule);
-                                }}
-                                placeholder="예: 예약 필수, 오후 2시부터"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    {scheduleData.map((schedule, index) => {
+                      const isAvailable = schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available';
+
+                      return (
+                        <button
+                          key={schedule.dayOfWeek}
+                          type="button"
+                          onClick={() => {
+                            const newSchedule = [...scheduleData];
+                            if (isAvailable) {
+                              // Currently available -> make it closed
+                              newSchedule[index].morningStatus = 'closed';
+                              newSchedule[index].afternoonStatus = 'closed';
+                            } else {
+                              // Currently closed -> make it available
+                              newSchedule[index].morningStatus = 'available';
+                              newSchedule[index].afternoonStatus = 'available';
+                            }
+                            setScheduleData(newSchedule);
+                          }}
+                          className={`
+                            py-4 px-3 rounded-lg border-2 font-semibold text-sm transition-all
+                            ${isAvailable
+                              ? 'bg-green-50 border-green-500 text-green-700 hover:bg-green-100'
+                              : 'bg-gray-50 border-gray-300 text-gray-500 hover:bg-gray-100'}
+                          `}
+                        >
+                          <div className="text-base mb-1">{DAYS_OF_WEEK[index].label}</div>
+                          <div className="text-xs">
+                            {isAvailable ? '진료' : '휴진'}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <p className="text-xs text-gray-600">
+                      💡 클릭하여 진료/휴진을 전환할 수 있습니다. 녹색은 진료일, 회색은 휴진일을 나타냅니다.
+                    </p>
                   </div>
                 </div>
               )}

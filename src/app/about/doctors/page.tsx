@@ -83,36 +83,33 @@ export default function DoctorsPage() {
       return <p className="text-xs text-gray-500 text-center py-2">진료시간 정보 없음</p>;
     }
 
-    // Sort schedules by day order
-    const sortedSchedules = [...schedules].sort((a, b) => {
-      return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
-    });
+    // Sort schedules by day order (Mon-Sat only)
+    const sortedSchedules = [...schedules]
+      .filter(s => s.dayOfWeek !== 'sunday')
+      .sort((a, b) => {
+        return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
+      });
 
     return (
-      <div className="space-y-1">
+      <div className="grid grid-cols-6 gap-1">
         {sortedSchedules.map((schedule) => {
           const day = dayOfWeekMap[schedule.dayOfWeek] || schedule.dayOfWeek;
           const isClosed = schedule.morningStatus === 'closed' && schedule.afternoonStatus === 'closed';
-
-          if (isClosed) {
-            return (
-              <div key={schedule.id} className="flex items-center text-xs">
-                <span className="w-6 font-medium text-gray-700">{day}</span>
-                <span className="flex-1 text-gray-400">휴진</span>
-              </div>
-            );
-          }
+          const isAvailable = schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available';
 
           return (
-            <div key={schedule.id} className="flex items-center text-xs">
-              <span className="w-6 font-medium text-gray-700">{day}</span>
-              <div className="flex-1 flex gap-2">
-                <span className={schedule.morningStatus === 'available' ? 'text-green-600' : 'text-gray-400'}>
-                  {schedule.morningStatus === 'available' ? '오전 ●' : '오전 ○'}
-                </span>
-                <span className={schedule.afternoonStatus === 'available' ? 'text-green-600' : 'text-gray-400'}>
-                  {schedule.afternoonStatus === 'available' ? '오후 ●' : '오후 ○'}
-                </span>
+            <div
+              key={schedule.id}
+              className={`
+                text-center py-2 px-1 rounded text-xs font-medium
+                ${isAvailable
+                  ? 'bg-green-50 text-green-700 border border-green-200'
+                  : 'bg-gray-50 text-gray-400 border border-gray-200'}
+              `}
+            >
+              {day}
+              <div className="text-[10px] mt-0.5">
+                {isAvailable ? '진료' : '휴진'}
               </div>
             </div>
           );
