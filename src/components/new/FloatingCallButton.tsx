@@ -31,7 +31,7 @@ export default function FloatingCallButton() {
   return (
     <button
       onClick={handleCall}
-      className={`fixed bottom-6 right-6 z-[9999] transition-all duration-300 ${
+      className={`md:hidden fixed bottom-6 right-6 z-[9999] transition-all duration-300 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
       }`}
       aria-label="전화 걸기"
