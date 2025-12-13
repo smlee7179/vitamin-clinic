@@ -76,65 +76,16 @@ export default function HoursPage() {
     }
   };
 
-  const renderSchedule = (schedules: DoctorSchedule[] = []) => {
-    if (schedules.length === 0) {
-      return (
-        <div className="text-center py-4 text-gray-500 text-sm">
-          진료시간 정보 없음
-        </div>
-      );
-    }
-
-    // Sort schedules by day order (Mon-Sat only)
-    const sortedSchedules = [...schedules]
-      .filter(s => s.dayOfWeek !== 'sunday')
-      .sort((a, b) => {
-        return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
-      });
-
-    return (
-      <div className="grid grid-cols-6 gap-2">
-        {sortedSchedules.map((schedule) => {
-          const day = dayOfWeekMap[schedule.dayOfWeek] || schedule.dayOfWeek;
-          const isClosed = schedule.morningStatus === 'closed' && schedule.afternoonStatus === 'closed';
-          const isAvailable = schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available';
-
-          return (
-            <div
-              key={schedule.id}
-              className={`
-                text-center py-3 px-2 rounded-lg font-semibold text-sm
-                ${isAvailable
-                  ? 'bg-green-50 text-green-700 border-2 border-green-200'
-                  : 'bg-gray-50 text-gray-400 border-2 border-gray-200'}
-              `}
-            >
-              <div className="mb-1">{day}</div>
-              <div className="text-xs">
-                {isAvailable ? '진료' : '휴진'}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
       <NewHeader />
 
       <main className="bg-[#f8f7f5] px-4 md:px-10 py-16 md:py-20">
-        <div className="max-w-[1140px] mx-auto">
+        <div className="max-w-[960px] mx-auto">
           {/* Page Heading */}
-          <div className="text-center mb-12">
-            <h1 className="text-[#343A40] text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-[-0.015em] mb-4">
-              진료시간 안내
-            </h1>
-            <p className="text-[#8a7960] text-base md:text-lg">
-              의료진별 진료 시간을 확인하세요.
-            </p>
-          </div>
+          <h1 className="text-[#343A40] text-3xl md:text-4xl font-bold mb-8">
+            진료시간 안내
+          </h1>
 
           {loading ? (
             <div className="text-center py-20">
@@ -142,70 +93,105 @@ export default function HoursPage() {
               <p className="mt-4 text-gray-500">진료시간 정보를 불러오는 중...</p>
             </div>
           ) : (
-            <>
-              {/* Standard Hours Info */}
-              <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6 md:p-8 mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[#f97316]">schedule</span>
-                  병원 진료시간
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-8">
+              {/* Standard Hours */}
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h2 className="text-lg font-bold text-gray-900">진료 시간</h2>
+                </div>
+                <div className="p-6">
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-200">
-                      <span className="font-medium text-gray-700">평일 (월~금)</span>
-                      <span className="text-gray-900">09:00 - 18:00</span>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700">평일 (월~금)</span>
+                      <span className="font-medium text-gray-900">09:00 - 18:00</span>
                     </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-200">
-                      <span className="font-medium text-gray-700">토요일</span>
-                      <span className="text-gray-900">09:00 - 13:00</span>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700">토요일</span>
+                      <span className="font-medium text-gray-900">09:00 - 13:00</span>
                     </div>
-                    <div className="flex items-center justify-between py-3">
-                      <span className="font-medium text-gray-700">일요일 / 공휴일</span>
-                      <span className="text-red-500 font-medium">휴진</span>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700">점심시간</span>
+                      <span className="font-medium text-gray-900">13:00 - 14:00</span>
                     </div>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-4 flex items-start gap-3">
-                    <span className="material-symbols-outlined text-[#f97316] text-xl">info</span>
-                    <div className="text-sm text-gray-700">
-                      <p className="font-semibold mb-2">점심시간 안내</p>
-                      <p>평일: 13:00 - 14:00</p>
-                      <p className="mt-2 text-xs text-gray-600">
-                        점심시간에는 진료가 불가합니다.
-                      </p>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700">일요일 / 공휴일</span>
+                      <span className="font-medium text-red-500">휴진</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Doctor Schedules */}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">원장님별 진료시간</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {doctors.map((doctor) => (
-                    <div
-                      key={doctor.id}
-                      className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-                    >
-                      <div className="bg-gradient-to-br from-[#f97316] to-[#ea580c] p-6 text-white">
-                        <h3 className="text-xl font-bold mb-1">{doctor.name}</h3>
-                        <p className="text-orange-100 text-sm">{doctor.title}</p>
-                        <p className="text-orange-100 text-xs mt-1">{doctor.specialty}</p>
-                      </div>
-                      <div className="p-6">
-                        <h4 className="text-sm font-semibold text-gray-700 mb-4">진료 요일</h4>
-                        {renderSchedule(doctor.schedules)}
-                      </div>
-                    </div>
-                  ))}
+              {/* Doctor Schedules Table */}
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h2 className="text-lg font-bold text-gray-900">원장님별 진료 요일</h2>
                 </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">원장님</th>
+                        {dayOrder.map(day => (
+                          <th key={day} className="px-3 py-3 text-center text-sm font-semibold text-gray-700">
+                            {dayOfWeekMap[day]}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {doctors.map((doctor) => {
+                        // Create a map of schedules by day
+                        const scheduleMap = new Map(
+                          (doctor.schedules || []).map(s => [s.dayOfWeek, s])
+                        );
 
-                {doctors.length === 0 && (
-                  <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-12 text-center">
-                    <p className="text-gray-500">등록된 의료진이 없습니다.</p>
-                  </div>
-                )}
+                        return (
+                          <tr key={doctor.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4">
+                              <div className="font-medium text-gray-900">{doctor.name}</div>
+                              <div className="text-xs text-gray-500">{doctor.title}</div>
+                            </td>
+                            {dayOrder.map(day => {
+                              const schedule = scheduleMap.get(day);
+                              const isAvailable = schedule &&
+                                (schedule.morningStatus === 'available' || schedule.afternoonStatus === 'available');
+
+                              return (
+                                <td key={day} className="px-3 py-4 text-center">
+                                  {isAvailable ? (
+                                    <span className="inline-block w-6 h-6 bg-green-500 rounded-full"></span>
+                                  ) : (
+                                    <span className="inline-block w-6 h-6 bg-gray-200 rounded-full"></span>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {doctors.length === 0 && (
+                    <div className="p-12 text-center text-gray-500">
+                      등록된 의료진이 없습니다.
+                    </div>
+                  )}
+                </div>
               </div>
-            </>
+
+              {/* Legend */}
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-green-500 rounded-full"></span>
+                  <span>진료</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-gray-200 rounded-full"></span>
+                  <span>휴진</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </main>
