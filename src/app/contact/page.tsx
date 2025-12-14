@@ -64,7 +64,7 @@ export default function ContactPage() {
             <div className="flex flex-wrap justify-between gap-3 p-4">
               <div className="flex min-w-72 flex-col gap-3">
                 <p className="text-[#181511] text-3xl md:text-4xl lg:text-5xl font-black leading-tight tracking-[-0.033em]">
-                  오시는 길 & 진료안내
+                  오시는길
                 </p>
                 <p className="text-[#8a7960] text-base md:text-lg font-normal leading-normal">
                   비타민마취통증의학과에 오시는 길을 안내해드립니다.
