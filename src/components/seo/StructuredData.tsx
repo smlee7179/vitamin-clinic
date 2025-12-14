@@ -1,31 +1,38 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
+
 interface StructuredDataProps {
   type: 'organization' | 'medical-clinic' | 'breadcrumb' | 'faq';
-  data: any;
+  data?: any;
 }
 
 export default function StructuredData({ type, data }: StructuredDataProps) {
+  const { hospitalInfo } = useHospitalInfo();
+
   const getStructuredData = () => {
     switch (type) {
       case 'organization':
         return {
           "@context": "https://schema.org",
           "@type": "MedicalOrganization",
-          "name": "비타민 의원",
-          "alternateName": "Vitamin Clinic",
-          "description": "부산 해운대구 노인 친화적 정형외과 전문병원",
-          "url": "https://vitamin-clinic.com",
-          "logo": "https://vitamin-clinic.com/images/logo.png",
-          "image": "https://vitamin-clinic.com/images/clinic-exterior.jpg",
-          "telephone": "+82-51-123-4567",
-          "email": "info@vitamin-clinic.com",
+          "@id": "https://vitaminpain.com/#organization",
+          "name": hospitalInfo?.hospitalName || "비타민 마취통증의학과",
+          "alternateName": "Vitamin Pain Clinic",
+          "description": "부산 해운대구 노인 친화적 정형외과 및 통증의학과 전문병원",
+          "url": "https://vitaminpain.com",
+          "logo": hospitalInfo?.logoUrl || "https://vitaminpain.com/icon-192x192.png",
+          "image": "https://vitaminpain.com/icon-512x512.png",
+          "telephone": hospitalInfo?.phone || "051-469-7581",
+          "email": hospitalInfo?.email || "info@vitaminpain.com",
+          "faxNumber": hospitalInfo?.fax || undefined,
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "해운대로 123",
+            "streetAddress": hospitalInfo?.address || "부산광역시 해운대구",
             "addressLocality": "해운대구",
             "addressRegion": "부산광역시",
-            "postalCode": "48000",
+            "postalCode": "",
             "addressCountry": "KR"
           },
           "geo": {
@@ -33,50 +40,70 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
             "latitude": 35.1586,
             "longitude": 129.1603
           },
-          "openingHours": [
-            "Mo-Fr 09:00-18:00",
-            "Sa 09:00-13:00"
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              "opens": "09:00",
+              "closes": "18:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": "Saturday",
+              "opens": "09:00",
+              "closes": "13:00"
+            }
           ],
           "sameAs": [
-            "https://www.instagram.com/vitamin_clinic",
-            "https://blog.naver.com/vitamin_clinic"
+            // SNS 링크 추가 가능
           ],
           "medicalSpecialty": [
-            "정형외과",
-            "관절염 치료",
-            "척추질환",
-            "골다공증"
+            "Pain Medicine",
+            "Orthopedics",
+            "Rheumatology",
+            "Physical Medicine and Rehabilitation"
           ],
           "availableService": [
             {
-              "@type": "MedicalProcedure",
-              "name": "관절염 치료"
+              "@type": "MedicalTherapy",
+              "name": "척추 통증 치료"
             },
             {
-              "@type": "MedicalProcedure", 
-              "name": "척추질환 치료"
+              "@type": "MedicalTherapy",
+              "name": "관절 통증 치료"
             },
             {
-              "@type": "MedicalProcedure",
+              "@type": "MedicalTherapy",
+              "name": "신경통 치료"
+            },
+            {
+              "@type": "MedicalTherapy",
               "name": "골다공증 치료"
+            },
+            {
+              "@type": "MedicalTherapy",
+              "name": "도수치료 및 물리치료"
             }
-          ]
+          ],
+          "priceRange": "$$",
+          "hasMap": "https://www.google.com/maps/search/?api=1&query=35.1586,129.1603"
         };
 
       case 'medical-clinic':
         return {
           "@context": "https://schema.org",
           "@type": "MedicalClinic",
-          "name": "비타민 의원",
-          "description": "노인 친화적 정형외과 전문병원",
-          "url": "https://vitamin-clinic.com",
-          "telephone": "+82-51-123-4567",
+          "@id": "https://vitaminpain.com/#clinic",
+          "name": hospitalInfo?.hospitalName || "비타민 마취통증의학과",
+          "description": "노인 친화적 정형외과 및 통증의학과 전문병원",
+          "url": "https://vitaminpain.com",
+          "telephone": hospitalInfo?.phone || "051-469-7581",
           "address": {
             "@type": "PostalAddress",
-            "streetAddress": "해운대로 123",
-            "addressLocality": "해운대구", 
+            "streetAddress": hospitalInfo?.address || "부산광역시 해운대구",
+            "addressLocality": "해운대구",
             "addressRegion": "부산광역시",
-            "postalCode": "48000",
+            "postalCode": "",
             "addressCountry": "KR"
           },
           "geo": {
@@ -88,12 +115,13 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
             "Mo-Fr 09:00-18:00",
             "Sa 09:00-13:00"
           ],
-          "medicalSpecialty": "정형외과",
+          "medicalSpecialty": ["통증의학과", "정형외과"],
           "availableService": [
-            "관절염 치료",
-            "척추질환 치료", 
+            "척추 통증 치료",
+            "관절 통증 치료",
+            "신경통 치료",
             "골다공증 치료",
-            "재활치료"
+            "도수치료 및 물리치료"
           ]
         };
 

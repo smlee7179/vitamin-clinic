@@ -3,6 +3,7 @@ import { Inter, Pacifico } from "next/font/google";
 import GoogleAnalytics from "../components/analytics/GoogleAnalytics";
 import PerformanceMonitor from "../components/analytics/PerformanceMonitor";
 import ProgressBar from "../components/layout/ProgressBar";
+import StructuredData from "../components/seo/StructuredData";
 import { HospitalInfoProvider } from "../contexts/HospitalInfoContext";
 import { Metadata } from "next";
 
@@ -133,6 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PerformanceMonitor />
         <ProgressBar />
         <HospitalInfoProvider>
+          <StructuredData type="organization" />
           {children}
         </HospitalInfoProvider>
       </body>
