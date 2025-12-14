@@ -18,62 +18,99 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: '비타민 의원 - 부산 정형외과 | 노인 친화적 정형외과',
-    template: '%s | 비타민 의원'
-  },
-  description: '부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다. 관절염, 척추질환, 골다공증 치료에 특화되어 있으며, 큰 글자와 높은 대비로 노인분들도 편리하게 이용하실 수 있습니다.',
-  keywords: ['부산 정형외과', '해운대 정형외과', '노인 친화적 병원', '관절염 치료', '척추질환', '골다공증', '정형외과 전문의', '부산 병원'],
-  authors: [{ name: '비타민 의원' }],
-  creator: '비타민 의원',
-  publisher: '비타민 의원',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://vitamin-clinic.com'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'ko_KR',
-    url: 'https://vitamin-clinic.com',
-    title: '비타민 의원 - 부산 정형외과 | 노인 친화적 정형외과',
-    description: '부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다. 관절염, 척추질환, 골다공증 치료에 특화되어 있습니다.',
-    siteName: '비타민 의원',
-    images: [
-      {
-        url: '/images/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: '비타민 의원 - 부산 정형외과',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '비타민 의원 - 부산 정형외과 | 노인 친화적 정형외과',
-    description: '부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다.',
-    images: ['/images/og-image.jpg'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+// Fetch site settings for dynamic metadata
+async function getSiteSettings() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://vitaminpain.com';
+    const response = await fetch(`${baseUrl}/api/site-settings`, {
+      next: { revalidate: 60 } // Revalidate every 60 seconds
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    return null;
+  } catch (error) {
+    console.error('Failed to fetch site settings:', error);
+    return null;
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteSettings = await getSiteSettings();
+
+  // Use custom settings if available, otherwise use defaults
+  const title = siteSettings?.siteTitle || '비타민 의원 - 부산 정형외과 | 노인 친화적 정형외과';
+  const description = siteSettings?.siteDescription || '부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다. 관절염, 척추질환, 골다공증 치료에 특화되어 있으며, 큰 글자와 높은 대비로 노인분들도 편리하게 이용하실 수 있습니다.';
+  const keywords = siteSettings?.keywords || '부산 정형외과, 해운대 정형외과, 노인 친화적 병원, 관절염 치료, 척추질환, 골다공증, 정형외과 전문의, 부산 병원';
+
+  // Use custom OG image if available, otherwise use default
+  const ogImageUrl = siteSettings?.ogImageUrl || '/images/og-image.jpg';
+  const ogTitle = siteSettings?.ogTitle || title;
+  const ogDescription = siteSettings?.ogDescription || description;
+
+  // Use custom Twitter image if available, otherwise use OG image
+  const twitterImageUrl = siteSettings?.twitterImageUrl || ogImageUrl;
+  const twitterTitle = siteSettings?.twitterTitle || ogTitle;
+  const twitterDescription = siteSettings?.twitterDescription || ogDescription;
+
+  return {
+    title: {
+      default: title,
+      template: `%s | ${siteSettings?.siteTitle || '비타민 의원'}`
+    },
+    description,
+    keywords: keywords.split(',').map((k: string) => k.trim()),
+    authors: [{ name: '비타민 의원' }],
+    creator: '비타민 의원',
+    publisher: '비타민 의원',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    metadataBase: new URL('https://vitaminpain.com'),
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'ko_KR',
+      url: 'https://vitaminpain.com',
+      title: ogTitle,
+      description: ogDescription,
+      siteName: siteSettings?.siteTitle || '비타민 의원',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: ogTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: twitterTitle,
+      description: twitterDescription,
+      images: [twitterImageUrl],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    google: 'your-google-verification-code',
-  },
-};
+    verification: {
+      google: 'your-google-verification-code',
+    },
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

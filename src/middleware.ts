@@ -41,6 +41,7 @@ export async function middleware(request: NextRequest) {
     '/api/doctor-schedule', // Public doctor schedules (doctors page)
     '/api/unified-schedule', // Public unified schedule (hours page)
     '/api/page-heading',    // Public page headings
+    '/api/site-settings',   // Public site settings (for metadata/OG images)
     '/manifest.json',       // PWA manifest
   ];
 
