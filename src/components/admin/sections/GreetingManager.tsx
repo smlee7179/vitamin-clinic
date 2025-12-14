@@ -2,8 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import ImageUpload from '@/components/admin/ImageUpload';
-import GreetingTextEditor from '@/components/admin/GreetingTextEditor';
+
+// Dynamic import for heavy @tiptap libraries (only loads when needed)
+const GreetingTextEditor = dynamic(
+  () => import('@/components/admin/GreetingTextEditor'),
+  {
+    loading: () => (
+      <div className="border border-gray-300 rounded-lg p-4 min-h-[300px] flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-2"></div>
+          <p className="text-sm text-gray-600">에디터 로딩 중...</p>
+        </div>
+      </div>
+    ),
+    ssr: false
+  }
+);
 
 interface GreetingSection {
   id: string;

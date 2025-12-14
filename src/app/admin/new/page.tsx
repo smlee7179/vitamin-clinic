@@ -3,23 +3,35 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import LogoManager from '@/components/admin/sections/LogoManager';
-import FooterManager from '@/components/admin/sections/FooterManager';
-import HeroCarouselManager from '@/components/admin/sections/HeroCarouselManager';
-import NoticesManager from '@/components/admin/sections/NoticesManager';
-import PageHeroManager from '@/components/admin/sections/PageHeroManager';
-import GreetingManager from '@/components/admin/sections/GreetingManager';
-import EquipmentManager from '@/components/admin/sections/EquipmentManager';
-import HospitalTourManager from '@/components/admin/sections/HospitalTourManager';
-import ServicesManager from '@/components/admin/sections/ServicesManager';
-import ContactInfoManager from '@/components/admin/sections/ContactInfoManager';
-import PageHeadingManager from '@/components/admin/sections/PageHeadingManager';
-import InfoCardManager from '@/components/admin/sections/InfoCardManager';
-import PopupsManager from '@/components/admin/sections/PopupsManager';
-import DoctorsManager from '@/components/admin/sections/DoctorsManager';
-import ClinicPagesManager from '@/components/admin/sections/ClinicPagesManager';
-import TreatmentPagesManager from '@/components/admin/sections/TreatmentPagesManager';
-import SiteSettingsManager from '@/components/admin/sections/SiteSettingsManager';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for admin section managers (only load when needed)
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center py-12">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+      <p className="text-gray-600">로딩 중...</p>
+    </div>
+  </div>
+);
+
+const LogoManager = dynamic(() => import('@/components/admin/sections/LogoManager'), { loading: LoadingSpinner });
+const FooterManager = dynamic(() => import('@/components/admin/sections/FooterManager'), { loading: LoadingSpinner });
+const HeroCarouselManager = dynamic(() => import('@/components/admin/sections/HeroCarouselManager'), { loading: LoadingSpinner });
+const NoticesManager = dynamic(() => import('@/components/admin/sections/NoticesManager'), { loading: LoadingSpinner });
+const PageHeroManager = dynamic(() => import('@/components/admin/sections/PageHeroManager'), { loading: LoadingSpinner });
+const GreetingManager = dynamic(() => import('@/components/admin/sections/GreetingManager'), { loading: LoadingSpinner });
+const EquipmentManager = dynamic(() => import('@/components/admin/sections/EquipmentManager'), { loading: LoadingSpinner });
+const HospitalTourManager = dynamic(() => import('@/components/admin/sections/HospitalTourManager'), { loading: LoadingSpinner });
+const ServicesManager = dynamic(() => import('@/components/admin/sections/ServicesManager'), { loading: LoadingSpinner });
+const ContactInfoManager = dynamic(() => import('@/components/admin/sections/ContactInfoManager'), { loading: LoadingSpinner });
+const PageHeadingManager = dynamic(() => import('@/components/admin/sections/PageHeadingManager'), { loading: LoadingSpinner });
+const InfoCardManager = dynamic(() => import('@/components/admin/sections/InfoCardManager'), { loading: LoadingSpinner });
+const PopupsManager = dynamic(() => import('@/components/admin/sections/PopupsManager'), { loading: LoadingSpinner });
+const DoctorsManager = dynamic(() => import('@/components/admin/sections/DoctorsManager'), { loading: LoadingSpinner });
+const ClinicPagesManager = dynamic(() => import('@/components/admin/sections/ClinicPagesManager'), { loading: LoadingSpinner });
+const TreatmentPagesManager = dynamic(() => import('@/components/admin/sections/TreatmentPagesManager'), { loading: LoadingSpinner });
+const SiteSettingsManager = dynamic(() => import('@/components/admin/sections/SiteSettingsManager'), { loading: LoadingSpinner });
 
 export default function NewAdminPage() {
   const router = useRouter();
