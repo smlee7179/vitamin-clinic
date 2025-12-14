@@ -378,6 +378,27 @@ model TreatmentPage {
   createdAt         DateTime @default(now())
 }
 
+// 사이트 전역 설정 (SEO, OG 이미지 등)
+model SiteSettings {
+  id             String   @id @default(cuid())
+  // SEO 메타 정보
+  siteTitle      String   @default("비타민 의원")
+  siteDescription String  @default("부산 해운대구 비타민 의원은 노인 친화적 정형외과 전문병원입니다.")
+  keywords       String?  @default("부산 정형외과, 해운대 정형외과, 노인 친화적 병원")
+  // OG (Open Graph) 이미지
+  ogImageUrl     String?
+  ogTitle        String?
+  ogDescription  String?
+  // Twitter 카드
+  twitterImageUrl String?
+  twitterTitle    String?
+  twitterDescription String?
+  // 기타 설정
+  faviconUrl     String?
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   STAFF

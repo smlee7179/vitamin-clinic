@@ -19,6 +19,7 @@ import PopupsManager from '@/components/admin/sections/PopupsManager';
 import DoctorsManager from '@/components/admin/sections/DoctorsManager';
 import ClinicPagesManager from '@/components/admin/sections/ClinicPagesManager';
 import TreatmentPagesManager from '@/components/admin/sections/TreatmentPagesManager';
+import SiteSettingsManager from '@/components/admin/sections/SiteSettingsManager';
 
 export default function NewAdminPage() {
   const router = useRouter();
@@ -88,6 +89,7 @@ export default function NewAdminPage() {
       name: '전역 설정',
       icon: '⚙️',
       sections: [
+        { id: 'seo', name: 'SEO 및 링크 공유 썸네일' },
         { id: 'logo', name: '병원 로고 관리' },
         { id: 'footer', name: '푸터 정보 관리' },
         { id: 'popups', name: '팝업 관리' }
@@ -153,6 +155,8 @@ export default function NewAdminPage() {
 
     switch (key) {
       // 전역 설정
+      case 'global-seo':
+        return <SiteSettingsManager />;
       case 'global-logo':
         return <LogoManager />;
       case 'global-footer':
