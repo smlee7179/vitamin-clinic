@@ -1,22 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useHospitalInfo } from '@/contexts/HospitalInfoContext';
 
 export default function FloatingCallButton() {
-  const [phoneNumber, setPhoneNumber] = useState<string>('051-469-7581');
+  const { hospitalInfo } = useHospitalInfo();
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    // Fetch phone number from hospital info
-    fetch('/api/hospital-info')
-      .then(res => res.json())
-      .then(data => {
-        if (data.phone) {
-          setPhoneNumber(data.phone);
-        }
-      })
-      .catch(err => console.error('Failed to load phone number:', err));
+  // Use phone from context or fallback
+  const phoneNumber = hospitalInfo?.phone || '051-469-7581';
 
+  useEffect(() => {
     // Show button after a short delay
     const timer = setTimeout(() => setIsVisible(true), 500);
     return () => clearTimeout(timer);

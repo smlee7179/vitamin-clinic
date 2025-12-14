@@ -7,6 +7,11 @@ export default function PerformanceMonitor() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // 프로덕션 환경에서만 실행
+    if (process.env.NODE_ENV !== 'production') {
+      return;
+    }
+
     // 페이지 로드 성능 측정
     const measurePerformance = () => {
       if (typeof window === 'undefined') return;
