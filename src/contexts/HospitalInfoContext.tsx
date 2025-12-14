@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 
 interface HospitalInfo {
   id: string;
@@ -44,8 +44,14 @@ export function HospitalInfoProvider({ children }: { children: ReactNode }) {
       });
   }, []);
 
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({ hospitalInfo, loading }),
+    [hospitalInfo, loading]
+  );
+
   return (
-    <HospitalInfoContext.Provider value={{ hospitalInfo, loading }}>
+    <HospitalInfoContext.Provider value={value}>
       {children}
     </HospitalInfoContext.Provider>
   );

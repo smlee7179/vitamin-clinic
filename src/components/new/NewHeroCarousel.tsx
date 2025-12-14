@@ -110,6 +110,7 @@ export default function NewHeroCarousel() {
                 alt={slide.title}
                 fill
                 priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 1200px"
                 quality={85}
