@@ -19,7 +19,7 @@ export default function GoogleAnalytics() {
     if (!GA_TRACKING_ID || typeof window === 'undefined') return;
 
     // 이미 로드되었는지 확인
-    if (window.gtag) return;
+    if (typeof window.gtag !== 'undefined') return;
 
     // Google Analytics 스크립트 로드
     const script = document.createElement('script');
