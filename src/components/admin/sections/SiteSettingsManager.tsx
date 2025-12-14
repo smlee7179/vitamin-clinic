@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface SiteSettings {
   id: string;
@@ -21,6 +21,10 @@ export default function SiteSettingsManager() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'seo' | 'og' | 'twitter'>('og');
+  const [uploading, setUploading] = useState(false);
+
+  const ogFileInputRef = useRef<HTMLInputElement>(null);
+  const twitterFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -37,6 +41,60 @@ export default function SiteSettingsManager() {
       console.error('Failed to fetch settings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (file: File, type: 'og' | 'twitter') => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('preset', 'og'); // OG 이미지 프리셋 사용
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // 업로드된 이미지 URL을 설정에 반영
+        if (type === 'og') {
+          setSettings(prev => prev ? { ...prev, ogImageUrl: data.url } : null);
+        } else {
+          setSettings(prev => prev ? { ...prev, twitterImageUrl: data.url } : null);
+        }
+
+        alert('이미지가 업로드되었습니다!');
+      } else {
+        const errorData = await response.json();
+        alert(`업로드 실패: ${errorData.error || '알 수 없는 오류'}`);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('이미지 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'og' | 'twitter') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // 파일 타입 검증
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      // 파일 크기 검증 (20MB)
+      if (file.size > 20 * 1024 * 1024) {
+        alert('파일 크기는 20MB 이하여야 합니다.');
+        return;
+      }
+
+      handleImageUpload(file, type);
     }
   };
 
@@ -152,37 +210,60 @@ export default function SiteSettingsManager() {
               </p>
             </div>
 
-            {/* Image Preview */}
-            {settings.ogImageUrl && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  현재 이미지 미리보기
-                </label>
-                <div className="border border-gray-300 rounded-lg overflow-hidden max-w-md">
-                  <img
-                    src={settings.ogImageUrl}
-                    alt="OG Image Preview"
-                    className="w-full h-auto"
-                  />
-                </div>
-              </div>
-            )}
-
+            {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                이미지 URL
+                OG 이미지 업로드
               </label>
+
+              {/* Current Image Preview */}
+              {settings.ogImageUrl && (
+                <div className="mb-4">
+                  <div className="border border-gray-300 rounded-lg overflow-hidden max-w-2xl">
+                    <img
+                      src={settings.ogImageUrl}
+                      alt="OG Image Preview"
+                      className="w-full h-auto"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    현재 이미지
+                  </p>
+                </div>
+              )}
+
+              {/* Upload Button */}
               <input
-                type="url"
-                value={settings.ogImageUrl || ''}
-                onChange={(e) =>
-                  setSettings({ ...settings, ogImageUrl: e.target.value })
-                }
-                placeholder="https://example.com/og-image.jpg"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                type="file"
+                ref={ogFileInputRef}
+                onChange={(e) => handleFileSelect(e, 'og')}
+                accept="image/*"
+                className="hidden"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                이미지를 업로드하고 URL을 입력하세요
+              <button
+                onClick={() => ogFileInputRef.current?.click()}
+                disabled={uploading}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors inline-flex items-center gap-2"
+              >
+                {uploading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    업로드 중...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    이미지 선택 및 업로드
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-gray-500 mt-2">
+                JPG, PNG, WebP, GIF 파일 지원 (최대 20MB)
               </p>
             </div>
 
@@ -295,19 +376,59 @@ export default function SiteSettingsManager() {
               </p>
             </div>
 
+            {/* Twitter Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                트위터 이미지 URL
+                트위터 이미지 업로드
               </label>
+
+              {settings.twitterImageUrl && (
+                <div className="mb-4">
+                  <div className="border border-gray-300 rounded-lg overflow-hidden max-w-2xl">
+                    <img
+                      src={settings.twitterImageUrl}
+                      alt="Twitter Image Preview"
+                      className="w-full h-auto"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    현재 이미지
+                  </p>
+                </div>
+              )}
+
               <input
-                type="url"
-                value={settings.twitterImageUrl || ''}
-                onChange={(e) =>
-                  setSettings({ ...settings, twitterImageUrl: e.target.value })
-                }
-                placeholder="https://example.com/twitter-image.jpg"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                type="file"
+                ref={twitterFileInputRef}
+                onChange={(e) => handleFileSelect(e, 'twitter')}
+                accept="image/*"
+                className="hidden"
               />
+              <button
+                onClick={() => twitterFileInputRef.current?.click()}
+                disabled={uploading}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors inline-flex items-center gap-2"
+              >
+                {uploading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    업로드 중...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    이미지 선택 및 업로드
+                  </>
+                )}
+              </button>
+              <p className="text-xs text-gray-500 mt-2">
+                JPG, PNG, WebP, GIF 파일 지원 (최대 20MB)
+              </p>
             </div>
 
             <div>
@@ -320,6 +441,7 @@ export default function SiteSettingsManager() {
                 onChange={(e) =>
                   setSettings({ ...settings, twitterTitle: e.target.value })
                 }
+                placeholder="OG 제목과 다르게 설정하려면 입력하세요"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
             </div>
@@ -333,6 +455,7 @@ export default function SiteSettingsManager() {
                 onChange={(e) =>
                   setSettings({ ...settings, twitterDescription: e.target.value })
                 }
+                placeholder="OG 설명과 다르게 설정하려면 입력하세요"
                 rows={3}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />

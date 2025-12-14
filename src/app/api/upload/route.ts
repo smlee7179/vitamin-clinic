@@ -17,6 +17,7 @@ const IMAGE_PRESETS = {
   service: { width: 1280, height: 720, quality: 85, fit: 'inside' }, // 비율 유지
   gallery: { width: 800, height: 800, quality: 85, fit: 'inside' }, // 비율 유지
   logo: { width: 2000, height: null, quality: 90, fit: 'inside' }, // 로고 - 원본 비율 유지
+  og: { width: 1200, height: 630, quality: 90, fit: 'inside' }, // OG 이미지 - 1200x630 권장
   default: { width: 1200, height: 1200, quality: 85, fit: 'inside' }, // 기본값 - 비율 유지
 };
 
