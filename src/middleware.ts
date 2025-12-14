@@ -5,6 +5,19 @@ import { verifyToken } from '@/lib/simple-auth'
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
+  // Handle OPTIONS requests for CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      },
+    });
+  }
+
   // Public API endpoints (GET only for displaying content on homepage)
   const publicAPIs = [
     '/api/content',
