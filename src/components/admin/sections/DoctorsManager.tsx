@@ -115,7 +115,18 @@ export default function DoctorsManager() {
       if (response.ok) {
         const schedules = await response.json();
         if (schedules && schedules.length > 0) {
-          setScheduleData(schedules);
+          // Sort schedules to match DAYS_OF_WEEK order (Mon-Sat)
+          // API returns alphabetically sorted by dayOfWeek, but we need Mon-Sat order
+          const sortedSchedules = DAYS_OF_WEEK.map(day => {
+            const schedule = schedules.find((s: any) => s.dayOfWeek === day.value);
+            return schedule || {
+              dayOfWeek: day.value,
+              morningStatus: 'available' as const,
+              afternoonStatus: 'available' as const,
+              note: ''
+            };
+          });
+          setScheduleData(sortedSchedules);
         } else {
           // No schedule found, use default
           setScheduleData(
