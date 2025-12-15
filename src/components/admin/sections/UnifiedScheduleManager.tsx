@@ -15,28 +15,36 @@ interface UnifiedSchedule {
   note?: string;
 }
 
-const DAYS_OF_WEEK = [
-  { key: 'monday', label: '월요일' },
-  { key: 'tuesday', label: '화요일' },
-  { key: 'wednesday', label: '수요일' },
-  { key: 'thursday', label: '목요일' },
-  { key: 'friday', label: '금요일' },
-  { key: 'saturday', label: '토요일' }
-];
+interface HoursFormData {
+  // Weekday (Mon-Fri)
+  weekdayOpen: string;
+  weekdayClose: string;
+
+  // Saturday
+  saturdayOpen: string;
+  saturdayClose: string;
+
+  // Lunch time (applies to all days)
+  lunchStart: string;
+  lunchEnd: string;
+
+  // Special notes for each day
+  notes: {
+    [key: string]: string;
+  };
+}
+
+const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
 export default function UnifiedScheduleManager() {
-  const [schedules, setSchedules] = useState<UnifiedSchedule[]>([]);
-  const [selectedDay, setSelectedDay] = useState<string>('monday');
-  const [currentSchedule, setCurrentSchedule] = useState<UnifiedSchedule>({
-    dayOfWeek: 'monday',
-    morningOpen: '09:00',
-    morningClose: '13:00',
-    afternoonOpen: '14:00',
-    afternoonClose: '18:00',
+  const [formData, setFormData] = useState<HoursFormData>({
+    weekdayOpen: '09:00',
+    weekdayClose: '18:00',
+    saturdayOpen: '09:00',
+    saturdayClose: '13:00',
     lunchStart: '13:00',
     lunchEnd: '14:00',
-    isClosed: false,
-    note: ''
+    notes: {}
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -45,19 +53,34 @@ export default function UnifiedScheduleManager() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (selectedDay) {
-      updateCurrentSchedule(selectedDay);
-    }
-  }, [selectedDay, schedules]);
-
   const fetchData = async () => {
     try {
       const schedulesRes = await fetch('/api/unified-schedule');
 
       if (schedulesRes.ok) {
-        const data = await schedulesRes.json();
-        setSchedules(data);
+        const schedules: UnifiedSchedule[] = await schedulesRes.json();
+
+        // Find Monday schedule for weekday defaults
+        const monday = schedules.find(s => s.dayOfWeek === 'monday');
+        const saturday = schedules.find(s => s.dayOfWeek === 'saturday');
+
+        // Extract notes from all days
+        const notes: { [key: string]: string } = {};
+        schedules.forEach(s => {
+          if (s.note) {
+            notes[s.dayOfWeek] = s.note;
+          }
+        });
+
+        setFormData({
+          weekdayOpen: monday?.morningOpen || '09:00',
+          weekdayClose: monday?.afternoonClose || '18:00',
+          saturdayOpen: saturday?.morningOpen || '09:00',
+          saturdayClose: saturday?.afternoonClose || saturday?.morningClose || '13:00',
+          lunchStart: monday?.lunchStart || '13:00',
+          lunchEnd: monday?.lunchEnd || '14:00',
+          notes
+        });
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -66,44 +89,75 @@ export default function UnifiedScheduleManager() {
     }
   };
 
-  const updateCurrentSchedule = (day: string) => {
-    const existingSchedule = schedules.find(s => s.dayOfWeek === day);
-
-    if (existingSchedule) {
-      setCurrentSchedule(existingSchedule);
-    } else {
-      setCurrentSchedule({
-        dayOfWeek: day,
-        morningOpen: '09:00',
-        morningClose: '13:00',
-        afternoonOpen: '14:00',
-        afternoonClose: '18:00',
-        lunchStart: '13:00',
-        lunchEnd: '14:00',
-        isClosed: false,
-        note: ''
-      });
-    }
-  };
-
-  const handleSave = async () => {
+  const handleSaveAll = async () => {
     setSaving(true);
     try {
-      const response = await fetch('/api/unified-schedule', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentSchedule)
+      // Prepare schedules for all days
+      const schedulesToSave: Omit<UnifiedSchedule, 'id'>[] = [];
+
+      // Weekdays (Mon-Fri) - all get the same hours
+      WEEKDAYS.forEach(day => {
+        schedulesToSave.push({
+          dayOfWeek: day,
+          morningOpen: formData.weekdayOpen,
+          morningClose: formData.lunchStart, // Morning ends when lunch starts
+          afternoonOpen: formData.lunchEnd,   // Afternoon starts when lunch ends
+          afternoonClose: formData.weekdayClose,
+          lunchStart: formData.lunchStart,
+          lunchEnd: formData.lunchEnd,
+          isClosed: false,
+          note: formData.notes[day] || ''
+        });
       });
 
-      if (response.ok) {
-        alert('저장되었습니다.');
-        fetchData();
+      // Saturday - typically shorter hours
+      schedulesToSave.push({
+        dayOfWeek: 'saturday',
+        morningOpen: formData.saturdayOpen,
+        morningClose: formData.saturdayClose,
+        afternoonOpen: undefined,
+        afternoonClose: undefined,
+        lunchStart: undefined,
+        lunchEnd: undefined,
+        isClosed: false,
+        note: formData.notes['saturday'] || ''
+      });
+
+      // Sunday - always closed
+      schedulesToSave.push({
+        dayOfWeek: 'sunday',
+        morningOpen: undefined,
+        morningClose: undefined,
+        afternoonOpen: undefined,
+        afternoonClose: undefined,
+        lunchStart: undefined,
+        lunchEnd: undefined,
+        isClosed: true,
+        note: formData.notes['sunday'] || '일요일 및 공휴일 휴진'
+      });
+
+      // Save all schedules
+      const responses = await Promise.all(
+        schedulesToSave.map(schedule =>
+          fetch('/api/unified-schedule', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(schedule)
+          })
+        )
+      );
+
+      const allSuccessful = responses.every(res => res.ok);
+
+      if (allSuccessful) {
+        alert('✓ 진료시간이 저장되었습니다.');
+        fetchData(); // Refresh data
       } else {
-        alert('저장에 실패했습니다.');
+        alert('⚠ 일부 저장에 실패했습니다.');
       }
     } catch (error) {
       console.error('Save failed:', error);
-      alert('저장 중 오류가 발생했습니다.');
+      alert('❌ 저장 중 오류가 발생했습니다.');
     } finally {
       setSaving(false);
     }
@@ -112,234 +166,204 @@ export default function UnifiedScheduleManager() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-3"></div>
+          <p className="text-sm text-gray-600">진료시간 불러오는 중...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">병원 진료 시간 관리</h2>
-        <p className="text-sm text-gray-600 mb-6">
-          병원 전체 운영 시간을 설정합니다. 원장님별 진료 시간은 '의료진 소개 &gt; 의료진 관리'에서 설정할 수 있습니다.
-        </p>
-
+      {/* Main Form */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="mb-6">
-          {/* Day Selection */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {DAYS_OF_WEEK.map(day => (
-              <button
-                key={day.key}
-                onClick={() => setSelectedDay(day.key)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  selectedDay === day.key
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {day.label}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">진료시간 관리</h2>
+          <p className="text-sm text-gray-600">
+            홈페이지 진료시간 안내 페이지에 표시될 진료시간을 설정합니다.
+          </p>
+        </div>
 
-          {/* Schedule Form */}
-          <div className="space-y-6 border-t pt-6">
-            {/* Closed Day Toggle */}
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="isClosed"
-                checked={currentSchedule.isClosed}
-                onChange={(e) => setCurrentSchedule(prev => ({
-                  ...prev,
-                  isClosed: e.target.checked
-                }))}
-                className="w-5 h-5 text-orange-500 rounded focus:ring-orange-500"
-              />
-              <label htmlFor="isClosed" className="text-sm font-medium text-gray-700">
-                휴진일로 설정
-              </label>
+        <div className="space-y-6">
+          {/* Weekday Hours (Mon-Fri) */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-orange-500">📅</span>
+              평일 (월~금)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  진료 시작 시간
+                </label>
+                <input
+                  type="time"
+                  value={formData.weekdayOpen}
+                  onChange={(e) => setFormData(prev => ({ ...prev, weekdayOpen: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  진료 종료 시간
+                </label>
+                <input
+                  type="time"
+                  value={formData.weekdayClose}
+                  onChange={(e) => setFormData(prev => ({ ...prev, weekdayClose: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
             </div>
-
-            {!currentSchedule.isClosed && (
-              <>
-                {/* Hospital Hours */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">병원 진료시간</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        오전 시작
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.morningOpen || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          morningOpen: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        오전 종료
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.morningClose || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          morningClose: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        오후 시작
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.afternoonOpen || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          afternoonOpen: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        오후 종료
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.afternoonClose || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          afternoonClose: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        점심 시작
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.lunchStart || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          lunchStart: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        점심 종료
-                      </label>
-                      <input
-                        type="time"
-                        value={currentSchedule.lunchEnd || ''}
-                        onChange={(e) => setCurrentSchedule(prev => ({
-                          ...prev,
-                          lunchEnd: e.target.value
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Special Note */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    특별 공지 (선택사항)
-                  </label>
-                  <input
-                    type="text"
-                    value={currentSchedule.note || ''}
-                    onChange={(e) => setCurrentSchedule(prev => ({
-                      ...prev,
-                      note: e.target.value
-                    }))}
-                    placeholder="예: 토요일 오후 휴진"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  />
-                </div>
-              </>
-            )}
+            <div className="mt-3 px-4 py-3 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>미리보기:</strong> 평일 (월~금) <span className="font-semibold text-gray-900">{formData.weekdayOpen} - {formData.weekdayClose}</span>
+              </p>
+            </div>
           </div>
 
-          {/* Save Button */}
-          <div className="flex justify-end mt-6 pt-6 border-t">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {saving ? '저장 중...' : '저장하기'}
-            </button>
+          {/* Saturday Hours */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-blue-500">📅</span>
+              토요일
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  진료 시작 시간
+                </label>
+                <input
+                  type="time"
+                  value={formData.saturdayOpen}
+                  onChange={(e) => setFormData(prev => ({ ...prev, saturdayOpen: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  진료 종료 시간
+                </label>
+                <input
+                  type="time"
+                  value={formData.saturdayClose}
+                  onChange={(e) => setFormData(prev => ({ ...prev, saturdayClose: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
+            </div>
+            <div className="mt-3 px-4 py-3 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>미리보기:</strong> 토요일 <span className="font-semibold text-gray-900">{formData.saturdayOpen} - {formData.saturdayClose}</span>
+              </p>
+            </div>
           </div>
+
+          {/* Lunch Time */}
+          <div className="border-b border-gray-200 pb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-green-500">🍽️</span>
+              점심시간
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">평일 점심시간을 설정합니다. (토요일은 점심시간 없음)</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  점심 시작
+                </label>
+                <input
+                  type="time"
+                  value={formData.lunchStart}
+                  onChange={(e) => setFormData(prev => ({ ...prev, lunchStart: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  점심 종료
+                </label>
+                <input
+                  type="time"
+                  value={formData.lunchEnd}
+                  onChange={(e) => setFormData(prev => ({ ...prev, lunchEnd: e.target.value }))}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
+                />
+              </div>
+            </div>
+            <div className="mt-3 px-4 py-3 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <strong>미리보기:</strong> 점심시간 <span className="font-semibold text-gray-900">{formData.lunchStart} - {formData.lunchEnd}</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Sunday (Always Closed) */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <span className="text-red-500">🚫</span>
+              일요일 / 공휴일
+            </h3>
+            <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700">
+                <strong>미리보기:</strong> 일요일 / 공휴일 <span className="font-semibold text-red-600">휴진</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end mt-8 pt-6 border-t border-gray-200">
+          <button
+            onClick={handleSaveAll}
+            disabled={saving}
+            className="px-8 py-3 bg-orange-500 text-white text-lg font-semibold rounded-lg hover:bg-orange-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors shadow-md hover:shadow-lg"
+          >
+            {saving ? '저장 중...' : '✓ 저장하기'}
+          </button>
         </div>
       </div>
 
-      {/* Preview Table */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">주간 시간표 미리보기</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">요일</th>
-                <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">오전</th>
-                <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">점심</th>
-                <th className="border border-gray-200 px-4 py-2 text-left font-medium text-gray-700">오후</th>
-              </tr>
-            </thead>
-            <tbody>
-              {DAYS_OF_WEEK.map(day => {
-                const schedule = schedules.find(s => s.dayOfWeek === day.key) ||
-                  (day.key === selectedDay ? currentSchedule : null);
+      {/* Preview - How it will appear on the website */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <span>👁️</span>
+          홈페이지 표시 미리보기
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          진료시간 안내 페이지에 다음과 같이 표시됩니다.
+        </p>
 
-                return (
-                  <tr key={day.key} className={day.key === selectedDay ? 'bg-orange-50' : ''}>
-                    <td className="border border-gray-200 px-4 py-2 font-medium">
-                      {day.label}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {schedule?.isClosed ? (
-                        <span className="text-red-500">휴진</span>
-                      ) : (
-                        schedule?.morningOpen && schedule?.morningClose &&
-                        `${schedule.morningOpen} - ${schedule.morningClose}`
-                      )}
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {!schedule?.isClosed && schedule?.lunchStart && schedule?.lunchEnd &&
-                        `${schedule.lunchStart} - ${schedule.lunchEnd}`
-                      }
-                    </td>
-                    <td className="border border-gray-200 px-4 py-2">
-                      {schedule?.isClosed ? (
-                        <span className="text-red-500">휴진</span>
-                      ) : (
-                        schedule?.afternoonOpen && schedule?.afternoonClose &&
-                        `${schedule.afternoonOpen} - ${schedule.afternoonClose}`
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h4 className="font-bold text-gray-900">진료 시간</h4>
+          </div>
+          <div className="p-6">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-700">평일 (월~금)</span>
+                <span className="font-medium text-gray-900">
+                  {formData.weekdayOpen} - {formData.weekdayClose}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-700">토요일</span>
+                <span className="font-medium text-gray-900">
+                  {formData.saturdayOpen} - {formData.saturdayClose}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-700">점심시간</span>
+                <span className="font-medium text-gray-900">
+                  {formData.lunchStart} - {formData.lunchEnd}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-2">
+                <span className="text-gray-700">일요일 / 공휴일</span>
+                <span className="font-medium text-red-500">휴진</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
