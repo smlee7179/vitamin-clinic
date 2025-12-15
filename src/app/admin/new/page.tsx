@@ -29,6 +29,7 @@ const PageHeadingManager = dynamic(() => import('@/components/admin/sections/Pag
 const InfoCardManager = dynamic(() => import('@/components/admin/sections/InfoCardManager'), { loading: LoadingSpinner });
 const PopupsManager = dynamic(() => import('@/components/admin/sections/PopupsManager'), { loading: LoadingSpinner });
 const DoctorsManager = dynamic(() => import('@/components/admin/sections/DoctorsManager'), { loading: LoadingSpinner });
+const UnifiedScheduleManager = dynamic(() => import('@/components/admin/sections/UnifiedScheduleManager'), { loading: LoadingSpinner });
 const ClinicPagesManager = dynamic(() => import('@/components/admin/sections/ClinicPagesManager'), { loading: LoadingSpinner });
 const TreatmentPagesManager = dynamic(() => import('@/components/admin/sections/TreatmentPagesManager'), { loading: LoadingSpinner });
 const SiteSettingsManager = dynamic(() => import('@/components/admin/sections/SiteSettingsManager'), { loading: LoadingSpinner });
@@ -186,10 +187,7 @@ export default function NewAdminPage() {
       case 'about-doctors':
         return <DoctorsManager />;
       case 'about-hours':
-        return <div className="text-center py-12 text-gray-500">
-          <p className="text-lg mb-2">진료시간 안내</p>
-          <p className="text-sm">진료시간은 병원 정보 관리에서 설정할 수 있습니다.</p>
-        </div>;
+        return <UnifiedScheduleManager />;
       case 'about-contact':
         return <ContactInfoManager />;
 

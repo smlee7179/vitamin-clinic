@@ -24,6 +24,19 @@ interface Doctor {
   schedules?: DoctorSchedule[];
 }
 
+interface UnifiedSchedule {
+  id: string;
+  dayOfWeek: string;
+  morningOpen?: string;
+  morningClose?: string;
+  afternoonOpen?: string;
+  afternoonClose?: string;
+  lunchStart?: string;
+  lunchEnd?: string;
+  isClosed: boolean;
+  note?: string;
+}
+
 const dayOfWeekMap: { [key: string]: string } = {
   'monday': '월',
   'tuesday': '화',
@@ -38,15 +51,25 @@ const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'satur
 
 export default function HoursPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [schedules, setSchedules] = useState<UnifiedSchedule[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDoctors();
+    fetchData();
   }, []);
 
-  const fetchDoctors = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
+
+      // Fetch unified schedules
+      const scheduleRes = await fetch('/api/unified-schedule');
+      if (scheduleRes.ok) {
+        const scheduleData = await scheduleRes.json();
+        setSchedules(scheduleData);
+      }
+
+      // Fetch doctors with their schedules
       const response = await fetch('/api/doctors');
       if (response.ok) {
         const data = await response.json();
@@ -70,11 +93,40 @@ export default function HoursPage() {
         setDoctors(doctorsWithSchedules);
       }
     } catch (error) {
-      console.error('Failed to fetch doctors:', error);
+      console.error('Failed to fetch data:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Find the most common schedule for weekday and Saturday
+  const getStandardHours = () => {
+    if (schedules.length === 0) {
+      return {
+        weekdayOpen: '09:00',
+        weekdayClose: '18:00',
+        saturdayOpen: '09:00',
+        saturdayClose: '13:00',
+        lunchStart: '13:00',
+        lunchEnd: '14:00'
+      };
+    }
+
+    // Get Monday schedule as default for weekdays
+    const monday = schedules.find(s => s.dayOfWeek === 'monday');
+    const saturday = schedules.find(s => s.dayOfWeek === 'saturday');
+
+    return {
+      weekdayOpen: monday?.morningOpen || '09:00',
+      weekdayClose: monday?.afternoonClose || '18:00',
+      saturdayOpen: saturday?.morningOpen || '09:00',
+      saturdayClose: saturday?.afternoonClose || saturday?.morningClose || '13:00',
+      lunchStart: monday?.lunchStart || '13:00',
+      lunchEnd: monday?.lunchEnd || '14:00'
+    };
+  };
+
+  const standardHours = getStandardHours();
 
   return (
     <div className="bg-[#f8f7f5] min-h-screen">
@@ -103,21 +155,39 @@ export default function HoursPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2">
                       <span className="text-gray-700">평일 (월~금)</span>
-                      <span className="font-medium text-gray-900">09:00 - 18:00</span>
+                      <span className="font-medium text-gray-900">
+                        {standardHours.weekdayOpen} - {standardHours.weekdayClose}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-gray-700">토요일</span>
-                      <span className="font-medium text-gray-900">09:00 - 13:00</span>
+                      <span className="font-medium text-gray-900">
+                        {standardHours.saturdayOpen} - {standardHours.saturdayClose}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-gray-700">점심시간</span>
-                      <span className="font-medium text-gray-900">13:00 - 14:00</span>
+                      <span className="font-medium text-gray-900">
+                        {standardHours.lunchStart} - {standardHours.lunchEnd}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2">
                       <span className="text-gray-700">일요일 / 공휴일</span>
                       <span className="font-medium text-red-500">휴진</span>
                     </div>
                   </div>
+                  {schedules.some(s => s.note) && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-sm text-gray-600">
+                        💡 <strong>안내:</strong>
+                      </p>
+                      {schedules.filter(s => s.note).map((schedule, idx) => (
+                        <p key={idx} className="text-sm text-gray-600 mt-1">
+                          • {dayOfWeekMap[schedule.dayOfWeek]}요일: {schedule.note}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
