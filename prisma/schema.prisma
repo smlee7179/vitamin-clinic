@@ -184,6 +184,10 @@ model HospitalInfo {
   subwayInfo      String?
   busInfo         String?
   parkingInfo     String?
+  parking1Name    String?  // 첫 번째 주차장 이름
+  parking1MapUrl  String?  // 첫 번째 주차장 네이버 지도 링크
+  parking2Name    String?  // 두 번째 주차장 이름
+  parking2MapUrl  String?  // 두 번째 주차장 네이버 지도 링크
   // Social Media
   facebookUrl     String?
   instagramUrl    String?

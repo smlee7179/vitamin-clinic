@@ -14,6 +14,10 @@ interface ContactInfo {
   busInfo: string | null;
   subwayInfo: string | null;
   parkingInfo: string | null;
+  parking1Name: string | null;
+  parking1MapUrl: string | null;
+  parking2Name: string | null;
+  parking2MapUrl: string | null;
 }
 
 export default function ContactInfoManager() {
@@ -32,7 +36,11 @@ export default function ContactInfoManager() {
     googleMapUrl: '',
     busInfo: '',
     subwayInfo: '',
-    parkingInfo: ''
+    parkingInfo: '',
+    parking1Name: '',
+    parking1MapUrl: '',
+    parking2Name: '',
+    parking2MapUrl: ''
   });
 
   useEffect(() => {
@@ -57,7 +65,11 @@ export default function ContactInfoManager() {
             googleMapUrl: data.googleMapUrl || '',
             busInfo: data.busInfo || '',
             subwayInfo: data.subwayInfo || '',
-            parkingInfo: data.parkingInfo || ''
+            parkingInfo: data.parkingInfo || '',
+            parking1Name: data.parking1Name || '',
+            parking1MapUrl: data.parking1MapUrl || '',
+            parking2Name: data.parking2Name || '',
+            parking2MapUrl: data.parking2MapUrl || ''
           });
         }
       }
@@ -281,6 +293,84 @@ export default function ContactInfoManager() {
             rows={3}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           />
+        </div>
+      </div>
+
+      {/* Parking Lots Section */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+        <div>
+          <h3 className="text-lg font-bold text-gray-900">주차장 안내</h3>
+          <p className="text-sm text-gray-600 mt-1">
+            주차장이 여러 곳인 경우 각각의 위치 정보를 입력하세요
+          </p>
+        </div>
+
+        {/* Parking Lot 1 */}
+        <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+          <h4 className="font-semibold text-gray-900">첫 번째 주차장</h4>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              주차장 이름
+            </label>
+            <input
+              type="text"
+              value={formData.parking1Name}
+              onChange={(e) => handleChange('parking1Name', e.target.value)}
+              placeholder="예: 본관 주차장"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              네이버 지도 URL
+            </label>
+            <input
+              type="url"
+              value={formData.parking1MapUrl}
+              onChange={(e) => handleChange('parking1MapUrl', e.target.value)}
+              placeholder="https://map.naver.com/..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              네이버 지도에서 주차장 위치를 검색한 후 공유 버튼을 눌러 URL을 복사하세요
+            </p>
+          </div>
+        </div>
+
+        {/* Parking Lot 2 */}
+        <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+          <h4 className="font-semibold text-gray-900">두 번째 주차장</h4>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              주차장 이름
+            </label>
+            <input
+              type="text"
+              value={formData.parking2Name}
+              onChange={(e) => handleChange('parking2Name', e.target.value)}
+              placeholder="예: 별관 주차장"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              네이버 지도 URL
+            </label>
+            <input
+              type="url"
+              value={formData.parking2MapUrl}
+              onChange={(e) => handleChange('parking2MapUrl', e.target.value)}
+              placeholder="https://map.naver.com/..."
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              네이버 지도에서 주차장 위치를 검색한 후 공유 버튼을 눌러 URL을 복사하세요
+            </p>
+          </div>
         </div>
       </div>
 
