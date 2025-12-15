@@ -34,7 +34,11 @@ export async function POST(request: NextRequest) {
       googleMapUrl,
       busInfo,
       subwayInfo,
-      parkingInfo
+      parkingInfo,
+      parking1Name,
+      parking1MapUrl,
+      parking2Name,
+      parking2MapUrl
     } = body;
 
     // Since HospitalInfo should be a singleton, check if one exists
@@ -59,7 +63,11 @@ export async function POST(request: NextRequest) {
         googleMapUrl: googleMapUrl || null,
         busInfo: busInfo || null,
         subwayInfo: subwayInfo || null,
-        parkingInfo: parkingInfo || null
+        parkingInfo: parkingInfo || null,
+        parking1Name: parking1Name || null,
+        parking1MapUrl: parking1MapUrl || null,
+        parking2Name: parking2Name || null,
+        parking2MapUrl: parking2MapUrl || null
       }
     });
 
@@ -90,7 +98,11 @@ export async function PUT(request: NextRequest) {
       googleMapUrl,
       busInfo,
       subwayInfo,
-      parkingInfo
+      parkingInfo,
+      parking1Name,
+      parking1MapUrl,
+      parking2Name,
+      parking2MapUrl
     } = body;
 
     if (!id) {
@@ -114,7 +126,11 @@ export async function PUT(request: NextRequest) {
         googleMapUrl: googleMapUrl || null,
         busInfo: busInfo || null,
         subwayInfo: subwayInfo || null,
-        parkingInfo: parkingInfo || null
+        parkingInfo: parkingInfo || null,
+        parking1Name: parking1Name || null,
+        parking1MapUrl: parking1MapUrl || null,
+        parking2Name: parking2Name || null,
+        parking2MapUrl: parking2MapUrl || null
       }
     });
 
