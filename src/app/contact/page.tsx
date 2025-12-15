@@ -126,6 +126,62 @@ export default function ContactPage() {
               </div>
             </div>
 
+            {/* Parking Lots */}
+            {(hospitalInfo?.parking1MapUrl || hospitalInfo?.parking2MapUrl) && (
+              <div className="flex flex-col gap-4 px-4">
+                <h2 className="text-[#181511] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em]">
+                  주차장 안내
+                </h2>
+                <div className="flex flex-col lg:flex-row gap-6">
+                  {/* Parking Lot 1 */}
+                  {hospitalInfo?.parking1MapUrl && (
+                    <div className="flex-1 flex flex-col gap-4 p-6 rounded-xl bg-white border border-[#EAE8E4]">
+                      <div className="flex items-center gap-3">
+                        <div className="text-[#f2930d] flex items-center justify-center shrink-0 size-8">
+                          <span className="material-symbols-outlined text-3xl">local_parking</span>
+                        </div>
+                        <h3 className="text-[#181511] text-lg font-bold">
+                          {hospitalInfo.parking1Name || '주차장 1'}
+                        </h3>
+                      </div>
+                      <a
+                        href={hospitalInfo.parking1MapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-[#03C75A] text-white font-semibold rounded-lg hover:bg-[#02b350] transition-colors shadow-sm"
+                      >
+                        <span className="material-symbols-outlined">map</span>
+                        <span>네이버 지도에서 보기</span>
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Parking Lot 2 */}
+                  {hospitalInfo?.parking2MapUrl && (
+                    <div className="flex-1 flex flex-col gap-4 p-6 rounded-xl bg-white border border-[#EAE8E4]">
+                      <div className="flex items-center gap-3">
+                        <div className="text-[#f2930d] flex items-center justify-center shrink-0 size-8">
+                          <span className="material-symbols-outlined text-3xl">local_parking</span>
+                        </div>
+                        <h3 className="text-[#181511] text-lg font-bold">
+                          {hospitalInfo.parking2Name || '주차장 2'}
+                        </h3>
+                      </div>
+                      <a
+                        href={hospitalInfo.parking2MapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-[#03C75A] text-white font-semibold rounded-lg hover:bg-[#02b350] transition-colors shadow-sm"
+                      >
+                        <span className="material-symbols-outlined">map</span>
+                        <span>네이버 지도에서 보기</span>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Contact Details */}
             <div className="flex flex-col gap-6">
               <div className="flex flex-col">
@@ -262,62 +318,6 @@ export default function ContactPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Parking Lots */}
-              {(hospitalInfo?.parking1MapUrl || hospitalInfo?.parking2MapUrl) && (
-                <div className="flex flex-col gap-4 px-4">
-                  <h2 className="text-[#181511] text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-[-0.015em]">
-                    주차장 안내
-                  </h2>
-                  <div className="flex flex-col lg:flex-row gap-6">
-                    {/* Parking Lot 1 */}
-                    {hospitalInfo?.parking1MapUrl && (
-                      <div className="flex-1 flex flex-col gap-4 p-6 rounded-xl bg-white border border-[#EAE8E4]">
-                        <div className="flex items-center gap-3">
-                          <div className="text-[#f2930d] flex items-center justify-center shrink-0 size-8">
-                            <span className="material-symbols-outlined text-3xl">local_parking</span>
-                          </div>
-                          <h3 className="text-[#181511] text-lg font-bold">
-                            {hospitalInfo.parking1Name || '주차장 1'}
-                          </h3>
-                        </div>
-                        <a
-                          href={hospitalInfo.parking1MapUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#03C75A] text-white font-semibold rounded-lg hover:bg-[#02b350] transition-colors shadow-sm"
-                        >
-                          <span className="material-symbols-outlined">map</span>
-                          <span>네이버 지도에서 보기</span>
-                        </a>
-                      </div>
-                    )}
-
-                    {/* Parking Lot 2 */}
-                    {hospitalInfo?.parking2MapUrl && (
-                      <div className="flex-1 flex flex-col gap-4 p-6 rounded-xl bg-white border border-[#EAE8E4]">
-                        <div className="flex items-center gap-3">
-                          <div className="text-[#f2930d] flex items-center justify-center shrink-0 size-8">
-                            <span className="material-symbols-outlined text-3xl">local_parking</span>
-                          </div>
-                          <h3 className="text-[#181511] text-lg font-bold">
-                            {hospitalInfo.parking2Name || '주차장 2'}
-                          </h3>
-                        </div>
-                        <a
-                          href={hospitalInfo.parking2MapUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#03C75A] text-white font-semibold rounded-lg hover:bg-[#02b350] transition-colors shadow-sm"
-                        >
-                          <span className="material-symbols-outlined">map</span>
-                          <span>네이버 지도에서 보기</span>
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
