@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ModernImageUpload from '../ModernImageUpload';
 
 interface ContactInfo {
   id: string;
@@ -8,6 +9,7 @@ interface ContactInfo {
   phone: string;
   fax: string | null;
   email: string | null;
+  mapImageUrl: string | null;
   kakaoMapUrl: string | null;
   naverMapUrl: string | null;
   googleMapUrl: string | null;
@@ -188,18 +190,16 @@ export default function ContactInfoManager() {
         <h3 className="text-lg font-bold text-gray-900">지도 정보</h3>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            지도 이미지 URL
-          </label>
-          <input
-            type="url"
-            value={formData.mapImageUrl}
-            onChange={(e) => handleChange('mapImageUrl', e.target.value)}
-            placeholder="https://example.com/map-image.jpg"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          <ModernImageUpload
+            label="지도 이미지"
+            currentImage={formData.mapImageUrl}
+            onUpload={(url) => handleChange('mapImageUrl', url)}
+            aspectRatio="landscape"
+            preset="default"
+            showUrlInput={true}
           />
           <p className="mt-2 text-sm text-gray-500">
-            지도 스크린샷 이미지 URL을 입력하세요 (오시는 길 페이지에 표시됩니다)
+            병원 위치 지도 이미지를 업로드하세요 (오시는 길 페이지에 표시됩니다)
           </p>
         </div>
 
