@@ -1,4 +1,5 @@
 import { PrismaClient, Content } from '@prisma/client';
+import Image from 'next/image';
 
 export default async function GallerySection() {
   const prisma = new PrismaClient();
@@ -41,10 +42,13 @@ export default async function GallerySection() {
             style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div className="relative aspect-square overflow-hidden">
-              <img
+              <Image
                 src={g.image || "/device.jpg"}
                 alt={g.title || "시설 이미지"}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                quality={85}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>

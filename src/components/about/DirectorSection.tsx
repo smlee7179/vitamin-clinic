@@ -1,4 +1,5 @@
 import { PrismaClient, Content } from '@prisma/client';
+import Image from 'next/image';
 
 export default async function DirectorSection() {
   const prisma = new PrismaClient();
@@ -43,10 +44,15 @@ export default async function DirectorSection() {
             {/* 프로필 이미지 */}
             <div className="flex-shrink-0">
               <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden shadow-xl bg-gradient-to-br from-vitamin-200 to-vitamin-50 border-4 border-white">
-                <img
+                <Image
                   src={director.image || "/director.jpg"}
                   alt={director.title || "원장님 프로필"}
+                  width={224}
+                  height={224}
+                  sizes="(max-width: 640px) 192px, 224px"
                   className="object-cover object-center w-full h-full transition-transform duration-300 hover:scale-105"
+                  quality={90}
+                  priority={index === 0}
                 />
               </div>
             </div>
